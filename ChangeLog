@@ -1,0 +1,20 @@
+2007-04-02  Andrew John Hughes  <andrew@dcs.shef.ac.uk>
+
+	* docs/papers/concur07/Makefile,
+	* docs/papers/concur07/abbrev.sty,
+	* docs/papers/concur07/concur.tex,
+	* docs/papers/concur07/history.txt,
+	* docs/papers/concur07/literature.bib,
+	* docs/papers/concur07/llncs.cls,
+	* docs/papers/concur07/llncs.dem,
+	* docs/papers/concur07/llncs.doc,
+	* docs/papers/concur07/llncs.ind,
+	* docs/papers/concur07/llncs.toc,
+	* docs/papers/concur07/llncsdoc.sty,
+	* docs/papers/concur07/read.me,
+	* docs/papers/concur07/splncs.bst,
+	* docs/papers/concur07/sprmindx.sty,
+	* docs/papers/concur07/subjindx.ind:
+	Added CONCUR 07 paper.
+	
+

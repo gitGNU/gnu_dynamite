@@ -1,0 +1,108 @@
+
+\message{<Paul Taylor's abbreviations:
+hacked by Matt Fairtlough, 15/4/94>}
+
+% this style pinched from Paul Taylor's prooftree.sty
+% by Matt Fairtlough
+
+%===========================================================================
+%       ABBREVIATIONS
+
+% general punctuation-depedent treatment of abbreviated phrases
+% just use macro in text as if it were a word, with puctuation if required,
+% no escaped spaces needed
+\let\then=\relax % this appears also in Matt.sty &c.
+
+\def\abbrev
+#1%     / for italic, | for roman
+#2%     the word itself (omit \it, \/ and final full-stop)
+#3%     . for final (suppressible) full-stop, - for none
+#4{%    ~ for unbreakable space, _ for breakable space, - for no space
+\ifx    #1/%
+\then   \let\abbrevfont\it\let\abbrevcorr\/% italic
+\else   \let\abbrevfont\empty\let\abbrevcorr\empty
+\fi
+\def\abbrevword{#2}%     save the word
+\ifx    #3.% the full stop (if required) does not end a sentence
+\then   \def\abbrevstop{.\spacefactor=1000 }%
+\else   \let\abbrevstop\empty
+\fi
+\ifx    #4~%
+\then   \def\abbrevspace{~\ignorespaces}%       tied space (& dont spoil it!)
+\else   \ifx#4_%
+\then   \def\abbrevspace{\ }%                   breakable space
+\else   \let\abbrevspace\ignorespaces%          no space at all
+\fi\fi
+\futurelet\punct        % what punctuation follows?
+\doabbrev               % carry on ...
+}
+
+\def\doabbrev{%
+\resetabbrev    % alter full stop and space wrt following punctuation
+{\abbrevfont    % italic, perhaps
+\abbrevword     % the word
+\abbrevstopa    % full stop if needed
+\abbrevcorra}%  % italic correction
+\abbrevspacea}  % whatever kind of space at the end
+
+\def\resetabbrev{%
+%
+% ., suppress space, italic correction and full-stop
+\let\abbrevspacea\ignorespaces\let\abbrevstopa\empty\let\abbrevcorra\empty
+\ifx\punct.\else\ifx\punct,%
+%
+% ;:?/! suppress space and full-stop
+\else\let\abbrevcorra\abbrevcorr
+\ifx\punct;\else\ifx\punct:\else\ifx\punct?\else\ifx\punct/\else\ifx\punct!%
+%
+% })]'"- and explicit space (~ & \ ) suppress space but not full-stop 
+\else\let\abbrevstopa\abbrevstop
+\ifx\punct)\else\ifx\punct~\else\ifx\punct-\else\ifx\punct]%
+\else\ifx\punct'\else\ifx\punct"\else\ifx\punct\ \else\ifx\punct\egroup%
+%
+% default case: something to be treated as the ``next word''
+\else\let\abbrevspacea\abbrevspace
+\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi}
+
+
+%#1 / italic, | roman
+%#2 the word itself
+%#3 . for final (suppressible) full-stop, - for none
+%#4 ~ for unbreakable space, _ for breakable space, - for no space
+\def\adhoc      {\abbrev/{ad~hoc}-_}
+\def\adinf      {\abbrev/{ad~inf}._}
+\def\afortiori  {\abbrev/{\=a~fortiori}-_}
+\def\ala        {\abbrev/{\`a~la}-~}
+\def\apriori    {\abbrev/{\=a~priori}-_}
+\def\bonafide   {\abbrev/{bona fide}-_}
+\def\cf         {\abbrev/{cf}.~}
+\def\circa      {\abbrev/{circa}-~}
+\def\dh         {\abbrev/{d.h}.~}
+\def\eg         {\abbrev/{e.g}.~}
+\def\etal       {\abbrev/{et~al}._}
+\def\etc        {\abbrev/{etc}._}
+\def\etseq      {\abbrev/{et~seq}._}
+\def\fiat       {\abbrev/{fiat}-_}
+\def\fig        {\abbrev|{Fig}.~}
+\def\ibid       {\abbrev/{ibid}._}
+\def\ie         {\abbrev/{i.e}.~}
+\def\loccit     {\abbrev/{loc.~cit}._}
+\def\naive      {\abbrev|{na\"\i ve}-_}
+\def\naively    {\abbrev|{na\"\i vely}-_}
+\def\qua        {\abbrev/{qu\=a}-~}
+\def\qv         {\abbrev/{q.v}._}
+\def\sic        {\abbrev/{sic}-_}
+\def\versus     {\abbrev/{versus}-_}
+\def\via        {\abbrev/{via}-~}
+\def\viceversa  {\abbrev/{vice versa}-_}
+\def\visavis    {\abbrev/{vis \`a~vis}-_}
+\def\viz        {\abbrev/{viz}.~}
+\def\wolog      {\abbrev|{w.l.o.g}.~}% \wlog = ``write to log'' TeXbook p347
+\def\wrt        {\abbrev|{w.r.t}.~}
+\def\wts        {\abbrev|{w.t.s}.~}
+\def\Apriori    {\abbrev/{\=A~priori}-_}
+\def\Eg         {\abbrev/{E.g}.~}
+\def\Naive      {\abbrev|{Na\"\i ve}-_}
+\def\Naively    {\abbrev|{Na\"\i vely}-_}
+\def\Wolog      {\abbrev|{W.l.o.g}.~}
+

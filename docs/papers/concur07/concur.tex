@@ -1,0 +1,1209 @@
+\documentclass[orivec]{llncs}
+\usepackage{verbatim}
+\usepackage[T1]{fontenc}
+\usepackage[latin1]{inputenc}
+\usepackage{hyperref}
+\usepackage{abbrev}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{amsfonts, amssymb, amsmath, epsfig, eepic}
+\usepackage{wrapfig}
+\usepackage{stmaryrd}
+\usepackage{mathrsfs}
+
+\newcommand{\shrule}{\vspace{1.0mm}\hrule\vspace{1.0mm}}
+\newcommand{\out}{\overline}
+
+%% CaSE macros
+
+\newcommand{\crho}[1]{\rho_{\!#1}}
+\newcommand{\csigma}[1]{\sigma_{\!#1}}
+\newcommand{\inita}[1]{\mathcal{I\!\!A}({#1})}
+\newcommand{\initc}[1]{\mathcal{I\!C}({#1})}
+
+\newcommand{\lts}[4]{\langle {#1},{#2},{#3},{#4} \rangle}   
+
+\newcommand{\derives}[1]{\stackrel{#1}{\rightarrow}}
+\newcommand{\lderives}[1]{\stackrel{#1}{\longrightarrow}}
+\newcommand{\xderives}[1]{\xrightarrow{#1}}
+\newcommand{\nderives}[1]{\stackrel{#1}{\nrightarrow}}
+\newcommand{\obsderives}[1]{\stackrel{#1}{\Rightarrow}}    
+
+\newcommand{\expr}{\text{$\mathcal{E}$}}
+\newcommand{\exprb}{\text{$\mathcal{F}$}}
+\newcommand{\bouncer}{\text{$\mathcal{F}$}}
+\newcommand{\ambop}{\text{$\mathcal{M}$}}
+\newcommand{\bambop}{\text{$\mathcal{N}$}}
+\newcommand{\proc}{\text{$\mathcal{P}$}}
+\newcommand{\act}{\text{$\mathcal{A}$}}
+\newcommand{\timers}{\text{$\mathcal{T}$}}
+\newcommand{\labels}{\text{$\mathcal{L}$}}
+\newcommand{\names}{\text{$\mathcal{N}$}}
+\newcommand{\lowpri}{\text{$\mathcal{C}$}}
+\newcommand{\highpri}{\text{$\mathcal{H}$}}
+\newcommand{\independent}{\text{$\mathcal{U}$}}
+\newcommand{\conames}{\text{$\overline{\names}$}}
+\newcommand{\actions}{\text{$\mathcal{A}$}}
+
+\newcommand{\nil}{\textbf{0}}
+\newcommand{\pref}{\,.\,}
+\newcommand{\comp}{\;|\;}
+\newcommand{\res}[1]{\setminus {#1}}
+\newcommand{\hide}[1]{/ {#1}}
+\newcommand{\timeout}[3]{\lfloor{#1}\rfloor {#2} ({#3})}
+\newcommand{\stimeout}[3]{\lceil{#1}\rceil {#2} ({#3})}
+\newcommand{\dottimeout}[5]{\timeout{{#1}}{{#2}}{{#3}}\ldots {#4} ({#5})}
+\newcommand{\hid}{/}
+
+\newcommand{\eqdef}{\operatorname{\stackrel{\textrm{def}}{=}}}
+
+\newcommand{\twb}[1]{\approx_{#1}}
+\newcommand{\toc}[1]{\approx^{c}_{#1}}
+
+%% operational rules
+ 
+% Derivation Rules
+% 1. parameter is name
+% 2. parameter is premise
+% 3. parameter is conclusion
+% 4. parameter is side conditions
+%
+\newlength{\lrulename}
+\setlength{\lrulename}{0.80cm}
+ 
+\newcommand{\Rule}[4]{\makebox[\lrulename]{{\rm #1}\hfill}
+                      $\displaystyle\frac{#2}{#3}\,{#4}$}
+
+% Locality
+
+\newcommand{\loc}[4]{{#1}[ #2 ]^{#3}_{\{#4\}}}
+\newcommand{\locv}[4]{{#1}[ #2 ]^{#3}_{#4}}
+\newcommand{\nloc}[3]{{#1}[ #2 ]^{#3}}
+\newcommand{\lcloc}[3]{{#1}[ #2 ]_{\{#3\}}}
+\newcommand{\lncloc}[2]{{#1}[ #2 ]}
+
+%% misc macros
+
+\newcommand{\pair}[2]{\langle {#1},{#2} \rangle}
+\newcommand{\threetuple}[3]{\langle {#1},{#2},{#3} \rangle}
+\newcommand{\df}{\operatorname{=_{\textrm{df}}}}
+\newcommand{\seml}{[\hspace{-0.3ex}[}
+\newcommand{\semr}{]\hspace{-0.3ex}]}
+\newcommand{\semtwo}[5]{{#2}_{#3}\seml #1 \semr^{#4}_{#5}}
+\newcommand{\sem}[4]{{}_{#2}\seml #1 \semr^{#3}_{#4}}
+
+\newcommand{\procin}[2]{on\ #1 \tntin{#2}}
+\newcommand{\procout}[2]{on\ #1 \tntout{#2}}
+\newcommand{\bin}{\overline{\varovee}}
+\newcommand{\bout}{\overline{\varowedge}}
+\newcommand{\bopen}{\overline{\varoast}}
+\newcommand{\tntin}[1]{\tin\!#1}
+\newcommand{\tntout}[1]{\varowedge #1}
+\newcommand{\tntopen}[1]{\varoast #1}
+\newcommand{\tin}{\varovee}
+\newcommand{\tout}{\varowedge}
+\newcommand{\topen}{\varoast}
+\newcommand{\mobprim}{\text{$\{ \tin, \tout , \topen\}$}}
+\newcommand{\pc}{\mid}
+
+\newtheorem{prop}{Proposition}
+
+\title{Phased Mobile Systems}
+
+\author{Andrew Hughes\thanks{To whom correspondence should be addressed.} and Mike Stannett}
+
+\institute{Department of Computer Science, University of Sheffield, \\
+Regent Court, 211 Portobello Street, Sheffield S1 4DP, UK. \\
+	   \email{a.hughes@dcs.shef.ac.uk}
+}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+We present a novel combination of process synchronisation and mobility
+ with the concept of discrete time in the form of the TNT process
+ calculus.  This forms the basis of a framework for complex systems,
+ consisting of hierarchical components, the composition of which changes
+ over time and which contain processes that may interact, both in
+ response to others and to external stimuli, and move between different
+ environments during execution.
+\end{abstract}
+
+\section{Introduction}
+\label{introduction}
+
+When modelling complex systems, we ideally want to be able to break the
+problem down into easily digestible components.  We can then work on
+each individually, perfecting them up to the point where there are
+amalgamated in order to form a complete system.  This approach is common
+in sequential models (object-oriented ones in particular) and extends
+cleanly into the concurrent domain.  In this arena, components not only
+have their own defined behaviour, but also operate simultaneously, thus
+placing more emphasis on the interaction between them.
+
+This idea also encompasses a simple model of reality, where a
+component represents a microcosm of the real world.  Such environments
+contain multiple processes or objects which communicate with each
+other.  These are analogous to individuals conversing with one another
+in reality, in order to achieve their task.  Both can also act in
+isolation; such sequential behaviour is a subset of the overall
+concurrent behaviour modelled within this environment.
+
+Formal methods for reasoning about such systems are already well
+developed.  In the area of process algebra, in particular, concurrent
+interaction is generally represented by \emph{synchronization} between
+processes.  Indeed, this is the defining concept of
+CCS\cite{milner:ccs}.  Calculi that include \emph{localities} also allow
+the notion of componentisation to be explicitly realised by dividing
+processes into a hierarchy.  One proponent of this technique is the
+ambient calculus\cite{amb}, which focuses on these entities (known as
+`ambients' in this context) and allows their position to change during
+execution.
+
+What tends to be absent from these models is the notion of behaviour
+also being governed by time, or at least, some notion of phasing.  Some
+calculi maintain real time values\cite{tccs,beaten:timing,brics:lee},
+but a notion of discrete time maintains a more abstract perspective.
+This is most easily understood by again relating the idea to our own
+experiences.  Although we have exact times, such as fourteen minutes
+past two o'clock, we rarely care about the actual time.  What is more
+important is that a particular event occurs at some point in time, or
+that a task needs to be completed by an arbitrary deadline.  Thus, time
+can be more simply represented as a signal that our processes respond to
+as a whole, as opposed to the one-to-one communication activities
+previously mentioned.
+
+As an example, consider an environment inhabited by the members of a
+factory team.  The team receives a particular task to execute, which
+involves communication between each of their colleagues.  At some point
+in time, this task is completed; there is no more work to be done, so
+each individual moves on to the new task simultaneously (as a team),
+at the occurrence of this signal.
+
+These concepts are realised in the existing field of discrete timed
+process algebras, such as TPL\cite{hennessy:tpl}, PMC\cite{pmc}, CSA\cite{csa}
+and CaSE\cite{case,norton05alg}.  Our contribution in this paper is to
+combine the notions of locations, discrete time and mobility to create a
+calculus capable of modelling dynamic componentised systems, where
+behaviour is defined both by interactions between individual processes
+and by responses to external stimuli, represented by clock signals.
+A number of calculi\cite{lee:realtime,satoh:phd,webpi} have already
+attempted to combine mobility with real time values, but we believe the
+aggregation of mobility and discrete time to be a novel creation.
+
+To exemplify this, we can extend our factory idea to the point where
+that environment is just one of many, with the additional possibility of
+nesting of such entities.  Thus, the factory exists and operates within
+the larger environment of a city, with other buildings and individuals
+that have their own separate behaviour.  The factory can be thought of a
+single component, which behaves in its own way, but also interacts with
+the surrounding environment.
+
+To further complicate things, the hierarchy is dynamic.  Individuals
+may move from one environment to another, where different rules apply.
+Further, environments themselves can change their location, taking on
+a different context which again affects the behaviour of their
+constituents.
+
+Our calculus of Typed Nomadic Time (TNT) provides a framework for
+modelling such complex systems, with practical applicability very much
+in mind.  The objective of this paper is to demonstrate its underlying
+formal theory, derived in part from existing research in the area, via a
+description of its syntax, operational semantics and type system.  Our
+long term aim is to leverage TNT as a foundation for creating concurrent
+systems within a programmatic context.  This then allows for a
+specification of system interactions to be shifted directly from the
+theoretical domain into an implementation backed by a formal
+methodology, and, in turn, facilitates the general industry shift
+towards concurrent execution.
+
+\section{Typed Nomadic Time}
+\label{tnt}
+
+In this section, we present the syntax, operational semantics and type
+system of TNT.  In creating this calculus, we seek not to merely instil
+the existing pool of such formalisms with another, but instead focus on
+creating a framework which allows the systems outlined in section
+\ref{introduction} to be modelled in the most simple and elegant manner.
+With this in mind, we draw inspiration from several well-established
+areas of concurrency theory, rather than attempting to start afresh,
+choosing those concepts which best meet our ideals.
+
+\subsection{Syntax}
+
+The formal syntax of TNT is shown below, where $\expr$ and $\exprb$
+define possible process terms and $\ambop$ possible mobility primitives.
+We define a countable set of actions, $\actions = \names \cup
+\conames \cup \{\tau\}$, over which $\alpha$ and $\beta$
+range, where the elements of $\names$ are drawn from an infinite
+set of names, and $\conames$ is the corresponding set of
+co-names, $\{\overline{a} | a \in \mathcal{N}\}$.  $\timers$ is a
+countably infinite set of clocks over which $\sigma$ ranges, while $m$
+represents an arbitrary environ name.  The latter are not distinct, and
+hence do not form a set.  In particular, $m$ may be equal to the empty
+string, $\epsilon$, thus facilitating the use of anonymous
+environs\footnote{A primary motivation for this is that it allows TNT to
+be a conservative extension of CaSE.  To obtain an encoding for clock
+hiding, there must be a way of mapping the operator to an equivalent
+environ}.  $X$ is a variable from a countably infinite set used to bind
+process behaviour for the purpose of recursion.
+
+\begin{equation}
+  \begin{aligned}
+    \expr, \exprb \ ::=\ &
+    \nil  \;\,|\,\; 
+    \Omega \pc
+    \Delta \;\,|\,\; 
+    \Delta_{\sigma} \;\,|\,\; 
+    \alpha . \expr  \;\,|\,\;
+    \expr + \exprb \;\,|\,\; 
+    \expr\!|\!\exprb\;\,|\,\; 
+    \timeout{\expr}{\sigma}{\exprb} \;\,|\,\; \\
+    & \stimeout{\expr}{\sigma}{\exprb} \;\,|\,\; 
+    \mu X . \expr \;\,|\,\; 
+    X \;\,|\,\; 
+    \expr \setminus \vec{a} \;\,|\,\; 
+    \locv{m}{\expr}{\exprb}{\vec{\sigma}} \;\,|\,\;
+    \ambop . \expr \\
+    \ambop\ ::=\ & \tntin{m} \pc \tntout{m} \pc \tntopen{m} \pc
+     \procin{\beta}{m} \pc \procout{\beta}{m} \pc \bin \pc
+   \bout \pc \bopen
+   \end{aligned}
+\end{equation}
+
+At its heart, TNT is a conservative extension of Milner's CCS.
+Specifically, within each environment lie processes which interact with
+one another via \emph{handshake} synchronization; to proceed, one
+process must emit an action as another simultaneously emits the
+corresponding co-action.  This is something TNT shares with its
+predecessor, CaSE, from which it also acquires the following features:
+
+\begin{enumerate}
+\item Multiple \emph{abstract clocks}, denoted by $\sigma, \rho, \dots$,
+      which are interpreted not as quantitative values, but in a
+      qualitative fashion as signals of recurring events.
+\item Two \emph{timeout} operators, $\timeout{E}{\sigma}{F}$ and
+      $\stimeout{E}{\sigma}{F}$, which allow the behaviour of
+      processes to depend upon the occurrence of a particular clock
+      signal.
+\item Two \emph{timelock} operators, $\Delta$ and $\Delta_{\sigma}$,
+      which prevent all clocks and a single clock, $\sigma$ from
+      ticking, respectively.
+\item The concept of \emph{maximal progress} or, more generally,
+      prioritisation.  A signal from a clock may be pre-empted by the
+      existence of a process which may engage in a high priority
+      transition.  In CaSE, the only such transition is the internal action,
+      $\tau$, which results in processes performing the maximal amount
+      of possible behaviour before a clock tick.
+\item Encapsulation, realised in CaSE by the process of \emph{clock
+      hiding}, which is analogous to the notion of hiding found in
+      CSP\cite{hoare:csp78}.  This facilities the amalgamation of clock ticks
+      from a child component into the cycle of its parent.
+\end{enumerate}
+
+Clocks and the operators outlined above exist largely unchanged (for the
+time being) within TNT, their presence merely allowing process behaviour
+to incorporate the notion of discrete time.  It is the two general
+concepts of encapsulation and prioritisation that actually makes this
+valuable, by permitting componentisation and synchronous event cycles,
+and thus, it is these which TNT extends.
+
+Within CaSE, encapsulation is implicitly realised by the notion of clock
+hiding.  When a clock, $\sigma$, is hidden it appears indistinguishable
+from an internal action to observers outside the scope of the hiding
+operator.  The effect of this, when combined with maximal progress, is
+to have an entire subsystem (defined by the clock's scope) appear
+equivalent to a single process, with respect to the cycles of clocks
+with a wider scope.  This means that, just as with processes, the
+subsystem must perform the maximal amount of behaviour before the next
+of the more general clock ticks occurs.
+
+In TNT, we make this notion explicit by representing the boundaries of
+the component within the syntax itself.  The effect of these is also
+extended to processes, with interaction being disallowed between those
+in separate environments.  In doing so, we look towards the existing
+area of \emph{localities}\cite{obslocal,pawl} which have been used in
+various ways in a number of existing calculi.  After surveying this area
+at some length, we draw most of our inspiration from Cardelli and
+Gordon's ambient calculus, which focuses primarily on this concept and
+forms the framework for many of the results in this field.
+
+Our localities or \emph{environs} are realised in the process
+$\locv{m}{\expr}{\exprb}{\vec{\sigma}}$.  The environ is given a name
+($m$), some behaviour ($\expr$), a security model in the form of a
+`bouncer' ($\exprb$) and a set of clocks, $\vec{\sigma}$.  The latter
+forms our equivalent of the CaSE clock hiding operator ($\{ \sigma \}$ is
+equivalent to $/ \sigma$) but with application to all clocks in the set
+simultaneously.
+
+The name of the environ is used with TNT's mobility primitives, which
+are an extension of those present in the ambient calculus.  We maintain
+the $in\ m$, $out\ m$ and $open\ m$ primitives, representing them
+instead as the mnemonics $\tntin{m}$, $\tntout{m}$ and $\tntopen{m}$ to
+prevent confusion with the names of actions.  To this, we add two
+primitives for process mobility, $\procin{\beta}{m}$ and
+$\procout{\beta}{m}$, which allow objective mobility to occur via
+synchronization on the action, $\beta$.
+
+When movement occurs, a mobility transition is emitted which forms part of a high
+priority set.  This, in turn, provides TNT's extension of the concept of
+maximal progress to a more general one of prioritisation.  The system at
+this stage is still simple; it merely formalises the concept of
+including mobility within the same class of functionality as internal
+behaviour and synchronisation, both of which result in silent actions.
+
+Transitions are divided into three sets:
+
+\begin{enumerate}
+\item $\highpri$, the \emph{high priority transitions}, which includes $\tau$ and
+      the mobility transitions, $\tin$, $\tout$ and $\topen$.
+\item $\lowpri$, the \emph{low priority transitions}, which includes all
+      clock ticks (and is thus equal to $\timers$).
+\item $\independent$, the \emph{independent transitions}, which arise from the
+      occurrence of actions that don't pair up with the corresponding
+      co-action (or vice versa).  These neither pre-empt or inhibit any
+      other transitions.  This set is equal to $\names \cup \conames$.
+\end{enumerate}
+
+If a process may emit a transition in $\highpri$, then those transitions
+in $\lowpri$ are prevented from occurring.  The same division may be
+applied to CaSE, where $\highpri$ is simply $\{ \tau \}$.
+
+Finally, TNT provides a method of security based on the research into
+safe ambients\cite{sangiorgi:mobsafeambients}.  \emph{Grave
+interferences} occur when two logically different mobility transitions may
+occur at the same time, a scenario which clearly leads to two radically
+different reductions.  These are unlike normal interferences, where more
+than one action competes for synchronisation, and tend to represent
+errors rather than an intentional notion of competition for resources.
+They occur because, unlike actions, the mobility primitives in the
+ambient calculus occur in isolation rather than in pairs.  Both safe
+ambients and TNT solve this problem by introducing the equivalent of
+co-names for mobility primitives, so that a similar synchronisation
+process must take place before movement occurs.
+
+In TNT, this is realised by \emph{bouncers}.  Named after the person who
+restricts access to a night club, the bouncer is an additional property
+of a environ which appears in the top right.  It has no real behaviour
+of its own, but instead performs the job of protecting the environ,
+essentially being a process with a more limited choice of available
+constructs\footnote{This limited choice is only explicitly imposed by
+the type system.  There is no restriction in the abstract syntax.}.  The
+bouncer provides the co-primitives (either $\bin$, $\bout$ or $\bopen$),
+and as a result dictates which mobility transitions may occur and their
+cardinality.
+
+This implementation differs from that in existing calculi, such as
+Sangiorgi's safe ambients, in specialising the process which may provide
+these co-primitives and also in attaching it to the environ itself.
+When a TNT environ moves, its bouncer moves with it and so an
+association is maintained between the two which is not present where the
+co-primitives are provided by an normal arbitrary process.  To maintain
+this distinction between bouncers and normal processes, $\Omega$ is used
+to represent a bouncer with no behaviour, as opposed to $\nil$.  The
+effect of this addition is shown later in the type system of section
+\ref{typesys}.
+
+\subsection{Operational Semantics}
+
+This section gives TNT an operational semantics in terms of a labelled
+transition system, $(\mathcal{P}, \mathcal{L}, \rightarrow, s)$, defined
+up to structural congruence.  $\proc$ is the set of states, \labels the
+alphabet $\actions \cup \timers \cup \mobprim$, $\rightarrow$ the
+transition relation and $s$ the start state.  Transitions with labels in
+$\actions$ are known as \emph{action transitions}, those in $\timers$ as
+\emph{clock transitions} and those in $\mobprim$ as \emph{mobility
+transitions}.  The transition relation, $\rightarrow \subseteq
+\proc \times \labels \times \proc$ is defined in the tables that follow.
+$E$, $F$ and $G$ range over process terms, $\sigma$ and $\rho$ over the
+set of clocks ($\timers$), $\alpha$ over the set of actions
+($\actions$), $h$ over $\highpri$, $a$ and $b$ over the actions
+sans $\tau$, $\kappa$ over $\actions \cup \mobprim$
+and $\gamma$ over the whole alphabet.  The semantics exhibit the
+following properties:
+\begin{prop}
+the prioritisation property
+i.e. $E \derives{\sigma}$ implies $E \nderives{h}$ 
+\end{prop}
+\begin{prop}
+the time determinacy property i.e. $E \derives{\sigma} E'$ and $E
+\derives{\sigma} E''$ implies $E' = E''$.
+\end{prop}
+Structural congruence is the least congruence relation that satisfies
+the laws given in Table \ref{tab:structcong}, allowing structural
+rearrangement and simplification of process terms. $\vec{A}$, $\vec{B}$
+and $\vec{C}$ range over subsets of \actions, while $fn(E)$ refers to
+the \emph{free names} of the process, $E$.  This set is constructed from
+all names that occur within $E$, with the exception of those bound by
+the restriction operator.
+
+\textsf{(\ref{structsum1})} and \textsf{(\ref{structsum2})} make the
+summation operator commutative and associative respectively, while
+\textsf{(\ref{structpar1})} and \textsf{(\ref{structpar2})} do the same
+for parallel composition.  The operator $\pc$ forms a monoid under
+\textsf{(\ref{structpar2})} and \textsf{(\ref{structident})}, the latter
+identity law allowing superfluous $\nil$ processes to be removed.  The
+final three focus on restriction, which may be:
+
+\begin{itemize}
+\item Removed from $\nil$ processes \textsf{(\ref{structresremove})}
+\item The set of restricted actions may be split between two parallel
+      composed processes so that the restricted actions are not in the
+      free names of the other process \textsf{(\ref{structrespar})}.
+\item Multiple restriction operators may be combined into a single set
+      \textsf{(\ref{structresres}))}.
+\end{itemize}
+
+\begin{table}
+  \caption{Semantics: Structural Congruence Laws}
+ \label{tab:structcong}
+ \vspace{-3mm}
+  \shrule
+  \begin{align}
+   E + F & \equiv F + E \tag{Struct Sum1} \label{structsum1}
+  \\
+   E + (F + G) & \equiv (E + F) + G \tag{Struct Sum2} \label{structsum2}
+   \\
+    E \pc F & \equiv F \pc E \tag{Struct Par1} \label{structpar1}
+  \\
+   E \pc (F \pc G) & \equiv (E \pc F) \pc G \tag{Struct Par2} \label{structpar2}
+ \\
+    E \pc \nil & \equiv E \tag{Struct Ident} \label{structident}
+   \\
+    \nil \setminus \vec{a} & \equiv \nil \tag{Struct Res Remove}
+   \label{structresremove}
+   \\
+    E \setminus \vec{A} \setminus \vec{B} & \equiv E \setminus \vec{A} \cup \vec{B}
+   \tag{Struct Res Res} \label{structresres}
+   \\
+    (E \pc F) \setminus \vec{A} & \equiv (E \setminus \vec{B}) \pc (F
+   \setminus \vec{C})^1 \tag{Struct Res Par} \label{structrespar}
+\end{align}
+\begin{align} 
+   (1)\ & \vec{B} = \{b \in \vec{A} \pc b \not \in fn(F)\} \notag \\ 
+   & \vec{C} = \{c \in \vec{A} \pc c \not \in fn(E)\} \notag
+ \end{align} 
+  \shrule
+\end{table}
+
+Table \ref{tab:casesubset} gives the subset of the semantics common to
+both TNT and CaSE. $Idle$ and $Patient$ represent the progress of time
+over $\nil$ and action prefixes respectively.  $Act$ allows an action to
+be performed, with an appropriately labelled action transition and the
+process continuing as $E$.  $Stall$ represents the stopping of a
+specific clock, $\sigma$, allowing transitions to occur for any other
+clock, $\rho$.
+
+\begin{table}
+  \caption{Semantics: Common CaSE Subset}
+ \label{tab:casesubset}
+ \vspace{-3mm}
+  \shrule
+ \begin{center}
+ \begin{tabular}{rc}
+     \Rule{Idle}
+     {-}
+     {\nil \lderives{\sigma} \nil}
+     {}
+     &
+     \Rule{Act}
+     {-}
+     {\alpha . E \derives{\alpha} E}
+     {}
+     \\[3ex]
+     \Rule{Patient\ }
+     {-}
+     {a.E \derives{\sigma} a.E}
+     {}
+     &
+     \Rule{Stall}
+     {-}
+     {\Delta_{\sigma} \derives{\rho} \Delta_{\sigma}}
+     {\rho \ne \sigma}
+     \\[3ex]
+     \Rule{Sum1}
+     {E \derives{\alpha} E^\prime}
+     {E + F \derives{\alpha} E^\prime}
+     {}
+     &
+     \Rule{Par1}
+     {E \derives{\alpha} E^\prime}
+     {E \;|\; F \derives{\alpha} E^\prime \;|\; F}
+     {}
+     \\[3ex]
+     \Rule{Sum2}
+     {E \derives{\sigma} E^\prime, F \derives{\sigma} F^\prime}
+     {E + F \derives{\sigma} E^\prime + F^\prime}
+     {}
+     &
+      \Rule{Par2}
+      {E \derives{a} E^\prime,
+        F \derives{\overline{a}} F^\prime}
+      {E \;|\; F \derives{\tau} E^\prime \;|\; F^\prime}
+      {}
+     \\[3ex]
+      \Rule{Par3}
+      {E \derives{\sigma} E^\prime,
+        F \derives{\sigma} F^\prime,
+        E \;|\; F \nderives{h}}
+      {E \;|\; F \derives{\sigma} E^\prime \;|\; F^\prime}
+      {}
+     &
+      \Rule{FTO1}
+      {E \nderives{h}}
+      {\timeout{E}{\sigma}{F} \derives{\sigma} F}
+      {}
+     \\[3ex]
+      \Rule{FTO2}
+      {E \derives{\gamma} E'}
+      {\timeout{E}{\sigma}{F} \derives{\gamma} E'}
+      {\gamma \ne \sigma}
+     &
+      \Rule{STO1}
+      {E \nderives{h}}
+      {\stimeout{E}{\sigma}{F} \derives{\sigma} F}
+      {}
+     \\[3ex]
+      \Rule{STO2}
+      {E \derives{\kappa} E'}
+      {\stimeout{E}{\sigma}{F} \derives{\kappa} E'}
+      {}
+     &
+      \Rule{STO3}
+      {E \derives{\rho} E'}
+      {\stimeout{E}{\sigma}{F} \derives{\rho} \stimeout{E'}{\sigma}{F}}
+      {\rho \ne \sigma}
+     \\[3ex]
+      \Rule{Rec}
+      {E \derives{\gamma} E'}
+      {\mu X.E \derives{\gamma} E' \{ \mu X.E / X\}}
+      {}
+      &
+      \Rule{Res}
+      {E \derives{\gamma} E'}
+      {E \setminus a \derives{\gamma} E' \setminus a}
+      {\gamma \ne a}
+     \\
+ \end{tabular}
+  \end{center}
+  \shrule
+\end{table}
+
+$Sum1$ and $Par1$ represent the performance of an action on either side
+of the summation and parallel composition operators.  These differ
+slightly from those in CaSE, as commutativity is now implied by the
+aforementioned structural congruence rules.  $Sum2$ and $Par3$ represent
+the passage of time over these two operators.  Note that time must be
+able to pass on both sides, and that prioritisation is enforced by the
+restriction $E \;|\; F \nderives{h}$ in $Par3$.
+
+$Par2$ encapsulates synchronization; when one of the processes can
+perform an action and the other can perform the matching co-action, a
+silent action is performed and both evolve.  $FTO1$ and $STO1$ are
+identical, allowing the dissolution of the timeout via a tick of the
+associated clock, $\sigma$, on the provision that $E \nderives{h}$.  The
+difference between the two timeouts is demonstrated by $FTO2$, $STO2$
+and $STO3$.  $FTO2$ is a general rule for the fragile timeout, which
+allows $E$ to execute and the timeout to be removed on the occurrence of
+any transition other than the expected clock tick.  For the stable
+timeout, all clock transitions are handled separately from other
+transitions.  According to $STO3$, clocks other than $\sigma$ may tick,
+but the timeout stays in place.  $STO2$ handles the removal of the
+stable timeout, due to an action or mobility transition performed by
+$E$.
+
+Finally, $Rec$ provides recursion, performing substitution of $X$ for
+the body of the recursion as soon as any transition, $\gamma$, occurs
+and $Res$ defines restriction, which disallows any transitions for the
+given action.
+
+The semantics given in Table \ref{tab:hidingsubset} are similar to the
+hiding rules given for CaSE, but are instead applied to the new
+syntactic form used in TNT.  Also included are rules which allow the
+mobility prefix to evolve, thus completing the semantics for the syntax
+of $\expr$ and $\exprb$, and which link the structural congruence rules
+into the labelled transition system.
+
+\begin{table}
+  \caption{Semantics: TNT Extensions}
+  \label{tab:hidingsubset}
+ \vspace{-3mm}
+  \shrule
+ \begin{center}
+ \begin{tabular}{cc}
+      \Rule{LHd1}
+      {E \derives{\sigma} E'}
+      {\locv{m}{E}{B}{\vec{\sigma}} \derives{\tau} \locv{m}{E'}{B}{\vec{\sigma}}}
+      {\sigma \in \vec{\sigma}}
+  &
+        \Rule{LHd2}
+      {E \derives{h} E'}
+      {\locv{m}{E}{B}{\vec{\sigma}} \derives{h} \locv{m}{E'}{B}{\vec{\sigma}}}
+      {}
+  \\[3ex]
+      \Rule{LHd3}
+      {E \derives{\rho} E',
+       E \nderives{\sigma}}
+      {\locv{m}{E}{B}{\vec{\sigma}} \derives{\rho} \locv{m}{E'}{B}{\vec{\sigma}}}
+      {\rho \not \in \vec{\sigma}, \sigma \in \vec{\sigma}}
+&
+      \Rule{Cap1}
+      {-}
+      {\ambop . E \derives{\ambop} E}
+      {}
+  \\[3ex]
+  \Rule{Cap2}
+  {-}
+  {\ambop . E \derives{\sigma} \ambop . E}
+  {}
+&
+     \Rule{SCong\ }
+     {E \equiv E', E' \derives{\gamma} F', F' \equiv F}
+     {E \derives{\gamma} F}
+     {}
+ \end{tabular}
+  \end{center}
+  \shrule
+\end{table}
+
+$LHd1$ provides the conversion of ticks emitted by the hidden clocks to
+silent actions; if $E$ can perform a $\sigma$ transition, then it
+performs a $\tau$ transition in a context where $\sigma$ is one of the
+hidden clocks.  $LHd2$ and $LHd3$ simply allow the remaining action,
+mobility and clock transitions to occur normally.  $Cap1$ and $Cap2$
+define the evolution of the mobility prefix, allowing the mobility
+primitive to execute and for clocks to idle over it, respectively.
+Finally, $SCong$ states that if $E$ is structurally equivalent to
+$E^\prime$ and $E^\prime$ can evolve to become $F^\prime$, which is
+itself structurally equivalent to $F$, then $E$ can evolve via the same
+transition to become $F$.
+
+The remaining semantics focus on the provision of mobility.  Table
+\ref{tab:locmobsubset} gives the rules required to move an environ
+around the hierarchy.  $InLoc$ allows a $\tin$ transition to occur and
+$n$ to move into $m$ if both an $\tntin{m}$ and an $\bin$ transition are
+available from the process $\tntin{m}.E$ and the bouncer, $B_1$,
+respectively.  $OutLoc$ gives the converse for $\tntout{m}.E$
+and $\bout$, causing an $\tout$ transition to occur and $n$ to move
+outside $n$.
+
+\begin{table}
+  \caption{Semantics: Environ Mobility}
+  \label{tab:locmobsubset}
+ \vspace{-3mm}
+  \shrule
+ \begin{center}
+ \begin{tabular}{c}
+  \Rule{InEnv}
+  {E \derives{\tntin{m}} E', B_1 \derives{\bin} B'_1}
+  {\locv{n}{E}{B_2}{\vec{\sigma}} \;|\;
+  \locv{m}{G}{B_1}{\vec{\rho}}
+  \derives{\tin}
+  \locv{m}{G \pc \locv{n}{E'}{B_2}{\vec{\sigma}}}{B'_1}{\vec{\rho}}}
+  {}
+  \\[3ex]
+  \Rule{OutEnv\ \ }
+  {E \derives{\tntout{m}} E', B_1 \derives{\bout} B'_1}
+  {\locv{m}{G \pc \locv{n}{E}{B_2}{\vec{\sigma}}}{B_1}{\vec{\rho}}
+  \derives{\tout}
+  \locv{n}{E'}{B_2}{\vec{\sigma}} \pc
+  \locv{m}{G}{B'_1}{\vec{\rho}}}
+  {}
+ \end{tabular}
+  \end{center}
+  \shrule
+\end{table}
+
+Table \ref{tab:open} depicts the behaviour of $\tntopen{m}$, which
+causes a $\topen$ transition to occur when both an $\tntopen{m}$ and an
+$\bopen$ transition are available.  The named environ, $m$, is destroyed
+and the two clock contexts unified.
+
+\begin{table}
+  \caption{Semantics: Open}
+  \label{tab:open}
+ \vspace{-3mm}
+  \shrule
+ \begin{center}
+ \begin{tabular}{c}
+  \Rule{Open}
+  {E \derives{\tntopen{m}} E', B_1 \derives{\bopen} B'_1}
+  {\locv{n}{E \;|\; \locv{m}{F}{B_1}{\vec{\sigma}}}{B_2}{\vec{\gamma}}
+  \derives{\topen} 
+  \locv{n}{E' \;|\; F}{B_2}{\vec{\gamma} \cup \vec{\sigma}}}
+  {}
+ \end{tabular}
+  \end{center}
+  \shrule
+\end{table}
+
+Finally, Table \ref{tab:procmobsubset} shows the semantics which relate
+to how processes move between environs.  In both rules, $E$ moves due to
+a mobility primitive which is part of $F$.  This occurs if
+$\procin{a}{m}$ or $\procout{a}{m}$, $a$ and $\bin$ or $\bout$ transitions
+take place, respectively.  An appropriate mobility transition ($\tin$
+or $\tout$) is emitted as a result of this three-way synchronization.
+
+\begin{table}
+  \caption{Semantics: Process Mobility}
+  \label{tab:procmobsubset}
+ \vspace{-3mm}
+  \shrule
+ \begin{center}
+ \begin{tabular}{c}
+      \Rule{ProcIn\ }
+      {E \derives{a} E',
+  F \xderives{\procin{a}{m}} F',
+       B_1 \derives{\bin} B'_1}
+      {((E \pc G) \setminus \vec{b}) \pc F \pc 
+  \locv{m}{H}{B_1}{\vec{\sigma}}
+  \derives{\tin}
+  {(G \setminus \vec{b}) \pc F' \pc \locv{m}{H \pc E'}{B'_1}{\vec{\rho}}}
+  }
+  {}
+  \\[3ex]
+      \Rule{ProcOut\ \ \ }
+  {E \derives{a} E',
+  F \xderives{\procout{a}{m}} F',
+  B_1 \derives{\bout} B'_1}
+  {\locv{m}{((E \;|\; G) \setminus \vec{b}) \pc F}{B_1}{\vec{\sigma}}
+  \derives{\tout}
+  {E' \pc \locv{m}{(G \setminus \vec{b}) \pc F'}{B'_1}{\vec{\sigma}}}
+  }
+  {}
+ \end{tabular}
+  \end{center}
+  \shrule
+\end{table}
+
+Process mobility, in this form, is \emph{objective}.  The process which
+emits one of the two new process mobility primitives synchronises with a
+partner process on the given action, and it is this partner which
+actually moves.  The partner will be a process in the same environ, due
+to the scoping of actions described above.
+
+Such behaviour is initially difficult to understand, but can be made
+clearer with a simple example.  Take the process,
+
+\begin{equation}
+\procin{go}{m}.E \pc go.F \pc \lcloc{m}{\nil}{\sigma}
+\end{equation}
+
+\noindent where $E$ may perform $\procin{go}{m}$, but it
+is $go.F$ that will actually move,
+
+\begin{equation}
+\procin{go}{m}.E \pc go.F \pc \lcloc{m}{\nil}{\sigma} \derives{\tin}
+E \pc \lcloc{m}{F \pc \nil}{\sigma}
+\end{equation}
+
+\noindent with the continuation, $F$, continuing to evolve in the
+environ $m$.  Process mobility in this objective form may still be used
+to perform subjective movement.  As processes can fork, a process that
+wishes to move can evolve into a situation where it is composed in
+parallel with a new process that exhibits the required movement
+primitive.  To demonstrate the converse, $out$, in the scenario
+above, $F$ can be defined as
+
+\begin{equation}
+F \eqdef leave.F^\prime \pc \procout{leave}{m}
+\end{equation}
+
+\noindent where the process on the right moves the one on the left
+outside $m$.  In context, this performs as follows:
+
+\begin{equation}
+E \pc \lcloc{m}{leave.F^\prime \pc \procout{leave}{m}.\nil \pc
+ \nil}{\sigma} 
+\derives{\tout}
+E \pc F^\prime \pc \lcloc{m}{\nil \pc \nil}{\sigma}
+\end{equation}
+
+\noindent to give a final process which is very similar to the original.
+More generally, subjective process movement may be encoded as
+
+\begin{equation}
+\seml in\ m\ F.E \semr \eqdef z.F \pc \procin{z}{m}.E
+\end{equation}
+
+\noindent where $F$ is the process that will move in to $m$, $E$ is
+the continuation and $z$ is a new name that doesn't appear free in the
+surrounding context.  The converse is pretty much the same:
+
+\begin{equation}
+\seml out\ m\ F.E \semr \eqdef z.F \pc \procout{z}{m}.E
+\end{equation}
+
+These definitions require the availability of $z$ as a new action name.
+Subjective movement is safer on an ad-hoc basis where the surrounding
+context is known.
+
+Returning to the semantics, note that channels in $E$ may become
+unrestricted due to the movement of the process to a different environ.
+This is illustrated in the rules by $((E \pc G) \setminus \vec{b})$,
+which becomes simply $G \setminus \vec{b}$ when $E$ changes position.
+As a result, any names that were members of $\vec{b}$ and thus
+restricted in $E$ are no longer in this situation following the movement
+of the process.  Actions are scoped to individual environs, and the
+names are unique, so $E$ can neither see the name in the old environ,
+nor maintain its own copy.
+
+\subsection{Type System}
+\label{typesys}
+
+This final section focuses on the specification of a simple type
+system for the calculus, which fulfils two main goals:
+
+\begin{enumerate}
+\item Ensures the sanity of a given TNT construction, which is
+  implicit in the examples above.  This is primarily achieved by
+  ensuring that normal process primitives and the primitives used by
+  bouncers remain distinct.  For example,
+  $\tntin{n}.\bin.\nil$ should not be a valid bouncer,
+  especially as $\tntin{n}$ suggests that the bouncer (and its environ)
+  should move inside $n$.
+\item Restrict mobility by type in addition to cardinality.  With the
+  syntax and semantics alone, movement control is limited to how many
+  times an environ may be entered or exited.  With the addition of a type
+  system, these operations can be restricted to processes whose type
+  allows the mobility transition to take place.
+\end{enumerate}
+
+Inspiration for the type system is taken for existing research on
+schemes for the ambient calculus, specifically the notion of groups
+presented in \cite{ambienttypes} and \cite{m3}.
+
+Each process is a member of a group, which determines the use of the
+mobility primitives.  Each group has a type\footnote{Or, more
+  accurately, as groups are types themselves, it essentially has a
+  type of a type or a \emph{kind}} composed of the following sets of
+environ names:
+
+\begin{itemize}
+\item $\mathscr{R}$ -- Environs which may be \emph{resided} in
+\item $\mathscr{O}$ -- Environs which may be \emph{opened}
+\item $\mathscr{L}$ -- Environs which may be \emph{left}
+\item $\mathscr{E}$ -- Environs which may be \emph{entered}
+\end{itemize}
+
+$\mathscr{L}$ and $\mathscr{E}$ form subsets of $\mathscr{R}$, as
+clearly, if a process may enter or leave a environ, it must also be
+able to reside within it.  As an example, consider the group
+$(\{n\},\emptyset, \emptyset,\{n\})$.  Processes which are members of
+this group may enter and reside in $n$, but, once there, they may not
+leave.  They also lack the ability to destroy $n$.
+
+Table \ref{tab:basictypes} presents the basic rules and the rudimentary
+types used for the basic elements of the syntax, such as $\nil$.  As is
+standard in the literature, the types are defined with respect to a type
+environment, $\Gamma$.  On this note, the rule $Env$ simply states that
+if $\xi$ of type $T$ is a member of $\Gamma$, then a typing derivation
+$\vdash \xi : T$ may be made in the context of $\Gamma$.  This forms the
+basis of all later rules.
+
+\begin{table}
+  \caption{Types: Basics}
+  \label{tab:basictypes}
+ \vspace{-3mm}
+  \shrule
+ \begin{center}
+ \begin{tabular}{rc}
+     \Rule{Env}
+     {\xi : T \in \Gamma}
+     {\Gamma \vdash \xi : T}
+     {}
+  &
+  \Rule{Nil}
+     {\Gamma \vdash g : Group}
+     {\Gamma \vdash \nil : g}
+     {}
+  \\[3ex]
+     \Rule{BNil}
+     {-}
+     {\Gamma \vdash \Omega : Bouncer}
+     {}
+     &
+     \Rule{Stop}
+     {\Gamma \vdash g : Group}
+     {\Gamma \vdash \Delta : g}
+     {}
+     \\[3ex]
+     \Rule{Stall}
+     {\Gamma \vdash \sigma : Clock, g : Group}
+     {\Gamma \vdash \Delta_\sigma : g}
+     {}
+     &
+     \Rule{Act}
+     {\Gamma \vdash \alpha : Act, E : g : Group}
+     {\Gamma \vdash \alpha . E : g}
+     {}
+  \\[3ex]
+     \Rule{Rec}
+     {\Gamma \vdash E : g : Group}
+     {\Gamma \vdash \mu X.E : g}
+     {}
+     &
+     \Rule{Res}
+     {\Gamma \vdash a : Name, E : g : Group}
+     {\Gamma \vdash E \setminus a : g}
+     {}
+ \end{tabular}
+  \end{center}
+  \shrule
+\end{table}
+
+The remaining rules in Table \ref {tab:basictypes} provide types for the
+processes.  Via $Nil$ and $Stop$, both $\nil$ and $\Delta$ are given a
+type of $g$, where $g$ is a group.  The only precondition for these
+derivations is that $g$ is typeable as a $Group$ in the environment,
+$Gamma$.  Likewise, $\Omega$ can be typed as a $Bouncer$, thus
+distinguishing it from normal processes, such as $\nil$.
+
+The other rules are also relatively straightforward.  $Stall$ simply
+says that $\Delta_{\sigma}$ may be typed as a process of group $g$ if
+$\sigma$ is a clock.  $Act$ states that $\alpha.E$ is a process in $g$
+if $\alpha$ is typeable as an action ($Act$, which includes names,
+co-names and $\tau$) and $E$ is also typeable as a process in the same
+group.  In the same vein, $Rec$ and $Res$ type recursive and restricted
+processes respectively, if the constituent process, $E$, is already
+typeable as a process.  In the case of $Res$, $a$ must be a name
+($Name$) if the process is to be successfully typed.
+
+In Table \ref{tab:operatortypes}, types are given to the composition of
+processes using the binary operators for summation, parallel composition
+and timeout.  All four are mostly identical, providing a type for the
+process resulting from the combination of the operator with two other
+processes, $E$ and $F$.  Each process is given a type, which must
+be equivalent groups within the union of the two environments, $\Gamma$
+and $\Gamma^\prime$.
+
+\begin{table}
+  \caption{Types: Operators}
+  \label{tab:operatortypes}
+ \vspace{-3mm}
+  \shrule
+ \begin{center}
+ \begin{tabular}{c}
+     \Rule{Sum}
+     {\Gamma \vdash P : g,
+      \Gamma^\prime \vdash P^\prime : g^\prime,
+      \Gamma \cup \Gamma^\prime \vdash g = g^\prime : Group}
+     {\Gamma \cup \Gamma^\prime \vdash P + P^\prime : g}
+     {}
+     \\[3ex]
+     \Rule{Par}
+     {\Gamma \vdash P : g,
+      \Gamma^\prime \vdash P^\prime : g^\prime,
+      \Gamma \cup \Gamma^\prime \vdash g = g^\prime : Group}
+  {\Gamma \cup \Gamma^\prime \vdash P \mid P^\prime : g}
+     {}
+     \\[3ex]
+     \Rule{FTO}
+     {\Gamma \vdash P : g,
+      \Gamma^\prime \vdash P^\prime : g^\prime,
+      \Gamma \cup \Gamma^\prime \vdash \sigma : Clock,
+      \Gamma \cup \Gamma^\prime \vdash g = g^\prime : Group}
+     {\Gamma \cup \Gamma^\prime \vdash \timeout{P}{\sigma}{P^\prime} : g}
+     {}
+  \\[3ex]
+  \Rule{STO}
+     {\Gamma \vdash P : g,
+      \Gamma^\prime \vdash P^\prime : g^\prime,
+      \Gamma \cup \Gamma^\prime \vdash \sigma : Clock,
+      \Gamma \cup \Gamma^\prime \vdash g = g^\prime : Group}
+     {\Gamma \cup \Gamma^\prime \vdash \stimeout{P}{\sigma}{P^\prime} : g}
+     {}
+     \\[3ex]
+     \Rule{BSum}
+     {\Gamma \cup \Gamma^\prime \vdash B : Bouncer,
+      \Gamma \cup \Gamma^\prime  \vdash B^\prime : Bouncer}
+     {\Gamma \cup \Gamma^\prime \vdash B + B^\prime : Bouncer}
+     {}
+ \end{tabular}
+  \end{center}
+  \shrule
+\end{table}
+
+The only other issue worthy of note with respect to these rules is that
+$FTO$ and $STO$ also require that $\sigma$ is typeable as a clock,
+another restriction which simply makes explicit a number of issues
+implied in the syntax.  Table \ref{tab:operatortypes} also includes
+a summation rule for bouncers, which simply requires that each bouncer
+is typeable as a $Bouncer$ under the union of the two type environments,
+$\Gamma$ and $\Gamma^\prime$.
+
+The types in Tables \ref{tab:basictypes} and \ref{tab:operatortypes}
+provide the basis for the mobility types presented in Table
+\ref{tab:mobilitytypes}, which form the focus of this type system.
+$g(\mathscr{R})$, $g(\mathscr{O})$, $g(\mathscr{L})$ and
+$g(\mathscr{E})$ represent the sets of environ names that form the
+group, $g$.
+
+\begin{table}
+  \caption{Types: Mobility}
+  \label{tab:mobilitytypes}
+ \vspace{-3mm}
+  \shrule
+ \begin{center}
+ \begin{tabular}{c}
+     \Rule{Environ}
+     {\Gamma \vdash m : Environ,
+     \Gamma \vdash P : g : Group,
+     \Gamma \vdash B : Bouncer,
+     m \in g(\mathscr{R})}
+     {\Gamma \vdash \loc{m}{P}{B}{\vec{\sigma}} : g}
+     {}
+  \\[3ex]
+     \Rule{EnvIn}
+     {\Gamma \vdash m : Environ,
+  \Gamma \vdash P : g : Group,
+  m \in g(\mathscr{E})}
+     {\Gamma \vdash \tntin{m}.P : g}
+     {}
+     \\[3ex]
+     \Rule{EnvOut\ \ }
+     {\Gamma \vdash \loc{n}{\loc{m}{P}{B_1}{\vec{\sigma}}}{B_2}{\vec{\rho}} : g : Group,
+  m \in g(\mathscr{L}),
+  n \in g(\mathscr{E})}
+     {\Gamma \vdash \tntout{m}.P : g}
+     {}
+     \\[3ex]
+     \Rule{Open}
+     {\Gamma \vdash \loc{n}{P}{B_1}{\vec{\sigma}} : g : Group,
+  \Gamma \vdash \loc{m}{Q}{B}{\vec{\sigma}} : h : Group,
+  m \in g(\mathscr{O}),
+  n \in h(\mathscr{E})}
+     {\Gamma \vdash \tntopen{m}.P : g}
+     {}
+  \\[3ex]
+     \Rule{ProcIn\ \ }
+  {\Gamma \vdash a : Name,
+  \Gamma \vdash \loc{n}{P \mid Q \mid \loc{n}{\nil}{B_1}{\vec{\sigma}}}{B_2}{\vec{\rho}} : g : Group, 
+  m \in g(\mathscr{E})}
+     {\loc{n}{\procin{a}{m}.P \mid a.Q \mid \loc{n}{\nil}{B_1}{\vec{\sigma}}}{B_2}{\vec{\rho}} : g : Group}
+     {}  
+  \\[3ex]
+     \Rule{ProcOut\ \ \ \ }
+  {\Gamma \vdash a : Name,
+  \Gamma \vdash \loc{n}{\loc{m}{P \mid Q}{B_1}{\vec{\sigma}}}{B_2}{\vec{\rho}} : g : Group, 
+  m \in g(\mathscr{L}),
+  n \in g(\mathscr{E})}
+     {\Gamma \vdash \loc{n}{\loc{m}{\procout{a}{m}.P \mid a.Q}{B}{\vec{\sigma}}}{B_2}{\vec{\rho}} :
+  g}
+     {}  
+ \end{tabular}
+  \end{center}
+  \shrule
+\end{table}
+
+$Environ$ is a fundamental rule, which links environs, bouncers, clocks
+and processes.  If $m$ is a environ name ($Environ$), $P$ is a process
+of type $g$ (where $g$ is a $Group$) and $B$ is a $Bouncer$, then the
+process $P$ may be typed as $g$ while encapsulated within the environ
+$m$, with its bouncer $B$.  The later rules rely on this to provide a
+type for the existing environ.
+
+$EnvIn$, $EnvOut$ and $Open$ are fairly similar, all pertaining to
+whether a particular environ movement is typeable, based on the groups
+of the processes within them.  $EnvIn$ states that if $m$ is a environ
+name, and $P$ is a process typed with the group, $g$, then $P$ may be
+prefixed with the $\tntin{m}$ mobility primitive if m is an element of
+the set $g(\mathscr{E})$, where $g(\mathscr{E})$ is the set of environ
+names which members of group $g$ may enter.
+
+The $EnvOut$ rules differs from $EnvIn$ in that it provides a context
+for the movement which will occur when $\tntout{m}$ is performed.  This
+is necessary because, not only must the resulting process,
+$\tntout{m}.P$, be able to leave $m$, but it must also be able to enter
+the environ above, $n$.  This is unnecessary in $EnvIn$ as $P$ does not
+leave the environ above.  These restrictions are enforced by requiring
+that the group of $P$, $g$, has $m$ as an element of $g(\mathscr{L})$ (so
+$P$ can leave $m$) and $n$ as an element of $g(\mathscr{E})$ (so $P$ can
+enter $n$).
+
+$Open$ has similar requirements.  $P$ is the process that performs the
+mobility primitive, $\tntopen{m}$, which requires its group, $g$, to
+contain $m$ in the set of environ names which may be opened.  However,
+the destruction of $m$ also has an effect on processes located in $m$,
+represented as $Q$.  As a result, $Q$ must have an appropriate group,
+$h$, such that $Q$ can reside in the parent environ, $n$, after $m$ is
+removed.  $ProcIn$ and $ProcOut$ are nearly identical to $EnvIn$ and
+$EnvOut$; the main difference is that they must provide additional
+contextual information (as well as requiring the typeability of the
+name, $a$) in order to handle the involvement of two processes rather
+than simply one.
+
+The final table, \ref{tab:bouncertypes}, adds some simple rules to
+complete the typing of the bouncers.  $BRec$ allows recursive bouncers
+to be defined, while $BIn$, $BOut$ and $BOpen$ allow an existing
+bouncer, $B$, to be prefixed with one of the three bouncer primitives
+($\bin$, $\bout$ and $\bopen$).
+
+\begin{table}
+  \caption{Types: Bouncers}
+  \label{tab:bouncertypes}
+ \vspace{-3mm}
+  \shrule
+ \begin{center}
+ \begin{tabular}{rc}
+  \Rule{BRec}
+  {\Gamma \vdash B : Bouncer}
+  {\Gamma \vdash \mu X.B : Bouncer}
+  {}
+  &
+  \Rule{BIn}
+  {\Gamma \vdash B : Bouncer}
+  {\Gamma \vdash \bin .B : Bouncer}
+  {}
+  \\[3ex]
+  \Rule{BOut}
+  {\Gamma \vdash B : Bouncer}
+  {\Gamma \vdash \bout .B : Bouncer}
+  {}
+  &
+  \Rule{BOpen\ }
+  {\Gamma \vdash B : Bouncer}
+  {\Gamma \vdash \bopen .B : Bouncer}
+  {}
+  \end{tabular}
+  \end{center}
+  \shrule
+\end{table}
+
+\section{Conclusions and Future Work}
+\label{futurework}
+
+This paper presented a novel combination of process synchronisation and
+mobility with the concept of discrete time.  In the process, we
+introduced the concept of synchronization-based objective process
+mobility and specific security processes, which are believed to be new
+to the field of process algebra.  The resulting process calculus is
+expected to provide a sufficient framework to tackle the concepts
+mentioned in the introduction.
+
+With regard to future work, we have yet to prove that the observational
+equivalence theory defined for CaSE remains a congruence when extended
+with the three new mobility transitions and syntactic additions of TNT.  We
+also intend to begin development on a tool, DynamiTE, which will allow
+both simulation of TNT processes and a mapping of these onto Java
+objects and its underlying concurrency model.  In the long term, we
+intend to consider further extensions to the calculus.  One possibility
+is the generalisation of the notion of bouncers to a general property
+attachment mechanism for environs, so that environs can also have, for
+example, associated stochastic measures.  In the type system, an
+inferencing algorithm would be beneficial to avoid the current reliance
+on a pre-populated type environment.
+
+\subsection*{Acknowledgements}
+
+We thank the anonymous referees, as well as Simon Foster, Gerald
+L{\"u}ttgen, Barry Norton and Georg Struth for their comments and
+suggestions.  This work is supported by a grant from the Engineering and
+Physical Sciences Research Council ({EPSRC}).
+
+\bibliography{literature}
+\bibliographystyle{splncs}
+
+\end{document}
