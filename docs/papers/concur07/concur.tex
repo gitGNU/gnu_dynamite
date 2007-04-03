@@ -16,7 +16,7 @@
 
 \newtheorem{prop}{Proposition}
 
-\title{Clocked Mobile Systems}
+\title{Timed Mobile Systems}
 
 \author{Andrew Hughes\thanks{Corresponding author.} and Mike Stannett}
 
@@ -31,6 +31,7 @@ Regent Court, 211 Portobello Street, Sheffield S1 4DP, UK. \\
 
 \MPS{To whom correspondence should be addressed.}{I've changed your `thanks' footnote}
 
+\AJH{Clocked Mobile Systems}{I've changed it again}
 \MPS{Phased Mobile System.}{I've changed your paper title}
 
 \begin{abstract}
@@ -41,7 +42,11 @@ Regent Court, 211 Portobello Street, Sheffield S1 4DP, UK. \\
  over time and which contain processes that may interact, both in
  response to others and to external stimuli, and move between different
  environments during execution.}%
- {We present \emph{TNT}, a novel calculus combining explicit clocks and run-to-completion semantics with mobility, and demonstrate its suitability for modelling complex hierarachical systems with changing topology.}
+ {We present \emph{TNT}, a novel calculus combining explicit clocks and
+ run-to-completion semantics with mobility, and demonstrate its
+ suitability for modelling complex hierarachical systems with \AJH{changing}{dynamic}
+ topology.}
+
 \end{abstract}
 
 \section{Introduction}
@@ -79,20 +84,21 @@ Indeed, this is the defining concept of CCS\MPS{\ADDTEXT}{ }\cite{milner:ccs}.
 \MPS{\ADDTEXT}{-- for example the \emph{ambient calculus} \cite{amb} --}
 also allow the notion of componentisation to be explicitly realised by \MPS{dividing}{forming}
 processes into a hierarchy.  \MPS{One proponent of this technique is the
-ambient calculus\MPS{\ADDTEXT}{ }\cite{amb}, which focuses on these entities (known as
+ambient calculus \cite{amb}, which focuses on these entities (known as
 `ambients' in this context) and allows their position to change during
 execution.}{The inclusion of locality naturally leads to \emph{mobility},
 the ability of a system to change its topological structure unilaterally.
-In consequence, the ambient calculus and its analogues are well positioned
+\AJH{In consequence}{Consequently}, the ambient calculus and its analogues are well positioned
 to model distributed systems in whicb resources can migrate from one
 location to another.}
 
-What tends to be absent from these models\MPS{\ADDTEXT}{, however,} is the notion of behaviour
-also being governed by time, or at least, some notion of phasing.  Some
-calculi maintain real time values\MPS{\ADDTEXT}{ }\cite{tccs,beaten:timing,brics:lee},
-but a notion of discrete time maintains a more abstract perspective.
-This is most easily understood by again relating the idea to our own
-experiences.  Although we have exact times, such as fourteen minutes
+What tends to be absent from these models\MPS{\ADDTEXT}{, however,} is
+the notion of behaviour also being governed by time, or at least, some
+notion of phasing.  Some calculi maintain real time
+values \cite{tccs,beaten:timing,brics:lee}, but a notion
+of discrete time maintains a more abstract perspective.  This is most
+easily understood by \AJH{again}{\DELTEXT} relating \AJH{the}{this} idea to our
+own experiences.  Although we have exact times, such as fourteen minutes
 past two o'clock, we rarely care about the actual time.  What is more
 important is that a particular event occurs at some point in time, or
 that a task needs to be completed by an arbitrary deadline.  Thus, time
@@ -108,13 +114,13 @@ each individual moves on to the new task simultaneously (as a team),
 at the occurrence of this signal.
 
 These concepts are realised in the existing field of discrete timed
-process algebras, such as TPL\MPS{\ADDTEXT}{ }\cite{hennessy:tpl}, PMC\MPS{\ADDTEXT}{ }\cite{pmc}, CSA\MPS{\ADDTEXT}{ }\cite{csa}
-and CaSE\MPS{\ADDTEXT}{ }\cite{case,norton05alg}.  Our contribution in this paper is to
+process algebras, such as TPL \cite{hennessy:tpl}, PMC \cite{pmc}, CSA \cite{csa}
+and CaSE \cite{case,norton05alg}.  Our contribution in this paper is to
 combine the notions of locations, discrete time and mobility to create a
 calculus capable of modelling dynamic componentised systems, where
 behaviour is defined both by interactions between individual processes
 and by responses to external stimuli, represented by clock signals.
-A number of calculi\MPS{\ADDTEXT}{ }\cite{lee:realtime,satoh:phd,webpi} have already
+A number of calculi \cite{lee:realtime,satoh:phd,webpi} have already
 attempted to combine mobility with real time values, but we believe the
 aggregation of mobility and discrete time to be a novel creation.
 
@@ -224,7 +230,7 @@ predecessor, CaSE, from which it also acquires the following features:
       of possible behaviour before a clock tick.
 \item Encapsulation, realised in CaSE by the process of \emph{clock
       hiding}, which is analogous to the notion of hiding found in
-      CSP\MPS{\ADDTEXT}{ }\cite{hoare:csp78}.  This facilities the amalgamation of clock ticks
+      CSP \cite{hoare:csp78}.  This facilities the amalgamation of clock ticks
       from a child component into the cycle of its parent.
 \end{enumerate}
 
@@ -249,7 +255,7 @@ In TNT, we make this notion explicit by representing the boundaries of
 the component within the syntax itself.  The effect of these is also
 extended to processes, with interaction being disallowed between those
 in separate environments.  In doing so, we look towards the existing
-area of \emph{localities}\MPS{\ADDTEXT}{ }\cite{obslocal,pawl} which have been used in
+area of \emph{localities} \cite{obslocal,pawl} which have been used in
 various ways in a number of existing calculi.  After surveying this area
 at some length, we draw most of our inspiration from Cardelli and
 Gordon's ambient calculus, which focuses primarily on this concept and
@@ -297,7 +303,7 @@ in $\lowpri$ are prevented from occurring.  The same division may be
 applied to CaSE, where $\highpri$ is simply $\{ \tau \}$.
 
 Finally, TNT provides a method of security based on the research into
-safe ambients\MPS{\ADDTEXT}{ }\cite{sangiorgi:mobsafeambients}.  \emph{Grave
+safe ambients \cite{sangiorgi:mobsafeambients}.  \emph{Grave
 interferences} occur when two logically different mobility transitions may
 occur at the same time, a scenario which clearly leads to two radically
 different reductions.  These are unlike normal interferences, where more

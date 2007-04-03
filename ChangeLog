@@ -1,9 +1,24 @@
+2007-04-02  Andrew John Hughes  <andrew@dcs.shef.ac.uk>
+
+	* docs/papers/concur07/concur.tex:
+	Comments and changes based on Mike's comments.
+
 2007-04-03 Mike Stannett <m.stannett@dcs.shef.ac.uk>
 
-  * Extracted \newcommands into new file, "macros.tex"
-  * Added "mpsmacros.tex", commands to handle suggested changes to text
-  * Made some initial text-change suggestions, including changed title and abstract.
-  * Stopped at 02.37am and committed new version
+	* docs/papers/concur07/marginnote.sty:
+	Added.
+	
+2007-04-03 Mike Stannett <m.stannett@dcs.shef.ac.uk>
+
+	* docs/papers/concur07/macros.tex:
+	Extracted \newcommands into new file.
+	* docs/papers/concur07/mpsmacros.tex:
+	Added "mpsmacros.tex", commands to handle
+	suggested changes to text
+	* docs/papers/concur07/concur.tex:
+	Made some initial text-change suggestions,
+	including changed title and abstract.
+	Stopped at 02.37am and committed new version
 
 2007-04-02  Andrew John Hughes  <andrew@dcs.shef.ac.uk>
 
