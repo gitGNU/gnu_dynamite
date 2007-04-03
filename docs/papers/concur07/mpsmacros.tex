@@ -1,0 +1,34 @@
+%	mpsmacros.tex
+%	Extra commands suggested by mps
+
+
+\newcommand{\ADDTEXT}{\textit{Text inserted.}}
+\newcommand{\DELTEXT}{\textit{Text deleted.}}
+
+% \Proofing{initial}{original text}{suggested replacement}
+\usepackage{marginnote}
+
+% Inner paragraphs can't include footnotes. Add the footnote text afterwards, e.g.
+%     \InnerProofing{MS}{Old text}{New text in braces}
+%     \InsertNewText{}
+\newcommand{\TheNewText}{}
+\newcommand{\InnerProofing}[3]{%
+  $^:$#3\stepcounter{footnote}\footnotemark[\value{footnote}]{}%
+  \renewcommand{\TheNewText}{#1: #2}%
+  \marginnote{\textbf{*\arabic{footnote}*}}%
+}
+\newcommand{\InsertNewText}{\footnotetext{\TheNewText}}
+
+% Outer paragraphs are much simpler
+\newcommand{\OuterProofing}[3]{%
+$^:$#3$^:$\stepcounter{footnote}\marginnote{\textbf{*\arabic{footnote}*}}%
+\footnotetext[\value{footnote}]{#1:~#2}%
+}
+
+% Don't forget to call \InsertNewText{} right after the inner paragraph ends!
+\newcommand{\MPSInner}[2]{\InnerProofing{MS}{#1}{#2}}
+\newcommand{\AJHInner}[2]{\InnerProofing{AH}{#1}{#2}}
+
+\newcommand{\MPS}[2]{\OuterProofing{MS}{#1}{#2}}
+\newcommand{\AJH}[2]{\OuterProofing{AH}{#1}{#2}}
+

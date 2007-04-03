@@ -1,0 +1,95 @@
+\newcommand{\shrule}{\vspace{1.0mm}\hrule\vspace{1.0mm}}
+\newcommand{\out}{\overline}
+
+%% CaSE macros
+
+\newcommand{\crho}[1]{\rho_{\!#1}}
+\newcommand{\csigma}[1]{\sigma_{\!#1}}
+\newcommand{\inita}[1]{\mathcal{I\!\!A}({#1})}
+\newcommand{\initc}[1]{\mathcal{I\!C}({#1})}
+
+\newcommand{\lts}[4]{\langle {#1},{#2},{#3},{#4} \rangle}   
+
+\newcommand{\derives}[1]{\stackrel{#1}{\rightarrow}}
+\newcommand{\lderives}[1]{\stackrel{#1}{\longrightarrow}}
+\newcommand{\xderives}[1]{\xrightarrow{#1}}
+\newcommand{\nderives}[1]{\stackrel{#1}{\nrightarrow}}
+\newcommand{\obsderives}[1]{\stackrel{#1}{\Rightarrow}}    
+
+\newcommand{\expr}{\text{$\mathcal{E}$}}
+\newcommand{\exprb}{\text{$\mathcal{F}$}}
+\newcommand{\bouncer}{\text{$\mathcal{F}$}}
+\newcommand{\ambop}{\text{$\mathcal{M}$}}
+\newcommand{\bambop}{\text{$\mathcal{N}$}}
+\newcommand{\proc}{\text{$\mathcal{P}$}}
+\newcommand{\act}{\text{$\mathcal{A}$}}
+\newcommand{\timers}{\text{$\mathcal{T}$}}
+\newcommand{\labels}{\text{$\mathcal{L}$}}
+\newcommand{\names}{\text{$\mathcal{N}$}}
+\newcommand{\lowpri}{\text{$\mathcal{C}$}}
+\newcommand{\highpri}{\text{$\mathcal{H}$}}
+\newcommand{\independent}{\text{$\mathcal{U}$}}
+\newcommand{\conames}{\text{$\overline{\names}$}}
+\newcommand{\actions}{\text{$\mathcal{A}$}}
+
+\newcommand{\nil}{\textbf{0}}
+\newcommand{\pref}{\,.\,}
+\newcommand{\comp}{\;|\;}
+\newcommand{\res}[1]{\setminus {#1}}
+\newcommand{\hide}[1]{/ {#1}}
+\newcommand{\timeout}[3]{\lfloor{#1}\rfloor {#2} ({#3})}
+\newcommand{\stimeout}[3]{\lceil{#1}\rceil {#2} ({#3})}
+\newcommand{\dottimeout}[5]{\timeout{{#1}}{{#2}}{{#3}}\ldots {#4} ({#5})}
+\newcommand{\hid}{/}
+
+\newcommand{\eqdef}{\operatorname{\stackrel{\textrm{def}}{=}}}
+
+\newcommand{\twb}[1]{\approx_{#1}}
+\newcommand{\toc}[1]{\approx^{c}_{#1}}
+
+%% operational rules
+ 
+% Derivation Rules
+% 1. parameter is name
+% 2. parameter is premise
+% 3. parameter is conclusion
+% 4. parameter is side conditions
+%
+\newlength{\lrulename}
+\setlength{\lrulename}{0.80cm}
+ 
+\newcommand{\Rule}[4]{\makebox[\lrulename]{{\rm #1}\hfill}
+                      $\displaystyle\frac{#2}{#3}\,{#4}$}
+
+% Locality
+
+\newcommand{\loc}[4]{{#1}[ #2 ]^{#3}_{\{#4\}}}
+\newcommand{\locv}[4]{{#1}[ #2 ]^{#3}_{#4}}
+\newcommand{\nloc}[3]{{#1}[ #2 ]^{#3}}
+\newcommand{\lcloc}[3]{{#1}[ #2 ]_{\{#3\}}}
+\newcommand{\lncloc}[2]{{#1}[ #2 ]}
+
+%% misc macros
+
+\newcommand{\pair}[2]{\langle {#1},{#2} \rangle}
+\newcommand{\threetuple}[3]{\langle {#1},{#2},{#3} \rangle}
+\newcommand{\df}{\operatorname{=_{\textrm{df}}}}
+\newcommand{\seml}{[\hspace{-0.3ex}[}
+\newcommand{\semr}{]\hspace{-0.3ex}]}
+\newcommand{\semtwo}[5]{{#2}_{#3}\seml #1 \semr^{#4}_{#5}}
+\newcommand{\sem}[4]{{}_{#2}\seml #1 \semr^{#3}_{#4}}
+
+\newcommand{\procin}[2]{on\ #1 \tntin{#2}}
+\newcommand{\procout}[2]{on\ #1 \tntout{#2}}
+\newcommand{\bin}{\overline{\varovee}}
+\newcommand{\bout}{\overline{\varowedge}}
+\newcommand{\bopen}{\overline{\varoast}}
+\newcommand{\tntin}[1]{\tin\!#1}
+\newcommand{\tntout}[1]{\varowedge #1}
+\newcommand{\tntopen}[1]{\varoast #1}
+\newcommand{\tin}{\varovee}
+\newcommand{\tout}{\varowedge}
+\newcommand{\topen}{\varoast}
+\newcommand{\mobprim}{\text{$\{ \tin, \tout , \topen\}$}}
+\newcommand{\pc}{\mid}
+
