@@ -51,52 +51,31 @@ hierarachical systems with dynamic topology.}
 \section{Introduction}
 \label{introduction}
 
-\MPS{When modelling complex systems, we ideally want to be able to break the
-problem down into easily digestible components.  We can then work on
-each individually, perfecting them up to the point where there are
-amalgamated in order to form a complete system.  This approach is common
-in sequential models (object-oriented ones in particular) and extends
-cleanly into the concurrent domain.  In this arena, components not only
-have their own defined behaviour, but also operate simultaneously, thus
-placing more emphasis on the interaction between them.
+A standard feature of concurrent systems modelling is the use of
+\emph{synchronisation} to model \emph{interaction}. Indeed, this is the
+defining concept of CCS \cite{milner:ccs}. \AJH{In contrast,
+calculi}{Calculi}\QUESTION{In contrast with what exactly?} that include
+\emph{localities} -- for example the \emph{ambient calculus} \cite{amb}
+-- also allow the notion of componentisation to be explicitly realised
+by forming processes into a hierarchy. The inclusion of locality
+naturally leads to \emph{mobility}, the ability of a system to change
+its topological structure unilaterally. Consequently, the ambient
+calculus and its analogues are well positioned to model distributed
+systems in which resources can migrate from one location to another.
 
-This idea also encompasses a simple model of reality, where a
-component represents a microcosm of the real world.  Such environments
-contain multiple processes or objects which communicate with each
-other.  These are analogous to individuals conversing with one another
-in reality, in order to achieve their task.  Both can also act in
-isolation; such sequential behaviour is a subset of the overall
-concurrent behaviour modelled within this environment.
-
-Formal methods for reasoning about such systems are already well developed. In
-the area of process algebra, in particular, concurrent interaction is generally
-represented by \emph{synchronization} between processes.}{A standard feature of
-concurrent systems modelling is the use of \emph{synchronisation} to model
-\emph{interaction}.} Indeed, this is the defining concept of CCS
-\cite{milner:ccs}. \MPS{Calculi}{In contrast, calculi} that include
-\emph{localities} \MPS{\ADDTEXT}{-- for example the \emph{ambient calculus}
-\cite{amb} --} also allow the notion of componentisation to be explicitly
-realised by \MPS{dividing}{forming} processes into a hierarchy. \MPS{One
-proponent of this technique is the ambient calculus \cite{amb}, which focuses on
-these entities (known as `ambients' in this context) and allows their position
-to change during execution.}{The inclusion of locality naturally leads to
-\emph{mobility}, the ability of a system to change its topological structure
-unilaterally. Consequently, the ambient calculus and its analogues are well
-positioned to model distributed systems in which resources can migrate from one
-location to another.}
-
-What tends to be absent from these models\MPS{\ADDTEXT}{, however,} is the
-notion of behaviour also being governed by time, or at least, some notion of
-\MPS{phasing}{workflow}. Some calculi maintain real time values
-\cite{tccs,beaten:timing,brics:lee}, but \MPS{a}{the} notion \MPS{of discrete
-time maintains a more abstract perspective}{that work typically occurs in stages
-in modelled only abstractly}. \MPS{This is most easily understood by
-\AJH{\DELTEXT again}{} relating \AJH{the}{this} idea to our own experiences.
-Although we have exact times, such as fourteen minutes past two o'clock, we
-rarely care about the actual time. What is more important is that a particular
-event occurs at some point in time, or that a task needs to be completed by an
-arbitrary deadline. Thus, time can be more simply represented as a signal that
-our processes respond to as a whole, as opposed to the one-to-one communication
+What tends to be absent from these models, however, is the notion of
+behaviour also being governed by time, or at least, some notion of
+workflow. Some calculi maintain real time values
+\cite{tccs,beaten:timing,brics:lee}, but the notion \MPS{of
+discrete time maintains a more abstract perspective}{that work typically
+occurs in stages in modelled only abstractly}. \MPS{This is most easily
+understood by \AJH{\DELTEXT again}{} relating \AJH{the}{this} idea to
+our own experiences.  Although we have exact times, such as fourteen
+minutes past two o'clock, we rarely care about the actual time. What is
+more important is that a particular event occurs at some point in time,
+or that a task needs to be completed by an arbitrary deadline. Thus,
+time can be more simply represented as a signal that our processes
+respond to as a whole, as opposed to the one-to-one communication
 activities previously mentioned.
 
 As an example}{For example}, consider an environment inhabited by the members of
