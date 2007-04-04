@@ -3,7 +3,8 @@
 
 
 \newcommand{\ADDTEXT}{\textit{Text inserted.}}
-\newcommand{\DELTEXT}{\textit{Text deleted.}}
+\newcommand{\DELTEXT}{\textit{Text deleted.}~}
+\newcommand{\QUESTION}[1]{\textbf{[QUESTION: #1]}}
 
 % \Proofing{initial}{original text}{suggested replacement}
 \usepackage{marginnote}
@@ -14,7 +15,7 @@
 \newcommand{\TheNewText}{}
 \newcommand{\InnerProofing}[3]{%
   $^:$#3\stepcounter{footnote}\footnotemark[\value{footnote}]{}%
-  \renewcommand{\TheNewText}{#1: #2}%
+  \renewcommand{\TheNewText}{\textit{#1 replaced}: #2}%
   \marginnote{\textbf{*\arabic{footnote}*}}%
 }
 \newcommand{\InsertNewText}{\footnotetext{\TheNewText}}
@@ -22,13 +23,13 @@
 % Outer paragraphs are much simpler
 \newcommand{\OuterProofing}[3]{%
 $^:$#3$^:$\stepcounter{footnote}\marginnote{\textbf{*\arabic{footnote}*}}%
-\footnotetext[\value{footnote}]{#1:~#2}%
+\footnotetext[\value{footnote}]{\textit{#1 replaced}:~#2}%
 }
 
 % Don't forget to call \InsertNewText{} right after the inner paragraph ends!
-\newcommand{\MPSInner}[2]{\InnerProofing{MS}{#1}{#2}}
-\newcommand{\AJHInner}[2]{\InnerProofing{AH}{#1}{#2}}
+\newcommand{\MPSInner}[2]{\InnerProofing{MPS}{#1}{#2}}
+\newcommand{\AJHInner}[2]{\InnerProofing{AJH}{#1}{#2}}
 
-\newcommand{\MPS}[2]{\OuterProofing{MS}{#1}{#2}}
-\newcommand{\AJH}[2]{\OuterProofing{AH}{#1}{#2}}
+\newcommand{\MPS}[2]{\OuterProofing{MPS}{#1}{#2}}
+\newcommand{\AJH}[2]{\OuterProofing{AJH}{#1}{#2}}
 

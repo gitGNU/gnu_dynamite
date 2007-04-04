@@ -2,14 +2,19 @@
 \usepackage{verbatim}
 \usepackage[T1]{fontenc}
 \usepackage[latin1]{inputenc}
-\usepackage{hyperref}
-\usepackage{abbrev}
 \usepackage{graphicx}
-\usepackage{hyperref}
-\usepackage{amsfonts, amssymb, amsmath, epsfig, eepic}
-\usepackage{wrapfig}
+\usepackage{amsfonts, amssymb, amsmath}
+
+% Needed for: \varovee, etc
 \usepackage{stmaryrd}
+
+% Needed for: \mathscr{}
 \usepackage{mathrsfs}
+
+%\usepackage{epsfig, eepic}
+%\usepackage{wrapfig}
+%\usepackage{abbrev}
+%\usepackage{hyperref}
 
 \input{macros}
 \input{mpsmacros}
@@ -29,31 +34,24 @@ Regent Court, 211 Portobello Street, Sheffield S1 4DP, UK. \\
 
 \maketitle
 
-\MPS{To whom correspondence should be addressed.}{I've changed your `thanks' footnote}
-
-\AJH{Clocked Mobile Systems}{I've changed it again}
-\MPS{Phased Mobile System.}{I've changed your paper title}
-
 \begin{abstract}
-\MPS{We present a novel combination of process synchronisation and mobility
- with the concept of discrete time in the form of the TNT process
- calculus.  This forms the basis of a framework for complex systems,
- consisting of hierarchical components, the composition of which changes
- over time and which contain processes that may interact, both in
- response to others and to external stimuli, and move between different
- environments during execution.}%
- {We present \emph{TNT}, a novel calculus combining explicit clocks and
- run-to-completion semantics with mobility, and demonstrate its
- suitability for modelling complex hierarachical systems with \AJH{changing}{dynamic}
- topology.}
+
+\MPS{We present a novel combination of process synchronisation and mobility with
+the concept of discrete time in the form of the TNT process calculus. This forms
+the basis of a framework for complex systems, consisting of hierarchical
+components, the composition of which changes over time and which contain
+processes that may interact, both in response to others and to external stimuli,
+and move between different environments during execution.}{We present
+\emph{TNT}, a novel calculus combining explicit clocks and run-to-completion
+semantics with mobility, and demonstrate its suitability for modelling complex
+hierarachical systems with dynamic topology.}
 
 \end{abstract}
 
 \section{Introduction}
 \label{introduction}
 
-\MPS{%
-When modelling complex systems, we ideally want to be able to break the
+\MPS{When modelling complex systems, we ideally want to be able to break the
 problem down into easily digestible components.  We can then work on
 each individually, perfecting them up to the point where there are
 amalgamated in order to form a complete system.  This approach is common
@@ -69,119 +67,124 @@ other.  These are analogous to individuals conversing with one another
 in reality, in order to achieve their task.  Both can also act in
 isolation; such sequential behaviour is a subset of the overall
 concurrent behaviour modelled within this environment.
-}{\textit{Deleted first two paragraphs}}
 
-\MPS{%
-Formal methods for reasoning about such systems are already well
-developed.  In the area of process algebra, in particular, concurrent
-interaction is generally represented by \emph{synchronization} between
-processes.}{%
-A standard feature of concurrent systems modelling is the use of
-\emph{synchronisation} to model \emph{interaction}.%
-}
-Indeed, this is the defining concept of CCS\MPS{\ADDTEXT}{ }\cite{milner:ccs}.
-\MPS{Calculi}{In contrast, calculi} that include \emph{localities}
-\MPS{\ADDTEXT}{-- for example the \emph{ambient calculus} \cite{amb} --}
-also allow the notion of componentisation to be explicitly realised by \MPS{dividing}{forming}
-processes into a hierarchy.  \MPS{One proponent of this technique is the
-ambient calculus \cite{amb}, which focuses on these entities (known as
-`ambients' in this context) and allows their position to change during
-execution.}{The inclusion of locality naturally leads to \emph{mobility},
-the ability of a system to change its topological structure unilaterally.
-\AJH{In consequence}{Consequently}, the ambient calculus and its analogues are well positioned
-to model distributed systems in whicb resources can migrate from one
+Formal methods for reasoning about such systems are already well developed. In
+the area of process algebra, in particular, concurrent interaction is generally
+represented by \emph{synchronization} between processes.}{A standard feature of
+concurrent systems modelling is the use of \emph{synchronisation} to model
+\emph{interaction}.} Indeed, this is the defining concept of CCS
+\cite{milner:ccs}. \MPS{Calculi}{In contrast, calculi} that include
+\emph{localities} \MPS{\ADDTEXT}{-- for example the \emph{ambient calculus}
+\cite{amb} --} also allow the notion of componentisation to be explicitly
+realised by \MPS{dividing}{forming} processes into a hierarchy. \MPS{One
+proponent of this technique is the ambient calculus \cite{amb}, which focuses on
+these entities (known as `ambients' in this context) and allows their position
+to change during execution.}{The inclusion of locality naturally leads to
+\emph{mobility}, the ability of a system to change its topological structure
+unilaterally. Consequently, the ambient calculus and its analogues are well
+positioned to model distributed systems in which resources can migrate from one
 location to another.}
 
-What tends to be absent from these models\MPS{\ADDTEXT}{, however,} is
-the notion of behaviour also being governed by time, or at least, some
-notion of phasing.  Some calculi maintain real time
-values \cite{tccs,beaten:timing,brics:lee}, but a notion
-of discrete time maintains a more abstract perspective.  This is most
-easily understood by \AJH{again}{\DELTEXT} relating \AJH{the}{this} idea to our
-own experiences.  Although we have exact times, such as fourteen minutes
-past two o'clock, we rarely care about the actual time.  What is more
-important is that a particular event occurs at some point in time, or
-that a task needs to be completed by an arbitrary deadline.  Thus, time
-can be more simply represented as a signal that our processes respond to
-as a whole, as opposed to the one-to-one communication activities
-previously mentioned.
+What tends to be absent from these models\MPS{\ADDTEXT}{, however,} is the
+notion of behaviour also being governed by time, or at least, some notion of
+\MPS{phasing}{workflow}. Some calculi maintain real time values
+\cite{tccs,beaten:timing,brics:lee}, but \MPS{a}{the} notion \MPS{of discrete
+time maintains a more abstract perspective}{that work typically occurs in stages
+in modelled only abstractly}. \MPS{This is most easily understood by
+\AJH{\DELTEXT again}{} relating \AJH{the}{this} idea to our own experiences.
+Although we have exact times, such as fourteen minutes past two o'clock, we
+rarely care about the actual time. What is more important is that a particular
+event occurs at some point in time, or that a task needs to be completed by an
+arbitrary deadline. Thus, time can be more simply represented as a signal that
+our processes respond to as a whole, as opposed to the one-to-one communication
+activities previously mentioned.
 
-As an example, consider an environment inhabited by the members of a
-factory team.  The team receives a particular task to execute, which
-involves communication between each of their colleagues.  At some point
-in time, this task is completed; there is no more work to be done, so
-each individual moves on to the new task simultaneously (as a team),
-at the occurrence of this signal.
+As an example}{For example}, consider an environment inhabited by the members of
+a factory team. The team receives a \MPS{particular task}{series of tasks} to
+execute, which \MPS{involves communication between each of their
+colleagues.}{require the team members to communicate with one another.} At some
+point\MPS{in time, this}{, the first task} is completed\MPS{; there is no more
+work to be done, so each individual moves on to the new task simultaneously (as
+a team).}{and the team moves on to the next. Modelling this in a setting where
+the number of workers cannot be predicted typically requires the use, either of
+\emph{global} synchronisation, or else (which we reject) of an infinite set of
+defining equations.}
 
-These concepts are realised in the existing field of discrete timed
-process algebras, such as TPL \cite{hennessy:tpl}, PMC \cite{pmc}, CSA \cite{csa}
-and CaSE \cite{case,norton05alg}.  Our contribution in this paper is to
-combine the notions of locations, discrete time and mobility to create a
-calculus capable of modelling dynamic componentised systems, where
-behaviour is defined both by interactions between individual processes
-and by responses to external stimuli, represented by clock signals.
-A number of calculi \cite{lee:realtime,satoh:phd,webpi} have already
-attempted to combine mobility with real time values, but we believe the
-aggregation of mobility and discrete time to be a novel creation.
+The\MPS{se concepts are realised in the existing field of}{idea of global
+synchronisation via \emph{clock signals} is made explicit by various} discrete
+timed process algebras, \MPS{such as}{including} TPL \cite{hennessy:tpl}, PMC
+\cite{pmc}, CSA \cite{csa} and CaSE \cite{case,norton05alg}. Our contribution
+\MPS{\DELTEXT in this paper}{} is to combine the notions of \MPS{locations,
+discrete time and mobility}{\emph{location}, \emph{clocks} and \emph{mobility}}
+to create a calculus capable of modelling dynamic componentised systems, where
+behaviour is defined both by interactions between individual processes and by
+responses to external stimuli, \MPS{\ADDTEXT}{as} represented by clock signals.
+A number of calculi \cite{lee:realtime,satoh:phd,webpi} have already attempted
+to combine mobility with real time values\QUESTION{You mentioned that such systems existed earlier, using refs 3--5. These are different refs, but it seems odd to repeat the same fact as if it were different. Or is it \emph{actually} different to what you mentioned before?}, but we believe the aggregation of
+mobility and \MPS{discrete time}{discrete clocks} to be \MPS{a novel
+creation}{novel}.\MPS{\DELTEXT 
 
-To exemplify this, we can extend our factory idea to the point where
-that environment is just one of many, with the additional possibility of
-nesting of such entities.  Thus, the factory exists and operates within
-the larger environment of a city, with other buildings and individuals
-that have their own separate behaviour.  The factory can be thought of a
-single component, which behaves in its own way, but also interacts with
-the surrounding environment.
+To exemplify this, we can extend our factory idea to the point where that
+environment is just one of many, with the additional possibility of nesting of
+such entities. Thus, the factory exists and operates within the larger
+environment of a city, with other buildings and individuals that have their own
+separate behaviour. The factory can be thought of a single component, which
+behaves in its own way, but also interacts with the surrounding environment.
 
-To further complicate things, the hierarchy is dynamic.  Individuals
-may move from one environment to another, where different rules apply.
-Further, environments themselves can change their location, taking on
-a different context which again affects the behaviour of their
-constituents.
+To further complicate things, the hierarchy is dynamic. Individuals may move
+from one environment to another, where different rules apply. Further,
+environments themselves can change their location, taking on a different context
+which again affects the behaviour of their constituents.}{}
 
-Our calculus of Typed Nomadic Time (TNT) provides a framework for
-modelling such complex systems, with practical applicability very much
-in mind.  The objective of this paper is to demonstrate its underlying
-formal theory, derived in part from existing research in the area, via a
-description of its syntax, operational semantics and type system.  Our
-long term aim is to leverage TNT as a foundation for creating concurrent
-systems within a programmatic context.  This then allows for a
-specification of system interactions to be shifted directly from the
-theoretical domain into an implementation backed by a formal
-methodology, and, in turn, facilitates the general industry shift
-towards concurrent execution.
+Our calculus\MPS{ of Typed Nomadic Time}{, \emph{Typed Nomadic Time}} (TNT)
+provides a framework for modelling such\MPS{\DELTEXT complex}{} systems, with
+practical applicability very much in mind. The \MPS{objective}{object} of this
+paper is to demonstrate its underlying formal theory, derived in part from
+existing research in the area, via a description of its syntax, operational
+semantics and type system. Our long term aim is to leverage TNT as a foundation
+for creating concurrent systems within a programmatic context. This \MPS{then
+allows for a}{will allow the} specification of system interactions to be shifted
+directly from the theoretical domain into an implementation backed by a formal
+methodology, \MPS{and, in turn, facilitates the general industry shift
+towards}{helping in turn to improve industrial adoption of} concurrent
+\MPS{execution}{techniques}.
 
 \section{Typed Nomadic Time}
 \label{tnt}
 
-In this section, we present the syntax, operational semantics and type
-system of TNT.  In creating this calculus, we seek not to merely instil
-the existing pool of such formalisms with another, but instead focus on
-creating a framework which allows the systems outlined in section
-\ref{introduction} to be modelled in the most simple and elegant manner.
-With this in mind, we draw inspiration from several well-established
-areas of concurrency theory, rather than attempting to start afresh,
-choosing those concepts which best meet our ideals.
+In this section, we present the syntax, operational semantics and type system of
+TNT. In creating this calculus, \MPS{we seek not to merely instil the existing
+pool of such formalisms with another, but instead focus on creating}{our aim is
+not to create ``yet another process calculus,'' but rather} a framework which
+allows \MPS{the systems outlined in section \ref{introduction}}{industrially
+relevant systems} to be modelled in the \MPS{most simple and elegant manner.
+With this in mind, we draw inspiration from several well-established areas of
+concurrency theory, rather than attempting to start afresh, choosing those
+concepts which best meet our ideals.}{simplest and most elegant way possible. We
+have re-used well-established concepts where appropriate.}
 
 \subsection{Syntax}
 
-The formal syntax of TNT is shown below, where $\expr$ and $\exprb$
-define possible process terms and $\ambop$ possible mobility primitives.
-We define a countable set of actions, $\actions = \names \cup
-\conames \cup \{\tau\}$, over which $\alpha$ and $\beta$
-range, where the elements of $\names$ are drawn from an infinite
-set of names, and $\conames$ is the corresponding set of
-co-names, $\{\overline{a} | a \in \mathcal{N}\}$.  $\timers$ is a
-countably infinite set of clocks over which $\sigma$ ranges, while $m$
-represents an arbitrary environ name.  The latter are not distinct, and
-hence do not form a set.  In particular, $m$ may be equal to the empty
-string, $\epsilon$, thus facilitating the use of anonymous
-environs\footnote{A primary motivation for this is that it allows TNT to
-be a conservative extension of CaSE.  To obtain an encoding for clock
-hiding, there must be a way of mapping the operator to an equivalent
-environ}.  $X$ is a variable from a countably infinite set used to bind
-process behaviour for the purpose of recursion.
+The formal syntax of TNT is shown \MPS{below}{in (\ref{eqn:tnt-syntax})}, where
+$\expr$ and $\exprb$ define possible process terms and $\ambop$
+\MPS{possible}{the available} mobility primitives. We \MPS{define}{assume} a
+countable set of actions, $\actions = \names \cup \conames \cup \{\tau\}$,
+\MPS{over which $\alpha$ and $\beta$ range}{ranged over by $\alpha$ and
+$\beta$}, where the elements of $\names$ are drawn from an infinite set of
+\MPS{names}{\emph{names}}, and $\conames$ is the corresponding set of
+\MPS{co-names}{\emph{co-names}}, $\{\overline{a} \mid a \in \names\}$. $\timers$
+is a countably infinite set of \MPS{clocks}{\emph{clocks}} over which $\sigma$
+ranges, while $m$ represents an arbitrary \MPS{environ name. The latter are not
+distinct, and hence do not form a set.}{\emph{environ name}.} In particular, $m$
+may be equal to the empty string, $\epsilon$, thus facilitating the use of
+anonymous environs\footnote{A primary motivation for this is that it allows TNT
+to be a conservative extension of CaSE. To obtain an encoding for clock hiding,
+there must be a way of mapping the operator to an equivalent environ}. $X$
+\MPS{is a variable from a countably infinite set}{ranges over a countably
+infinite set of variables, which are} used to bind process behaviour \MPS{for
+the purpose of recursion}{in recursive process definitions}.
 
-\begin{equation}
+\MPS{\begin{equation}
   \begin{aligned}
     \expr, \exprb \ ::=\ &
     \nil  \;\,|\,\; 
@@ -202,7 +205,30 @@ process behaviour for the purpose of recursion.
      \procin{\beta}{m} \pc \procout{\beta}{m} \pc \bin \pc
    \bout \pc \bopen
    \end{aligned}
+\end{equation}}{
+\begin{equation}
+  \begin{aligned}
+    \expr, \exprb \quad \mathrel{::=} \quad &
+      \nil  \mid
+      \Omega \mid
+      \Delta \mid
+      \Delta_{\sigma} \mid
+      \alpha . \expr  \mid
+      \expr + \exprb \mid
+      (\expr \mathrel{\!|\!} \exprb) \mid
+      \timeout{\expr}{\sigma}{\exprb} \mid \\
+    & \stimeout{\expr}{\sigma}{\exprb} \mid 
+      \mu X . \expr \mid
+      X \mid 
+      \expr \setminus \vec{a} \mid
+      \locv{m}{\expr}{\exprb}{\vec{\sigma}} \mid
+      \ambop . \expr \\
+   \ambop \quad \mathrel{::=} \quad & \tntin{m} \mid \tntout{m} \mid \tntopen{m} \mid
+      \procin{\beta}{m} \mid \procout{\beta}{m} \mid \bin \mid
+      \bout \mid \bopen
+   \end{aligned}
 \end{equation}
+}
 
 At its heart, TNT is a conservative extension of Milner's CCS.
 Specifically, within each environment lie processes which interact with
@@ -220,14 +246,14 @@ predecessor, CaSE, from which it also acquires the following features:
       processes to depend upon the occurrence of a particular clock
       signal.
 \item Two \emph{timelock} operators, $\Delta$ and $\Delta_{\sigma}$,
-      which prevent all clocks and a single clock, $\sigma$ from
-      ticking, respectively.
+      which prevent all clocks \MPS{and a single clock, $\sigma$}{(or a single
+      clock, $\sigma$)} from ticking, respectively.
 \item The concept of \emph{maximal progress} or, more generally,
       prioritisation.  A signal from a clock may be pre-empted by the
-      existence of a process which may engage in a high priority
+      existence of a process \MPS{which may engage in a high}{that engages in a higher} priority
       transition.  In CaSE, the only such transition is the internal action,
       $\tau$, which results in processes performing the maximal amount
-      of possible behaviour before a clock tick.
+      of possible behaviour before \MPS{a clock tick}{allowing a clock to tick}.
 \item Encapsulation, realised in CaSE by the process of \emph{clock
       hiding}, which is analogous to the notion of hiding found in
       CSP \cite{hoare:csp78}.  This facilities the amalgamation of clock ticks
