@@ -11,17 +11,51 @@
 
 \usepackage{bussproofs}
 
+\newcommand{\Reveals}[1]{\mathrel{\Downarrow_{#1}}}
+\newcommand{\RevealsA}{\Reveals{\mathcal{A}}}
+\newcommand{\RevealsC}{\Reveals{\mathcal{C}}}
+\newcommand{\RevealsE}{\Reveals{\mathcal{E}}}
+
+\newcommand{\Eq}{\approx}
+\newcommand{\EqA}{\mathrel{\Eq{\mathcal{A}}}}
+\newcommand{\EqC}{\mathrel{\Eq{\mathcal{C}}}}
+\newcommand{\EqE}{\mathrel{\Eq{\mathcal{E}}}}
+
 \input{macros}
+\input{mpsmacros}
+
 \begin{document}
 
 
 \section{Equivalence Theory}
 \label{sec:equivalence-theory}
 
-What does it mean for two environs $\locv{m}{P}{B}{\vec\rho}$ and $\locv{n}{Q}{C}{\vec\sigma}$ to be equivalent? Since TNT combines features that are analogous to those found in the Ambient Calculus, we will adopt the standard Morris-style approach used by Gordon and Cardelli \cite{GC} to define \emph{contextual equivalence} for Mobile Ambients.
+What does it mean for two environs $\locv{m}{P}{B}{\vec\rho}$ and
+$\locv{n}{Q}{C}{\vec\sigma}$ to be equivalent? We will adopt the Morris-style
+approach \cite{Mor68} used to define equivalence for Mobile Ambients \cite{GC99}
+and barbed congruence for te $\pi$-calculus \cite{SW01}.
+
+We first define three predicates $P \RevealsA x$, $P \RevealsC x$ and $P
+\RevealsE x$, describing the immediate (weak) observability of actions and
+clocks, and the eventual top-level observability of environs, respectively. For
+each predicate $\Reveals{\bullet}$ we then define a corresponding contextual
+equivalence $\Eq_{\bullet}$. Finally, we define equivalence $\Eq$ for TNT
+processes to be the conjunction of these three equivalences.
+
+Having defined equivalence, we can prove various safety properties. In
+particular, we show that $P \Eq Q$ implies that $P$ and $Q$ have the same type
+relative to our type system.
+
+\subsection{Observability predicates}
+\label{sec:observability-predicates}
 
 
-Since TNT combines features of several earlier process calculi, we first desribe the approaches taken there.
+
+
+
+
+\bibliographystyle{splncs}
+\bibliography{literature}
 
 
 \end{document}

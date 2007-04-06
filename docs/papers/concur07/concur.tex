@@ -11,11 +11,11 @@
 
 \title{Timed Mobile Systems}
 
-\author{Andrew Hughes\thanks{Corresponding author.} and Mike Stannett}
+\author{Andrew Hughes\thanks{Corresponding author.} \and Mike Stannett}
 
 \institute{Department of Computer Science, University of Sheffield, \\
-Regent Court, 211 Portobello Street, Sheffield S1 4DP, UK. \\
-	   \email{a.hughes@dcs.shef.ac.uk}
+  Regent Court, 211 Portobello Street, Sheffield S1 4DP, UK. \\
+  \email{a.hughes@dcs.shef.ac.uk}
 }
 
 \begin{document}
@@ -310,7 +310,7 @@ the time determinacy property i.e. $E \derives{\sigma} E'$ and $E
 \derives{\sigma} E''$ implies $E' = E''$.
 \end{prop}
 Structural congruence is the least congruence relation that satisfies
-the laws given in Table \ref{tab:structcong}, allowing structural
+the laws given in table \ref{tab:structcong}, allowing structural
 rearrangement and simplification of process terms. $\vec{A}$, $\vec{B}$
 and $\vec{C}$ range over subsets of \actions, while $fn(E)$ denotes the
 \emph{free names} of the process, $E$ (names that occur within $E$ which
@@ -457,7 +457,7 @@ presence of structural congruence and in the use of the restriction $E
   \shrule
 \end{table}
 
-The semantics given in Table \ref{tab:hidingsubset} are similar to the
+The semantics given in table \ref{tab:hidingsubset} are similar to the
 hiding rules given for CaSE, but are instead applied to the new
 syntactic form used in TNT.  Also included are rules which allow the
 mobility prefix to evolve, thus completing the semantics for the syntax
@@ -564,7 +564,7 @@ environ, $m$, is destroyed and the two clock contexts unified.
   \shrule
 \end{table}
 
-Finally, Table \ref{tab:procmobsubset} shows the semantics which relate
+Finally, table \ref{tab:procmobsubset} shows the semantics which relate
 to how processes move between environs.  In both rules, $E$ moves due to
 a mobility primitive which is part of $F$.  This occurs if
 $\procin{a}{m}$ or $\procout{a}{m}$, $a$ and $\bin$ or $\bout$ transitions
@@ -779,7 +779,7 @@ basis of all later rules.
   \shrule
 \end{table}
 
-The remaining rules in Table \ref {tab:basictypes} provide types for the
+The remaining rules in table \ref {tab:basictypes} provide types for the
 processes.  Via $Nil$ and $Stop$, both $\nil$ and $\Delta$ are given a
 type of $g$, where $g$ is a group.  The only precondition for these
 derivations is that $g$ is typeable as a $Group$ in the environment,
@@ -796,7 +796,7 @@ processes respectively, if the constituent process, $E$, is already
 typeable as a process.  In the case of $Res$, $a$ must be a name
 ($Name$) if the process is to be successfully typed.
 
-In Table \ref{tab:operatortypes}, types are given to the composition of
+In table \ref{tab:operatortypes}, types are given to the composition of
 processes using the binary operators for summation, parallel composition
 and timeout.  All four are mostly identical, providing a type for the
 process resulting from the combination of the operator with two other
@@ -859,8 +859,8 @@ a summation rule for bouncers, which simply requires that each bouncer
 is typeable as a $Bouncer$ under the union of the two type environments,
 $\Gamma$ and $\Gamma^\prime$.
 
-The types in Tables \ref{tab:basictypes} and \ref{tab:operatortypes}
-provide the basis for the mobility types presented in Table
+The types in tables \ref{tab:basictypes} and \ref{tab:operatortypes}
+provide the basis for the mobility types presented in table
 \ref{tab:mobilitytypes}, which form the focus of this type system.
 $g(\mathscr{R})$, $g(\mathscr{O})$, $g(\mathscr{L})$ and
 $g(\mathscr{E})$ represent the sets of environ names that form the
