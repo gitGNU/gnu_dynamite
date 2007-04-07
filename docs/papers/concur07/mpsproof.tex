@@ -12,23 +12,28 @@
 \usepackage{bussproofs}
 
 \newcommand{\Exhibits}[1]{\mathrel{\downarrow_{#1}}}
-\newcommand{\ExhibitsA}{\Exhibits{\mathcal{A}}}
-\newcommand{\ExhibitsC}{\Exhibits{\mathcal{C}}}
-\newcommand{\ExhibitsE}{\Exhibits{\mathcal{E}}}
+\newcommand{\ExhibitsA}{\Exhibits{\mathscr{A}}}
+\newcommand{\ExhibitsC}{\Exhibits{\mathscr{C}}}
+\newcommand{\ExhibitsE}{\Exhibits{\mathscr{E}}}
 
-\newcommand{\Reveals}[1]{\mathrel{\Downarrow_{#1}}}
-\newcommand{\RevealsA}{\Reveals{\mathcal{A}}}
-\newcommand{\RevealsC}{\Reveals{\mathcal{C}}}
-\newcommand{\RevealsE}{\Reveals{\mathcal{E}}}
+\newcommand{\Reveals}[1]{\mathrel{\downarrow^{w}_{#1}}}
+\newcommand{\RevealsA}{\Reveals{\mathscr{A}}}
+\newcommand{\RevealsC}{\Reveals{\mathscr{C}}}
+\newcommand{\RevealsE}{\Reveals{\mathscr{E}}}
+
+\newcommand{\Invokes}[1]{\mathrel{\Downarrow_{#1}}}
+\newcommand{\InvokesA}{\Invokes{\mathscr{A}}}
+\newcommand{\InvokesC}{\Invokes{\mathscr{C}}}
+\newcommand{\InvokesE}{\Invokes{\mathscr{E}}}
 
 \newcommand{\Eq}{\approx}
-\newcommand{\EqA}{\mathrel{\Eq_{\mathcal{A}}}}
-\newcommand{\EqC}{\mathrel{\Eq_{\mathcal{C}}}}
-\newcommand{\EqE}{\mathrel{\Eq_{\mathcal{E}}}}
+\newcommand{\EqA}{\mathrel{\Eq_{\mathscr{A}}}}
+\newcommand{\EqC}{\mathrel{\Eq_{\mathscr{C}}}}
+\newcommand{\EqE}{\mathrel{\Eq_{\mathscr{E}}}}
 
-\newcommand{\Means}{\mathrel{~=_{\mathrm{def}}~}}
-\newcommand{\Does}[1]{\xrightarrow{#1}}
-\newcommand{\DoesMany}[1]{\mathrel{{\xrightarrow{#1}}^*}}
+\newcommand{\Means}{\eqdef}
+\newcommand{\Does}[1]{\xderives{#1}}
+\newcommand{\DoesMany}[1]{\mathrel{{\xderives{#1}}^*}}
 
 \input{macros}
 \input{mpsmacros}
@@ -41,69 +46,130 @@
 
 What does it mean for two environs $\locv{m}{P}{B}{\vec\rho}$ and
 $\locv{n}{Q}{C}{\vec\sigma}$ to be equivalent? We will adopt the Morris-style
-approach \cite{Mor68} used to define equivalence for Mobile Ambients \cite{GC99}
-and barbed congruence for the $\pi$-calculus \cite{SW01}. Having defined
+approach \cite{Mor68} (or the \emph{may-test} approach) used to characterise both equivalence of Mobile Ambients \cite{GC99}
+and barbed congruence in the $\pi$-calculus \cite{SW01}. Having defined
 equivalence, we can prove various safety properties. In particular, we show that
 $P \Eq Q$ implies that $P$ and $Q$ have the same type relative to our type
 system.
 
-\subsection{Observability predicates}
-\label{sec:observability-predicates}
+\subsection{Immediate Observability}
+\label{sec:immediate-observability}
 
 We first define three predicates $\expr \ExhibitsA \alpha$, $\expr \ExhibitsC
-\sigma$ and $\expr \ExhibitsE n$, describing the immediate (weak) observability
-of actions and clocks, and the eventual top-level observability of environs,
+\sigma$ and $\expr \ExhibitsE n$, describing the immediate observability
+of actions and clocks, and the immediate top-level placement of environs,
 respectively. For each predicate $\Exhibits{\bullet}$ we then define a
 corresponding contextual equivalence $\Eq_{\bullet}$. Finally, we define
 equivalence $\Eq$ for TNT processes to be the conjunction of these three
 equivalences.
 
-\begin{definition}[Exhibition of a Symbol]
-The predicates $\ExhibitsA$, $\ExhibitsC$ and $\ExhibitsE$ are defined by:
-\begin{enumerate}
-\item
-    $\expr \ExhibitsA \alpha \Means
-      \expr \Does{\alpha}$
-\item
-    $\expr \ExhibitsC \sigma \Means
-      \expr \Does{\sigma}$
-\item
-    $\expr \ExhibitsE n \Means
-    \exists \vec{m},  \expr', \expr'', B, \vec{\sigma}$
-    such that
-    $ n \not\in \vec{m}$
-    and
-    $\expr \equiv 
-     \left( \locv{n}{\expr'}{B}{\vec\sigma} \mid \expr'' \right) \res{\vec{m}} $
-\end{enumerate}
-In each case, we say that $\expr$ \emph{exhibits} the relevant action, clock or environ name.
+\subsubsection{Actions.}
+The notion of immediate observability of an action needs to take account of possible timeouts. For example, the action $a$ can occur immediately in both $a\pref\nil$ and $\timeout{a\pref\nil}{\sigma}{b\pref\nil}$, while the action $b$ can occur immediately in neither. We can capture the required behaviour quite simply, however, by appealing to our semantics.
+
+\begin{definition}
+We say that $\expr$ \emph{exhibits} the action $\alpha$, and write $\expr \ExhibitsA \alpha$, provided $\expr \Does{\alpha}$.
 \end{definition}
 
-\begin{definition}[Revelation of a Symbol]
-A process \emph{reveals} (or \emph{eventually exhibits}) a symbol $x$, provided the relevant reductions transform it into an expression that exhibits $x$. Formally,
+
+\subsubsection{Clocks.} 
+
+Clocks are used in TNT to delimit segments of behaviour. Consequently, we
+consider a clock to be immediately observable if it is possible for it to be the
+next clock whose ticking can be seen to occur in the expression's reduction.
+
+\begin{definition}
+We say that $\expr$ \emph{exhibits} the clock $\sigma$, and write $\expr \ExhibitsC \sigma$, provided $\expr \Does{\sigma}$.
+\end{definition}
+
+\begin{proposition}
+If $\expr \ExhibitsC$, then $\expr$ is of one of the forms
 \begin{enumerate}
 \item
-    $\expr \RevealsA \alpha
-     \Means
-     \exists \expr'$
-     such that
-    $\expr \DoesMany{\tau} \expr' \ExhibitsA \alpha$
+    $\timeout{\exprb}{\sigma}{\exprb'}$;
 \item
-    $\expr \RevealsC \sigma
-     \Means
-     \exists \expr'$
-     such that
-    $\expr \DoesMany{\tau} \expr' \ExhibitsC \sigma$
+    $\stimeout{\exprb}{\sigma}{\exprb'}$;
 \item
-    $\expr \RevealsE n
-     \Means
-     \exists \vec{h} \in \{ \bin, \bout, \bopen \}^*$
-     such that
-    $\expr \Does{\vec{h}} \ExhibitsE n$
+    $\timeout{\expr'}{\sigma}{\exprb'}$ where $\expr' \ExhibitsC \sigma$;
+\item
+    $\stimeout{\expr'}{\sigma}{\exprb'}$ where $\expr' \ExhibitsC \sigma$;
+\item
+    $\expr' \hide{\vec{\sigma}}$ where $\sigma \not\in \vec{\sigma}$ and $\expr' \ExhibitsC n$.
+\item
+    $\expr' \res{ \vec{n} }$ where $\expr' \ExhibitsC \sigma$.
+\end{enumerate}
+\end{proposition}
+
+
+\subsubsection{Environs} 
+
+Following Gordon and Cardelli \cite{GC99} we say that $\expr$ \emph{exhibits}
+the environ $n$ whenever $n$ is the name of a `top-level' environ. However, our
+definition again needs to take account of potential time-outs. For example, $n$
+is exhibited in both $\loc{n}{P}{B}{\sigma}$ and
+$\timeout{\loc{n}{P}{B}{\sigma}}{\sigma}{\nil}$. In addition, the presence of time-out operators means that restrictions can occur at several locations in the expression, without affecting the environ's visibility.
+
+\begin{definition}
+We say that $\expr$ \emph{exhibits} the environ $n$, and write $\expr \ExhibitsE
+n$, provided $\expr$ is of one of the forms 
+\begin{enumerate}
+\item 
+    $\locv{n}{\exprb}{B}{\vec{\sigma}}$;
+\item
+    $\timeout{ \expr' }{\rho}{\exprb}$ where $\expr' \ExhibitsE n$;
+\item
+    $\stimeout{ \expr' }{\rho}{\exprb}$ where $\expr' \ExhibitsE n$; or
+\item
+    $\expr' \hide{\vec{\sigma}}$ where $\expr' \ExhibitsE n$.
+\item
+    $\expr' \res{ \vec{n} }$ where $n \not\in \vec{n}$ and $\expr' \ExhibitsE n$.
 \end{enumerate}
 \end{definition}
 
-As usual, a \emph{context} $C$ is an expression with one or more `holes'. We write $C[\expr]$ for the expression obtained by $C$'s holes with copies of $\expr$ (this may result in free names and variables in $\expr$ becoming bound).
+
+\subsection{Weak Immediate Observability}
+\label{sec:eventual-observability}
+
+A symbol $x$ is \emph{weak immediately observable} (we shall say it is \emph{revealed}) in an expression $\expr$ precisely when $x$ is the first \emph{relevant} action of the appropriate class.
+
+
+\subsubsection{Actions.}
+
+There is only one `irrelevant' action, namely $\tau$. This does not mean, however, that $\tau$ cannot be revealed. Rather, we don't care about \emph{extra} occurrences of $\tau$.
+
+\begin{definition}
+We say that $\expr$ \emph{reveals} the action $\alpha$, and write $\expr \RevealsA \alpha$, provided there is some $\expr'$ such that $\expr \DoesMany{\tau} \expr' \ExhibitsA \alpha$.
+\end{definition}
+
+\subsubsection{Clocks.}
+
+Clocks are used to delimit activities, so we should allow normal actions to proceed between clock ticks without prejudicing the subsequent tick's right to be considered eventually observed.
+
+\begin{definition}
+We say that $\expr$ \emph{reveals} the clock $\sigma$, and write $\expr \RevealsC \alpha$, provided there is some $\expr'$ and some $\vec{\alpha} \in \act^*$ such that $\expr \Does{\vec{\alpha}} \expr' \ExhibitsC \sigma$.
+\end{definition}
+
+Since clocks are automatically hidden by enclosure in an environ, and cannot be introduced syntactically except within time-out, the following characterisation is straightforward.
+
+
+
+\subsubsection{Environs.}
+
+An environ is eventually observed provided it can be brought to top level by some sequence of mobility-based reductions.
+
+\begin{definition}
+We say that $\expr$ \emph{reveals} the environ $n$, and write $\expr \RevealsE n$, provided there is some $\expr'$ and some $\vec{\ambop} \in \{\tin, \tout, \topen\}^*$ such that $\expr \Does{\vec{\ambop}} \expr' \ExhibitsE n$.
+\end{definition}
+
+
+
+
+\subsection{Contextual Congruence}
+\label{sec:contextual-congruence}
+
+As usual, a \emph{context} $C$ is an expression with one or more `holes'. We write $[\,]$ for a hole, and $C[\expr]$ for the expression obtained by filling $C$'s holes with copies of $\expr$ (this may result in free names and variables in $\expr$ becoming bound).
+
+
+
 
 \begin{definition}[Action, Clock and Environ Equivalence]
 \begin{enumerate}
