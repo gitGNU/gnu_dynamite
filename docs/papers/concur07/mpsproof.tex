@@ -11,15 +11,24 @@
 
 \usepackage{bussproofs}
 
+\newcommand{\Exhibits}[1]{\mathrel{\downarrow_{#1}}}
+\newcommand{\ExhibitsA}{\Exhibits{\mathcal{A}}}
+\newcommand{\ExhibitsC}{\Exhibits{\mathcal{C}}}
+\newcommand{\ExhibitsE}{\Exhibits{\mathcal{E}}}
+
 \newcommand{\Reveals}[1]{\mathrel{\Downarrow_{#1}}}
 \newcommand{\RevealsA}{\Reveals{\mathcal{A}}}
 \newcommand{\RevealsC}{\Reveals{\mathcal{C}}}
 \newcommand{\RevealsE}{\Reveals{\mathcal{E}}}
 
 \newcommand{\Eq}{\approx}
-\newcommand{\EqA}{\mathrel{\Eq{\mathcal{A}}}}
-\newcommand{\EqC}{\mathrel{\Eq{\mathcal{C}}}}
-\newcommand{\EqE}{\mathrel{\Eq{\mathcal{E}}}}
+\newcommand{\EqA}{\mathrel{\Eq_{\mathcal{A}}}}
+\newcommand{\EqC}{\mathrel{\Eq_{\mathcal{C}}}}
+\newcommand{\EqE}{\mathrel{\Eq_{\mathcal{E}}}}
+
+\newcommand{\Means}{\mathrel{~=_{\mathrm{def}}~}}
+\newcommand{\Does}[1]{\xrightarrow{#1}}
+\newcommand{\DoesMany}[1]{\mathrel{{\xrightarrow{#1}}^*}}
 
 \input{macros}
 \input{mpsmacros}
@@ -33,26 +42,103 @@
 What does it mean for two environs $\locv{m}{P}{B}{\vec\rho}$ and
 $\locv{n}{Q}{C}{\vec\sigma}$ to be equivalent? We will adopt the Morris-style
 approach \cite{Mor68} used to define equivalence for Mobile Ambients \cite{GC99}
-and barbed congruence for te $\pi$-calculus \cite{SW01}.
-
-We first define three predicates $P \RevealsA x$, $P \RevealsC x$ and $P
-\RevealsE x$, describing the immediate (weak) observability of actions and
-clocks, and the eventual top-level observability of environs, respectively. For
-each predicate $\Reveals{\bullet}$ we then define a corresponding contextual
-equivalence $\Eq_{\bullet}$. Finally, we define equivalence $\Eq$ for TNT
-processes to be the conjunction of these three equivalences.
-
-Having defined equivalence, we can prove various safety properties. In
-particular, we show that $P \Eq Q$ implies that $P$ and $Q$ have the same type
-relative to our type system.
+and barbed congruence for the $\pi$-calculus \cite{SW01}. Having defined
+equivalence, we can prove various safety properties. In particular, we show that
+$P \Eq Q$ implies that $P$ and $Q$ have the same type relative to our type
+system.
 
 \subsection{Observability predicates}
 \label{sec:observability-predicates}
 
+We first define three predicates $\expr \ExhibitsA \alpha$, $\expr \ExhibitsC
+\sigma$ and $\expr \ExhibitsE n$, describing the immediate (weak) observability
+of actions and clocks, and the eventual top-level observability of environs,
+respectively. For each predicate $\Exhibits{\bullet}$ we then define a
+corresponding contextual equivalence $\Eq_{\bullet}$. Finally, we define
+equivalence $\Eq$ for TNT processes to be the conjunction of these three
+equivalences.
 
+\begin{definition}[Exhibition of a Symbol]
+The predicates $\ExhibitsA$, $\ExhibitsC$ and $\ExhibitsE$ are defined by:
+\begin{enumerate}
+\item
+    $\expr \ExhibitsA \alpha \Means
+      \expr \Does{\alpha}$
+\item
+    $\expr \ExhibitsC \sigma \Means
+      \expr \Does{\sigma}$
+\item
+    $\expr \ExhibitsE n \Means
+    \exists \vec{m},  \expr', \expr'', B, \vec{\sigma}$
+    such that
+    $ n \not\in \vec{m}$
+    and
+    $\expr \equiv 
+     \left( \locv{n}{\expr'}{B}{\vec\sigma} \mid \expr'' \right) \res{\vec{m}} $
+\end{enumerate}
+In each case, we say that $\expr$ \emph{exhibits} the relevant action, clock or environ name.
+\end{definition}
 
+\begin{definition}[Revelation of a Symbol]
+A process \emph{reveals} (or \emph{eventually exhibits}) a symbol $x$, provided the relevant reductions transform it into an expression that exhibits $x$. Formally,
+\begin{enumerate}
+\item
+    $\expr \RevealsA \alpha
+     \Means
+     \exists \expr'$
+     such that
+    $\expr \DoesMany{\tau} \expr' \ExhibitsA \alpha$
+\item
+    $\expr \RevealsC \sigma
+     \Means
+     \exists \expr'$
+     such that
+    $\expr \DoesMany{\tau} \expr' \ExhibitsC \sigma$
+\item
+    $\expr \RevealsE n
+     \Means
+     \exists \vec{h} \in \{ \bin, \bout, \bopen \}^*$
+     such that
+    $\expr \Does{\vec{h}} \ExhibitsE n$
+\end{enumerate}
+\end{definition}
 
+As usual, a \emph{context} $C$ is an expression with one or more `holes'. We write $C[\expr]$ for the expression obtained by $C$'s holes with copies of $\expr$ (this may result in free names and variables in $\expr$ becoming bound).
 
+\begin{definition}[Action, Clock and Environ Equivalence]
+\begin{enumerate}
+\item
+    Two expressions are \emph{action equivalent} provided they reveal the same actions: 
+    $\expr \EqA \exprb
+     \Means
+     \forall C, \alpha ~.~
+     C[\expr] \RevealsA \alpha \Leftrightarrow C[\exprb] \RevealsA \alpha$
+\item
+    Two expressions are \emph{clock equivalent} provided they reveal the same clocks: 
+    $\expr \EqC \exprb
+     \Means
+     \forall C, \sigma ~.~
+     C[\expr] \RevealsC \sigma \Leftrightarrow C[\exprb] \RevealsC \sigma$
+\item
+    Two expressions are \emph{environ equivalent} provided they reveal the same environs: 
+    $\expr \EqE \exprb
+     \Means
+     \forall C, n ~.~
+     C[\expr] \RevealsE n \Leftrightarrow C[\exprb] \RevealsE n$
+\end{enumerate}
+\end{definition}
+
+Finally, full equivalence of TNT expressions is defined to be the conjunction of action, clock and mobility equivalence.
+\begin{definition}[Expression Equivalence]
+Two expressions are \emph{equivalent}, written provided they are action-, clock- and environ-equivalent.
+    $\expr \Eq \exprb
+     \Means
+     \left( \expr \EqA \exprb \right)$
+     and
+     $\left( \expr \EqC \exprb \right)$
+     and
+     $\left( \expr \EqE \exprb \right)$
+\end{definition}
 
 \bibliographystyle{splncs}
 \bibliography{literature}
