@@ -31,9 +31,11 @@
 \newcommand{\EqC}{\mathrel{\Eq_{\mathscr{C}}}}
 \newcommand{\EqE}{\mathrel{\Eq_{\mathscr{E}}}}
 
-\newcommand{\Means}{\eqdef}
+\newcommand{\Means}{\mathrel{~=_{\mathrm{def}}~}}
 \newcommand{\Does}[1]{\xderives{#1}}
-\newcommand{\DoesMany}[1]{\mathrel{{\xderives{#1}}^*}}
+\newcommand{\DoesTaus}{\mathrel{\Rightarrow}}
+\newcommand{\Theorem}{\vdash}
+\newcommand{\OfType}{\mathrel{:}}
 
 \input{macros}
 \input{mpsmacros}
@@ -73,9 +75,7 @@ We say that $\expr$ \emph{exhibits} the action $\alpha$, and write $\expr \Exhib
 
 \subsubsection{Clocks.} 
 
-Clocks are used in TNT to delimit segments of behaviour. Consequently, we
-consider a clock to be immediately observable if it is possible for it to be the
-next clock whose ticking can be seen to occur in the expression's reduction.
+We consider a clock to be immediately observable if it can tick immediately.
 
 \begin{definition}
 We say that $\expr$ \emph{exhibits} the clock $\sigma$, and write $\expr \ExhibitsC \sigma$, provided $\expr \Does{\sigma}$.
@@ -110,15 +110,15 @@ n$, provided $\expr$ is of one of the forms
 \subsection{Eventual Observability}
 \label{sec:eventual-observability}
 
-A symbol $x$ is \emph{eventually observable} (we shall sometimes say it is \emph{revealed}) in an expression $\expr$ precisely when $x$ is the first \emph{relevant} action of the appropriate class.
+A symbol $x$ is \emph{eventually observable} (we shall sometimes say it is \emph{revealed}) in an expression $\expr$ precisely when $x$ is the first \emph{relevant} action of the appropriate class. As usual, we write $\DoesTaus$ for the reflexive transitive closure of $\Does{\tau}$.
 
 
 \subsubsection{Actions.}
 
-There is only one `invisible' action, namely $\tau$. This does not mean, however, that $\tau$ cannot be revealed. Rather, we don't care about \emph{extra} occurrences of $\tau$.
+There is only one unobservable action, $\tau$. This does not mean, however, that $\tau$ cannot be revealed. Rather, we don't care about \emph{additional} occurrences of $\tau$.
 
 \begin{definition}
-We say that $\expr$ \emph{reveals} the action $\alpha$, and write $\expr \RevealsA \alpha$, provided there is some $\expr'$ such that $\expr \DoesMany{\tau} \expr' \ExhibitsA \alpha$.
+We say that $\expr$ \emph{reveals} the action $\alpha$, and write $\expr \RevealsA \alpha$, provided there is some $\expr'$ such that $\expr \DoesTaus \expr' \ExhibitsA \alpha$.
 \end{definition}
 
 \subsubsection{Clocks.}
@@ -126,13 +126,13 @@ We say that $\expr$ \emph{reveals} the action $\alpha$, and write $\expr \Reveal
 Clocks are used to delimit activities, so we should allow normal actions to proceed between clock ticks without prejudicing the subsequent tick's right to be considered eventually observed.
 
 \begin{definition}
-We say that $\expr$ \emph{reveals} the clock $\sigma$, and write $\expr \RevealsC \alpha$, provided there is some $\expr'$ and some $\vec{\alpha} \in \act^*$ such that $\expr \Does{\vec{\alpha}} \expr' \ExhibitsC \sigma$.
+We say that $\expr$ \emph{reveals} the clock $\sigma$, and write $\expr \RevealsC \sigma$, provided there is some $\expr'$ and some $\vec{s} \in \left( \act \cup \{ \tin, \tout, \topen \}\right)^*$ such that $\expr \Does{\vec{s}} \expr' \ExhibitsC \sigma$.
 \end{definition}
 
 Since clocks are automatically hidden by enclosure in an environ, and cannot be introduced syntactically except within time-out, the following characterisation is straightforward.
 
 \begin{proposition}
-If $\expr \RevealsC$, then $\expr$ is of one of the forms
+If $\expr \RevealsC \sigma$, then $\expr$ is of one of the forms
 \begin{enumerate}
 \item
     $\timeout{\exprb}{\sigma}{\exprb'}$;
@@ -184,24 +184,33 @@ Let $C$ range over arbitrary contexts. Two expressions are
 
 Finally, full equivalence of TNT expressions is defined to be the conjunction of action, clock and mobility equivalence.
 \begin{definition}[Expression Equivalence]
-Two expressions are (contextually) \emph{equivalent}, written provided they are action-, clock- and environ-equivalent. That is,
-    $\expr \Eq \exprb
-     \Means
-     \left( \expr \EqA \exprb \right)$
-     and
-     $\left( \expr \EqC \exprb \right)$
-     and
-     $\left( \expr \EqE \exprb \right)$
+Two expressions $\expr$ and $\exprb$ are (contextually) \emph{equivalent}, written $\expr \Eq \exprb$, provided they are action-, clock- and environ-equivalent. That is,
+\[
+    \expr \Eq \exprb
+    \Means
+    \left( \expr \EqA \exprb \right)
+    \land
+    \left( \expr \EqC \exprb \right)
+    \land 
+    \left( \expr \EqE \exprb \right)
+\]
 \end{definition}
 
 \begin{lemma}
-Contextual equiavlence is a congruence.
+Contextual equivalence is a congruence.
 \end{lemma}
 \begin{proof}
-Straightforward \textbf{Am checking}
+Straightforward \textbf{Am checking.}
 \qed \end{proof}
 
+Although we have defined contextual congruence without reference to the type system, it is important to show that they respect one another. The following theorem illustrates the coherence of our definitions.
 
+\begin{theorem}
+If $\expr \Eq \exprb$ and $\Theorem \expr \OfType g$, then $\Theorem \exprb \OfType g$.
+\end{theorem}
+\begin{proof}
+\textbf{Hmmmm.} 
+\qed \end{proof}
 
 \bibliographystyle{splncs}
 \bibliography{literature}
