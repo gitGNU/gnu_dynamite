@@ -7,7 +7,7 @@
 \input{macros}
 \input{mpsmacros}
 
-\newtheorem{prop}{Proposition}
+%\newtheorem{prop}{Proposition}
 
 \title{Timed Mobile Systems}
 
@@ -301,14 +301,14 @@ set of clocks ($\timers$), $\alpha$ over the set of actions
 sans $\tau$, $\kappa$ over $\actions \cup \mobprim$
 and $\gamma$ over the whole alphabet.  The semantics exhibit the
 following properties:
-\begin{prop}
+\begin{proposition}
 the prioritisation property
 i.e. $E \derives{\sigma}$ implies $E \nderives{h}$ 
-\end{prop}
-\begin{prop}
+\end{proposition}
+\begin{proposition}
 the time determinacy property i.e. $E \derives{\sigma} E'$ and $E
 \derives{\sigma} E''$ implies $E' = E''$.
-\end{prop}
+\end{proposition}
 Structural congruence is the least congruence relation that satisfies
 the laws given in Table \ref{tab:structcong}, allowing structural
 rearrangement and simplification of process terms. $\vec{A}$, $\vec{B}$

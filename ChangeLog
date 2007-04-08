@@ -1,5 +1,13 @@
 2007-04-08  Andrew John Hughes  <andrew@dcs.shef.ac.uk>
 
+	* docs/papers/concur07/concur.tex:
+	Removed unnecessary proposition environment,
+	as LNCS provides one.
+	* docs/papers/concur07/literature.bib:
+	Corrected entry (Mike's fault).
+	
+2007-04-08  Andrew John Hughes  <andrew@dcs.shef.ac.uk>
+
 	* docs/papers/concur07/mpsproof.tex:
 	Added comments.
 	* docs/papers/concur07/literature.bib:
