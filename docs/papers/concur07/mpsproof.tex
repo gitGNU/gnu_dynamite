@@ -12,14 +12,14 @@
 \usepackage{bussproofs}
 
 \newcommand{\Exhibits}[1]{\mathrel{\downarrow_{#1}}}
-\newcommand{\ExhibitsA}{\Exhibits{\mathscr{A}}}
-\newcommand{\ExhibitsC}{\Exhibits{\mathscr{C}}}
-\newcommand{\ExhibitsE}{\Exhibits{\mathscr{E}}}
+\newcommand{\ExhibitsA}{\Exhibits{A}}
+\newcommand{\ExhibitsC}{\Exhibits{T}}
+\newcommand{\ExhibitsE}{\Exhibits{E}}
 
 \newcommand{\Reveals}[1]{\mathrel{\Downarrow_{#1}}}
-\newcommand{\RevealsA}{\Reveals{\mathscr{A}}}
-\newcommand{\RevealsC}{\Reveals{\mathscr{C}}}
-\newcommand{\RevealsE}{\Reveals{\mathscr{E}}}
+\newcommand{\RevealsA}{\Reveals{A}}
+\newcommand{\RevealsC}{\Reveals{T}}
+\newcommand{\RevealsE}{\Reveals{E}}
 
 %\newcommand{\Invokes}[1]{\mathrel{\Downarrow_{#1}}}
 %\newcommand{\InvokesA}{\Invokes{\mathscr{A}}}
@@ -28,9 +28,9 @@
 
 \newcommand{\Eq}{\approx}
 \newcommand{\NotEq}{\not\approx}
-\newcommand{\EqA}{\mathrel{\Eq_{\mathscr{A}}}}
-\newcommand{\EqC}{\mathrel{\Eq_{\mathscr{C}}}} % T? 
-\newcommand{\EqE}{\mathrel{\Eq_{\mathscr{E}}}} % Conflict with E in types 
+\newcommand{\EqA}{\mathrel{\Eq_{A}}}
+\newcommand{\EqC}{\mathrel{\Eq_{T}}} 
+\newcommand{\EqE}{\mathrel{\Eq_{E}}} 
 
 \newcommand{\Means}{\mathrel{~=_{\mathrm{def}}~}}
 \newcommand{\Does}[1]{\xderives{#1}}
@@ -92,32 +92,28 @@ We say that $\expr$ \emph{exhibits} the clock $\sigma$, and write $\expr
 
 \subsubsection{Environs.} 
 
-Following Gordon and Cardelli \cite{GC99} we say that $\expr$
-\emph{exhibits} the environ $n$ whenever $n$ is the name of a
-`top-level' environ. However, our definition again needs to take account
-of potential time-outs. For example, $n$ is exhibited in both
-$\loc{n}{P}{B}{\sigma}$ and
-$\timeout{\loc{n}{P}{B}{\sigma}}{\sigma}{\nil}$. In addition, the
-presence of time-out operators means that restrictions can occur at
-several locations in the expression, without affecting the environ's
-visibility.
+Gordon and Cardelli \cite{GC99} say that an expression $\expr$ exhibits an
+environ $n$ provided $n$ occurs at top-level in $\expr$. We adapt this
+definition to include information about bouncers and clock sets, and say that
+$\expr$ exhibits the environ (actually an environ \emph{context}) $\locv{n}{}{B}{\vec{\sigma}}$
+provided this occurs at top-level. However, our definition again needs to
+take account of potential time-outs. For example, $\loc{n}{}{B}{\rho}$ is
+exhibited in both $\loc{n}{\expr}{B}{\rho}$ and
+$\timeout{\loc{n}{\exprb}{B}{\rho}}{\sigma}{\nil}$. In addition, the presence of
+time-out operators means that restrictions can occur at several locations in the
+expression, without affecting the environ's visibility.
 
 \begin{definition}
-We say that $\expr$ \emph{exhibits} the environ $n$, and write $\expr
-\ExhibitsE n$, provided $\expr$ is of one of the forms
+We say that $\expr$ \emph{exhibits} the environ $\locv{n}{\,}{B}{\vec{\sigma}}$,
+and write $\expr \ExhibitsE \locv{n}{\,}{B}{\vec{\sigma}}$, provided $\expr$ is 
+of one of the forms
+
 \begin{enumerate}
-\item 
-    $\locv{n}{\exprb}{B}{\vec{\sigma}}$;
 \item
-    $\timeout{ \expr' }{\rho}{\exprb}$ where $\expr' \ExhibitsE n$;
+    $\locv{n}{\exprb}{B}{\vec{\sigma}}$; or
 \item
-    $\stimeout{ \expr' }{\rho}{\exprb}$ where $\expr' \ExhibitsE n$; or
-\AJH{\DELTEXT We don't have this operator...
-\item
-    $\expr' \hide{\vec{\sigma}}$ where $\expr' \ExhibitsE n$.}{}
-\AJH{\DELTEXT Restriction is on actions not environ names...
-\item
-    $\expr' \res{ \vec{n} }$ where $n \not\in \vec{n}$ and $\expr' \ExhibitsE n$.}{}
+    $\timeout{\expr' }{\rho}{\exprb}$ or $\stimeout{\expr' }{\rho}{\exprb}$,
+    where $\expr' \ExhibitsE \locv{n}{\,}{B}{\vec{\sigma}}$;
 \end{enumerate}
 \end{definition}
 
@@ -128,7 +124,8 @@ We say that $\expr$ \emph{exhibits} the environ $n$, and write $\expr
 A symbol $x$ is \emph{eventually observable} (we shall sometimes say it
 is \emph{revealed}) in an expression $\expr$ precisely when $x$ is the
 first \emph{relevant} action of the appropriate class. As usual, we
-write $\DoesTaus$ for the reflexive transitive closure of $\Does{\tau}$.
+write $\DoesTaus$ for the reflexive transitive closure of $\Does{\tau}$, and
+$\expr\res{a}$ for $\expr\res{\{a\}}$.
 
 
 \subsubsection{Actions.}
@@ -163,10 +160,10 @@ An environ is eventually observed provided it can be brought to top
 level by some sequence of mobility-based reductions.
 
 \begin{definition}
-We say that $\expr$ \emph{reveals} the environ $n$, and write $\expr
-\RevealsE n$, provided there is some $\expr'$ and some $\vec{\ambop} \in
+We say that $\expr$ \emph{reveals} the environ $\locv{n}{\,}{B}{\vec{\sigma}}$, and write $\expr
+\RevealsE \locv{n}{\,}{B}{\vec{\sigma}}$, provided there is some $\expr'$ and some $\vec{\ambop} \in
 \{\tin, \tout, \topen\}^*$ such that $\expr \Does{\vec{\ambop}} \expr'
-\ExhibitsE n$.
+\ExhibitsE \locv{n}{\,}{B}{\vec{\sigma}}$.
 \end{definition}
 
 
@@ -175,7 +172,7 @@ We say that $\expr$ \emph{reveals} the environ $n$, and write $\expr
 \label{sec:contextual-congruence}
 
 As usual, a \emph{context} $C$ is an expression with one or more
-`holes'. We write $[\,]$ for a hole, and $C[\expr]$ for the expression
+\emph{holes}. We write $[\,]$ for a hole, and $C[\expr]$ for the expression
 obtained by filling $C$'s holes with copies of $\expr$ (this may result
 in free names and variables in $\expr$ becoming bound).
 
@@ -187,14 +184,13 @@ Let $C$ range over arbitrary contexts. Two expressions are
      reveal the same actions in every context: $C[\expr] \RevealsA
      \alpha \Leftrightarrow C[\exprb] \RevealsA \alpha$;
 \item
-    \emph{clock equivalent}, written $\expr \EqC \exprb$, provided they
-     reveal the same clocks in every context: $C[\expr] \RevealsC \sigma
-     \Leftrightarrow C[\exprb] \RevealsC \sigma$;
-
+    \emph{temporal} (or \emph{clock}) \emph{equivalent}, written $\expr \EqC
+    \exprb$, provided they reveal the same clocks in every context: $C[\expr] 
+    \RevealsC \sigma \Leftrightarrow C[\exprb] \RevealsC \sigma$;
 \item
     \emph{environ equivalent}, written $\expr \EqE \exprb$, provided
      they reveal the same environs in every context: $C[\expr] \RevealsE
-     n \Leftrightarrow C[\exprb] \RevealsE n$.
+     \locv{n}{\,}{B}{\vec{\sigma}} \Leftrightarrow C[\exprb] \RevealsE \locv{n}{\,}{B}{\vec{\sigma}}$.
 \end{enumerate}
 \end{definition}
 
@@ -226,7 +222,8 @@ Given any context $C'[]$, let $C'[C[]]$ be the result of filling the
 holes in $C'$ with copies of $C$. Then $C'[C[]]$ is itself a context,
 whence $C'[C[\expr]]$ and $C'[C[\exprb]]$ reveal the same actions,
 clocks and environs. Since $C'[]$ was arbitrary, we have $C[\expr] \Eq
-C[\exprb]$, as claimed.  \qed \end{proof}
+C[\exprb]$, as claimed.
+\qed \end{proof}
 
 \begin{theorem}
 Contextual equivalence is a congruence.
@@ -245,22 +242,19 @@ for tidying up expression reductions. Our proof technique relies on the
 nature of reductions in contextual expressions.
 
 Suppose the context $C[\,]$ contains $n$ holes; we will write
-$C[\,]_1\dots[\,]_n$. Then $C[\expr]$ means
-$C[\expr]_1\dots[\expr]_n$. If $\expr \Does{x}$, then (depending on the
-nature of $C$), it is possible that $C[\expr] \Does{x}
-C[\expr]_1\dots[\expr']_j\dots[\expr]_n$ for some $j$. We say that such
-a transition is \emph{local} to $\expr$ in $C$. On the other hand, there
-are some transitions that $C[\expr]$ can perform, regardless of
-$\expr$. We call these transitions \emph{global} in $C$. For example,
-the transition
-\[
-\out{a}.[\,] \mid a \pref b \pref [\,] \quad\Does{\tau}\quad [\,] \mid b
-\pref [\,] \] is global. All other transition in $C[\expr]$ are
+$C[\,]_1\dots[\,]_n$. Then $C[\expr]$ means $C[\expr]_1\dots[\expr]_n$. If
+$\expr \Does{x} \expr'$, then (depending on the nature of $C$), it is possible
+that $C[\expr] \Does{x} C[\expr]_1\dots[\expr']_j\dots[\expr]_n$ for some $j$.
+We say that such a transition is \emph{local} to $\expr$ in $C$. On the other
+hand, there are some transitions that $C[\expr]$ can perform, regardless of
+$\expr$. We call these transitions \emph{global} in $C$. For example, the
+transition \[ \out{a}.[\,] \mid a \pref b \pref [\,] \quad\Does{\tau}\quad [\,]
+\mid b \pref [\,] \] is global. All other transitions in $C[\expr]$ are
 \emph{distributed}.
 
 Distributed transitions are those that involve reduction of subcontexts
 of the form $C'|[\,]$, $C' + [\,]$ and
-$\locv{n}{[\,]}{B}{\vec{\sigma}}$. For example,
+$\locv{n}{\,}{B}{\vec{\sigma}}$. For example,
 \begin{itemize}
 \item
     $\nil + a\pref\nil \Does{\sigma}$ but $\nil + \Delta_\sigma
@@ -269,11 +263,13 @@ $\locv{n}{[\,]}{B}{\vec{\sigma}}$. For example,
 \item
     $a\pref\nil \mid \out{a}\pref\nil \Does{\tau}$ but $a\pref\nil \mid
      \nil \not\Does{\tau}$, so $\Does{\tau}$ is distributed in the
-     context \AJH{$a\pref\nil + [\,]$}{$a\pref\nil \mid [\,]$}.
+     context $a\pref\nil \mid [\,]$.
 \item
-    $\locv{m}{ \locv{n}{\tntout{m}\pref\nil}{}{} }{}{} \Does{\tout}$ but
-    $\locv{m}{ \nil }{}{} \not\Does{\tout}$, so $\Does{\tout}$ is
-     distributed in the context $\locv{m}{ [\,] }{}{}$.
+    $\locv{m}{ \locv{n}{\tntout{m}\pref\nil}{B}{\vec{\sigma}}}%
+     {(\bout\pref\Omega)}{\vec{\rho}} \Does{\tout}$ but
+    $\locv{m}{ \nil }{(\bout\pref\Omega)}{\vec{\rho}} \not\Does{\tout}$,
+     so $\Does{\tout}$ is distributed in the context $\locv{m}{\,}%
+     {(\bout\pref\Omega)}{\vec{\rho}}$.
 \end{itemize}
 The following results are immediate.
 
