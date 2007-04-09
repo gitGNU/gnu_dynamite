@@ -36,8 +36,7 @@ topology.
 
 A standard feature of concurrent systems modelling is the use of
 \emph{synchronisation} to model \emph{interaction}. Indeed, this is the
-defining concept of CCS \cite{milner:ccs}. \AJH{In contrast,
-calculi}{Calculi}\QUESTION{In contrast with what exactly?} that include
+defining concept of CCS \cite{milner:ccs}. Calculi that include
 \emph{localities} -- for example the \emph{ambient calculus} \cite{amb}
 -- also allow the notion of componentisation to be explicitly realised
 by forming processes into a hierarchy. The inclusion of locality
@@ -48,9 +47,9 @@ systems in which resources can migrate from one location to another.
 
 What tends to be absent from these models, however, is the notion of
 behaviour also being governed by time, or at least, some notion of
-workflow. Some calculi maintain \AJH{real}{continuous} time values
+workflow. Some calculi maintain continuous time values
 \cite{tccs,beaten:timing,brics:lee}, but the notion that work typically
-occurs in stages in modelled only abstractly. For example, consider an
+occurs in stages is modelled only abstractly. For example, consider an
 environment inhabited by the members of a factory team. The team
 receives a series of tasks to execute, which require the team members to
 communicate with one another. At some point, the first task is completed
@@ -59,22 +58,16 @@ number of workers cannot be predicted typically requires the use, either
 of \emph{global} synchronisation, or else (which we reject) of an
 infinite set of defining equations.
 
-The idea of global synchronisation via \emph{clock signals} is made
-explicit by various discrete timed process algebras, including TPL
-\cite{hennessy:tpl}, PMC \cite{pmc}, CSA \cite{csa} and CaSE
-\cite{case,norton05alg}. Our contribution is to combine the notions of
-\emph{location}, \emph{clocks} and \emph{mobility} to create a calculus
-capable of modelling dynamic componentised systems, where behaviour is
-defined both by interactions between individual processes and by
-responses to external stimuli, as represented by clock signals.  A
-number of calculi \cite{lee:realtime,satoh:phd,webpi} have already
-attempted to combine mobility with \AJH{real}{continuous} time
-values\QUESTION{You mentioned that such systems existed earlier, using
-refs 3--5. These are different refs, but it seems odd to repeat the same
-fact as if it were different. Or is it \emph{actually} different to what
-you mentioned before? They are different; continuous time + mobility,
-not just continuous time}, but we believe the aggregation of mobility
-and discrete clocks to be novel.
+The idea of global synchronisation via \emph{clock signals} is made explicit by
+various discrete timed process algebras, including TPL \cite{hennessy:tpl}, PMC
+\cite{pmc}, CSA \cite{csa} and CaSE \cite{case,norton05alg}. Our contribution is
+to combine the notions of \emph{location}, \emph{clocks} and \emph{mobility} to
+create a calculus capable of modelling dynamic componentised systems, where
+behaviour is defined both by interactions between individual processes and by
+responses to external stimuli, as represented by clock signals. A number of
+calculi \cite{lee:realtime,satoh:phd,webpi} have already attempted to combine
+mobility with continuous time values, but we believe the aggregation
+of mobility and discrete clocks to be novel.
 
 Our calculus, \emph{Typed Nomadic Time} (TNT) provides a framework for
 modelling such systems, with practical
@@ -160,8 +153,8 @@ predecessor, CaSE, from which it also acquires the following features:
       processes to depend upon the occurrence of a particular clock
       signal.
 \item Two \emph{timelock} operators, $\Delta$ and $\Delta_{\sigma}$,
-      which prevent all clocks \AJH{(}{,}or a single
-      clock, $\sigma$\AJH{)}{,} from ticking, respectively.
+      which prevent all clocks, or a single
+      clock, $\sigma$, from ticking, respectively.
 \item The concept of \emph{maximal progress} or, more generally,
       prioritisation.  A signal from a clock may be pre-empted by the
       existence of a process that engages in a higher priority
@@ -221,14 +214,6 @@ confusion with the names of actions.  \MPS{To this}{In addition}, we add two pri
 process mobility, $\procin{\beta}{m}$ and $\procout{\beta}{m}$, which
 allow objective mobility to occur via synchronization on the
 action\MPS{\DELTEXT ,}{} $\beta$.
-
-\AJH{\DELTEXT When movement occurs, a mobility transition is emitted
-which forms part of a high priority set.  This, in turn, provides TNT's
-extension of the concept of maximal progress to a more general one of
-prioritisation.  The system at this stage is still simple; it merely
-formalises the concept of including mobility within the same class of
-functionality as internal behaviour and synchronisation, both of which
-result in silent actions.}{}
 
 Transitions are divided into three sets:
 

@@ -21,10 +21,11 @@
 \newcommand{\RevealsC}{\Reveals{T}}
 \newcommand{\RevealsE}{\Reveals{E}}
 
-%\newcommand{\Invokes}[1]{\mathrel{\Downarrow_{#1}}}
-%\newcommand{\InvokesA}{\Invokes{\mathscr{A}}}
-%\newcommand{\InvokesC}{\Invokes{\mathscr{C}}}
-%\newcommand{\InvokesE}{\Invokes{\mathscr{E}}}
+\newcommand{\DEq}{\bumpeq}
+\newcommand{\NotDEq}{\not\bumpeq}
+\newcommand{\DEqA}{\mathrel{\DEq_{A}}}
+\newcommand{\DEqC}{\mathrel{\DEq_{T}}} 
+\newcommand{\DEqE}{\mathrel{\DEq_{E}}} 
 
 \newcommand{\Eq}{\approx}
 \newcommand{\NotEq}{\not\approx}
@@ -99,9 +100,7 @@ $\expr$ exhibits the environ (actually an environ \emph{context}) $\locv{n}{}{B}
 provided this occurs at top-level. However, our definition again needs to
 take account of potential time-outs. For example, $\loc{n}{}{B}{\rho}$ is
 exhibited in both $\loc{n}{\expr}{B}{\rho}$ and
-$\timeout{\loc{n}{\exprb}{B}{\rho}}{\sigma}{\nil}$. In addition, the presence of
-time-out operators means that restrictions can occur at several locations in the
-expression, without affecting the environ's visibility.
+$\timeout{\loc{n}{\exprb}{B}{\rho}}{\sigma}{\nil}$.
 
 \begin{definition}
 We say that $\expr$ \emph{exhibits} the environ $\locv{n}{\,}{B}{\vec{\sigma}}$,
@@ -168,8 +167,16 @@ We say that $\expr$ \emph{reveals} the environ $\locv{n}{\,}{B}{\vec{\sigma}}$, 
 
 
 
+
+
 \subsection{Contextual Congruence}
 \label{sec:contextual-congruence}
+
+Before we can define contextual congruence, we need to decide what it is for 
+two expressions to reveal the \emph{same} environ. Our definition is
+recursive, since the equivalence of $\locv{m}{}{\expr}{\vec{\sigma}}$ and
+$\locv{n}{}{\exprb}{\vec{\rho}}$ relies on the equivalence of $\expr$ and
+$\exprb$.
 
 As usual, a \emph{context} $C$ is an expression with one or more
 \emph{holes}. We write $[\,]$ for a hole, and $C[\expr]$ for the expression
@@ -177,38 +184,36 @@ obtained by filling $C$'s holes with copies of $\expr$ (this may result
 in free names and variables in $\expr$ becoming bound).
 
 \begin{definition}
-Let $C$ range over arbitrary contexts. Two expressions are
+Let $C$ range over arbitrary contexts. Two expressions $\expr$ and $\exprb$
+are (contextually) \emph{equivalent}, written $\expr \Eq \exprb$, provided
 \begin{enumerate}
 \item
-    \emph{action equivalent}, written $\expr \EqA \exprb$, provided they
-     reveal the same actions in every context: $C[\expr] \RevealsA
-     \alpha \Leftrightarrow C[\exprb] \RevealsA \alpha$;
+     they reveal the same actions in every context: $C[\expr] \RevealsA
+     \alpha \Leftrightarrow C[\exprb] \RevealsA \alpha$; we say the
+     expressions are \emph{action equivalent}, written $\expr \EqA \exprb$; 
 \item
-    \emph{temporal} (or \emph{clock}) \emph{equivalent}, written $\expr \EqC
-    \exprb$, provided they reveal the same clocks in every context: $C[\expr] 
-    \RevealsC \sigma \Leftrightarrow C[\exprb] \RevealsC \sigma$;
+     they reveal the same clocks in every context: $C[\expr] \RevealsC \sigma 
+     \Leftrightarrow C[\exprb] \RevealsC \sigma$; we say the expressions are
+     \emph{temporal} (or \emph{clock}) \emph{equivalent}, written $\expr \EqC
+     \exprb$; 
 \item
-    \emph{environ equivalent}, written $\expr \EqE \exprb$, provided
-     they reveal the same environs in every context: $C[\expr] \RevealsE
-     \locv{n}{\,}{B}{\vec{\sigma}} \Leftrightarrow C[\exprb] \RevealsE \locv{n}{\,}{B}{\vec{\sigma}}$.
+     they reveal the same environs (up to equivalence of bouncers) in every 
+     context:
+     \begin{enumerate}
+     \item
+        If $C[\expr] \RevealsE \locv{n}{\,}{\expr'}{\vec{\sigma}}$
+        then 
+        $C[\exprb] \RevealsE \locv{n}{\,}{\exprb'}{\vec{\sigma}}$
+        for some $\exprb' \Eq \expr'$;
+     \item
+        If $C[\exprb] \RevealsE \locv{n}{\,}{\exprb'}{\vec{\sigma}}$
+        then
+        $C[\expr] \RevealsE \locv{n}{\,}{\expr'}{\vec{\sigma}}$
+        for some $\expr \Eq \exprb'$.
+     \end{enumerate}
+     We say the expressions are \emph{environ equivalent}, written $\expr \EqE 
+     \exprb$.
 \end{enumerate}
-\end{definition}
-
-Finally, full equivalence of TNT expressions is defined to be the
-conjunction of action, clock and mobility equivalence.
-\begin{definition}[Expression Equivalence]
-Two expressions $\expr$ and $\exprb$ are (contextually)
-\emph{equivalent}, written $\expr \Eq \exprb$, provided they are
-action-, clock- and environ-equivalent. That is,
-\[
-    \expr \Eq \exprb
-    \Means
-    \left( \expr \EqA \exprb \right)
-    \land
-    \left( \expr \EqC \exprb \right)
-    \land 
-    \left( \expr \EqE \exprb \right)
-\]
 \end{definition}
 
 
