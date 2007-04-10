@@ -13,29 +13,32 @@
 
 \newcommand{\Exhibits}[1]{\mathrel{\downarrow_{#1}}}
 \newcommand{\ExhibitsA}{\Exhibits{A}}
-\newcommand{\ExhibitsC}{\Exhibits{T}}
+\newcommand{\ExhibitsT}{\Exhibits{T}}
 \newcommand{\ExhibitsE}{\Exhibits{E}}
 
 \newcommand{\Reveals}[1]{\mathrel{\Downarrow_{#1}}}
 \newcommand{\RevealsA}{\Reveals{A}}
-\newcommand{\RevealsC}{\Reveals{T}}
+\newcommand{\RevealsT}{\Reveals{T}}
 \newcommand{\RevealsE}{\Reveals{E}}
 
 \newcommand{\DEq}{\bumpeq}
 \newcommand{\NotDEq}{\not\bumpeq}
 \newcommand{\DEqA}{\mathrel{\DEq_{A}}}
-\newcommand{\DEqC}{\mathrel{\DEq_{T}}} 
+\newcommand{\DEqT}{\mathrel{\DEq_{T}}} 
 \newcommand{\DEqE}{\mathrel{\DEq_{E}}} 
 
 \newcommand{\Eq}{\approx}
 \newcommand{\NotEq}{\not\approx}
 \newcommand{\EqA}{\mathrel{\Eq_{A}}}
-\newcommand{\EqC}{\mathrel{\Eq_{T}}} 
-\newcommand{\EqE}{\mathrel{\Eq_{E}}} 
+\newcommand{\EqT}{\mathrel{\Eq_{T}}} 
+\newcommand{\EqE}{\mathrel{\Eq_{E}}}
 
-\newcommand{\Means}{\mathrel{~=_{\mathrm{def}}~}}
+\newcommand{\LTOC}{\approxeq}
+
+\newcommand{\Means}{\eqdef}
 \newcommand{\Does}[1]{\xderives{#1}}
 \newcommand{\DoesTaus}{\mathrel{\Rightarrow}}
+\newcommand{\Weak}[1]{\stackrel{#1}{\Rightarrow}}
 \newcommand{\Theorem}{\vdash}
 \newcommand{\OfType}{\mathrel{:}}
 
@@ -58,7 +61,7 @@ $Q$ have the same type relative to our type system.
 \subsection{Immediate Observability}
 \label{sec:immediate-observability}
 
-We first define three predicates $\expr \ExhibitsA \alpha$, $\expr \ExhibitsC
+We first define three predicates $\expr \ExhibitsA \alpha$, $\expr \ExhibitsT
 \sigma$ and $\expr \ExhibitsE n$, describing the immediate observability of
 actions and clocks, and the immediate top-level placement of environs,
 respectively. For each predicate $\Exhibits{\bullet}$ we then define a
@@ -88,7 +91,7 @@ immediately.
 
 \begin{definition}
 We say that $\expr$ \emph{exhibits} the clock $\sigma$, and write $\expr
-\ExhibitsC \sigma$, provided $\expr \Does{\sigma}$.
+\ExhibitsT \sigma$, provided $\expr \Does{\sigma}$.
 \end{definition}
 
 \subsubsection{Environs.} 
@@ -123,7 +126,8 @@ of one of the forms
 A symbol $x$ is \emph{eventually observable} (we shall sometimes say it
 is \emph{revealed}) in an expression $\expr$ precisely when $x$ is the
 first \emph{relevant} action of the appropriate class. As usual, we
-write $\DoesTaus$ for the reflexive transitive closure of $\Does{\tau}$, and
+write $\DoesTaus$ for the reflexive transitive closure of $\Does{\tau}$, 
+$\Weak{\gamma}$ for $\DoesTaus\Does{\gamma}\DoesTaus{\gamma}$ and
 $\expr\res{a}$ for $\expr\res{\{a\}}$.
 
 
@@ -147,9 +151,9 @@ right to be considered eventually observed.
 
 \begin{definition}
 We say that $\expr$ \emph{reveals} the clock $\sigma$, and write $\expr
-\RevealsC \sigma$, provided there is some $\expr'$ and some $\vec{s} \in
+\RevealsT \sigma$, provided there is some $\expr'$ and some $\vec{s} \in
 \left( \act \cup \{ \tin, \tout, \topen \}\right)^*$ such that $\expr
-\Does{\vec{s}} \expr' \ExhibitsC \sigma$.
+\Does{\vec{s}} \expr' \ExhibitsT \sigma$.
 \end{definition}
 
 
@@ -184,18 +188,21 @@ obtained by filling $C$'s holes with copies of $\expr$ (this may result
 in free names and variables in $\expr$ becoming bound).
 
 \begin{definition}
-Let $C$ range over arbitrary contexts. Two expressions $\expr$ and $\exprb$
-are (contextually) \emph{equivalent}, written $\expr \Eq \exprb$, provided
+
+A symmetric relation $R \subseteq \proc \times \proc$ is a \emph{contextual
+equivalence} if for all contexts $C[\,]$, expressions $\expr$ and $\exprb$,
+$\alpha \in \actions$, $\sigma in \timers$, and environs
+$\locv{n}{\,}{B}{\vec{\sigma}}$,
+
 \begin{enumerate}
 \item
-     they reveal the same actions in every context: $C[\expr] \RevealsA
-     \alpha \Leftrightarrow C[\exprb] \RevealsA \alpha$; we say the
-     expressions are \emph{action equivalent}, written $\expr \EqA \exprb$; 
+     $C[\expr] \ExhibitsA \alpha \Longrightarrow C[\exprb] \RevealsA \alpha$ and
+     vice versa; we say the expressions are \emph{action equivalent}, written 
+     $\expr \EqA \exprb$; 
 \item
-     they reveal the same clocks in every context: $C[\expr] \RevealsC \sigma 
-     \Leftrightarrow C[\exprb] \RevealsC \sigma$; we say the expressions are
-     \emph{temporal} (or \emph{clock}) \emph{equivalent}, written $\expr \EqC
-     \exprb$; 
+     $C[\expr] \ExhibitsT \sigma \Longrightarrow C[\exprb] \RevealsT \sigma$ and
+     vice versa; we say the expressions are \emph{timer equivalent}, written 
+     $\expr \EqT \exprb$; 
 \item
      they reveal the same environs (up to equivalence of bouncers) in every 
      context:
@@ -300,22 +307,39 @@ subexpression. Therefore, $\left(a\pref\expr \res{a}\right) \EqA
 they cannot contribute to distributed mobility transitions in any
 context $C$, whence $\left(a\pref\expr \res{a}\right) \EqE
 \nil$. Finally, we note that both expressions reveal all clocks
-$\sigma$, so that $\left(a\pref\expr \res{a}\right) \EqC \nil$, and we
+$\sigma$, so that $\left(a\pref\expr \res{a}\right) \EqT \nil$, and we
 are done.
 
 
-\subsection{Coherence of the Definitions}
-Although we have defined contextual congruence without reference to the
-type system, it is important to show that they respect one another. The
-following theorem illustrates the coherence of our definitions.
+\subsection{Located Temporal Observation Congruence}
+\label{sec:ltoc}
 
-\begin{theorem}
-If $\expr \Eq \exprb$ and $\Theorem \expr \OfType g$, then $\Theorem
-\exprb \OfType g$.
-\end{theorem}
+Following an idea in \cite{case}, we now use $\Eq$ to define a subcongruence
+$\LTOC$ which adds bisimulation propeties to the contextual equivalence already
+encapsulated.
+
+\begin{definition}
+A symmetric relation $R\mathrel{\subseteq}\mathop{\EqE}$ is a \emph{located temporal
+observation equivalence} if for every $(P,Q) \in R$, $\kappa \in \labels \setminus
+\timers$ and $\sigma \in \timers$
+\begin{enumerate}
+\item
+    $P \Does{\kappa} P' \Longrightarrow 
+       \exists Q' . Q \Weak{\kappa} Q' \mbox{ and } P' \Eq Q'$
+\item
+    $P \Does{\sigma} P' \Longrightarrow
+       \exists Q' . Q \Does{\sigma} Q' \mbox{ and } (P', Q') \in R$
+\end{enumerate}
+Write $P \LTOC Q$ if $(P,Q) \in R$ for some located temporal observation
+equivalence $R$.
+\end{definition}
+
+\begin{lemma}
+The equivalence $\LTOC$ is a congruence.
+\end{lemma}
 \begin{proof}
-\textbf{Hmmmm.} 
-\qed \end{proof}
+
+\end{proof}
 
 \bibliographystyle{splncs}
 \bibliography{literature}
