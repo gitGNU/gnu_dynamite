@@ -1,6 +1,11 @@
 2007-04-08  Andrew John Hughes  <andrew@dcs.shef.ac.uk>
 
 	* docs/papers/concur07/concur.tex:
+	Corrections of syntax and footnotes.
+
+2007-04-08  Andrew John Hughes  <andrew@dcs.shef.ac.uk>
+
+	* docs/papers/concur07/concur.tex:
 	Use our hiding macro.
 	
 2007-04-08  Andrew John Hughes  <andrew@dcs.shef.ac.uk>

@@ -70,18 +70,15 @@ mobility with continuous time values, but we believe the aggregation
 of mobility and discrete clocks to be novel.
 
 Our calculus, \emph{Typed Nomadic Time} (TNT) provides a framework for
-modelling such systems, with practical
-applicability very much in mind. The object of this
-paper is to demonstrate its underlying formal theory, derived in part
-from existing research in the area, via a description of its syntax,
-operational semantics and type system. Our long term aim is to leverage
-TNT as a foundation for creating concurrent systems within a
-programmatic context. This will allow the specification of system interactions to be shifted directly from the
-theoretical domain into an implementation backed by a formal
-methodology, \MPS{and, in turn, facilitates the general industry shift
-towards}{helping in turn to improve industrial adoption of}\QUESTION{You
-changed the meaning here.} concurrent
-techniques.
+modelling such systems, with practical applicability very much in
+mind. The object of this paper is to demonstrate its underlying formal
+theory, derived in part from existing research in the area, via a
+description of its syntax, operational semantics and type system. Our
+long term aim is to leverage TNT as a foundation for creating concurrent
+systems within a programmatic context. This will allow the specification
+of system interactions to be shifted directly from the theoretical
+domain into an implementation backed by a formal methodology, helping in
+turn to improve industrial adoption of concurrent techniques.
 
 \section{Typed Nomadic Time}
 \label{tnt}
@@ -126,7 +123,7 @@ definitions.
     & \stimeout{\expr}{\sigma}{\exprb} \mid 
       \mu X . \expr \mid
       X \mid 
-      \expr \setminus \vec{a} \mid
+      \expr \res{A} \mid
       \locv{m}{\expr}{\exprb}{\vec{\sigma}} \mid
       \ambop . \expr \\
    \ambop \quad \mathrel{::=} \quad & \tntin{m} \mid \tntout{m} \mid \tntopen{m} \mid
@@ -167,26 +164,19 @@ predecessor, CaSE, from which it also acquires the following features:
       from a child component into the cycle of its parent.
 \end{enumerate}
 
-\MPS{Clocks and the operators outlined above exist largely unchanged
-(for the time being)}{The notion of clocks and their associated
-operators are maintained verbatim} within TNT\MPS{their presence merely
-allowing process behaviour to incorporate the notion of discrete time.
-It is the two general concepts of encapsulation and
-prioritisation that actually makes this valuable, by permitting}{,while \emph{encapsulation} and \emph{prioritisation},
-which permit componentisation and synchronous event cycles respectively},
-\MPS{and thus, it is these which TNT extends}{are extended}.
+The notion of clocks and their associated operators are maintained
+verbatim within TNT,while \emph{encapsulation} and
+\emph{prioritisation, which permit componentisation and synchronous
+event cycles respectively}, are extended.
 
 Within CaSE, encapsulation is implicitly realised by the notion of clock
 hiding.  When a clock, $\sigma$, is hidden it appears indistinguishable
 from an internal action to observers outside the scope of the hiding
-operator.  \MPS{The effect of this, w}{W}hen combined with maximal
-progress, \MPS{\DELTEXT is to have}{} an entire subsystem (defined by
-the clock's scope) appear\MPS{\ADDTEXT}{s} equivalent to a single
-process, with respect to the cycles of clocks with a wider scope.
-\MPS{This means that, j}{J}ust as with processes, the subsystem
-\MPS{must perform}{performs} the maximal amount of behaviour before the
-\MPS{next of the more general clock ticks occurs}{clock ticks of the
-parent occur}.
+operator.  When combined with maximal progress, an entire subsystem
+(defined by the clock's scope) appears equivalent to a single process,
+with respect to the cycles of clocks with a wider scope.  Just as with
+processes, the subsystem performs the maximal amount of behaviour before
+any of the parent's clocks tick.
 
 In TNT, we make this notion explicit by representing the boundaries of
 the component within the syntax itself.  The effect of these is also
@@ -204,16 +194,13 @@ $\locv{m}{\expr}{\exprb}{\vec{\sigma}}$.  The environ is given a name
 `bouncer' ($\exprb$) and a set of clocks, $\vec{\sigma}$.  Environs incorporate clock hiding,
 similar to CaSE's operator, with $\seml E \hide{\sigma} \semr \eqdef \loc{}{E}{\Omega}{\sigma}$.
 
-The \MPS{name of the environ}{environ, $m$,} is used with TNT's mobility
-primitives, \MPS{which are an extension of those present}{as} in
-\MPS{the}{Cardelli and Gordon's} ambient calculus.  We maintain
-\MPS{\DELTEXT the}{} $in\ m$, $out\ m$ and $open\ m$ primitives,
-\MPS{\ADDTEXT}{but }represent\MPS{ing}{} them \MPS{instead as}{using}
-the mnemonics $\tntin{m}$, $\tntout{m}$ and $\tntopen{m}$ to prevent
-confusion with the names of actions.  \MPS{To this}{In addition}, we add two primitives for
-process mobility, $\procin{\beta}{m}$ and $\procout{\beta}{m}$, which
-allow objective mobility to occur via synchronization on the
-action\MPS{\DELTEXT ,}{} $\beta$.
+The environ, $m$, is used with TNT's mobility primitives, as in Cardelli
+and Gordon's ambient calculus.  We maintain $in\ m$, $out\ m$ and $open\
+m$ primitives, but represent them using the mnemonics $\tntin{m}$,
+$\tntout{m}$ and $\tntopen{m}$ to prevent confusion with the names of
+actions.  In addition, we add two primitives for process mobility,
+$\procin{\beta}{m}$ and $\procout{\beta}{m}$, which allow objective
+mobility to occur via synchronization on the action $\beta$.
 
 Transitions are divided into three sets:
 
@@ -296,8 +283,8 @@ the time determinacy property i.e. $E \derives{\sigma} E'$ and $E
 \end{proposition}
 Structural congruence is the least congruence relation that satisfies
 the laws given in Table \ref{tab:structcong}, allowing structural
-rearrangement and simplification of process terms. $\vec{A}$, $\vec{B}$
-and $\vec{C}$ range over subsets of \actions, while $fn(E)$ denotes the
+rearrangement and simplification of process terms. $A$, $B$
+and $C$ range over subsets of \actions, while $fn(E)$ denotes the
 \emph{free names} of the process, $E$ (names that occur within $E$ which
 are not bound by the restriction operator).  Notably, the rules allow:
  
@@ -325,18 +312,18 @@ are not bound by the restriction operator).  Notably, the rules allow:
  \\
     E \pc \nil & \equiv E \tag{StrIdent} \label{structident}
    \\
-    \nil \setminus \vec{a} & \equiv \nil \tag{StrResRem}
+    \nil \res{A} & \equiv \nil \tag{StrResRem}
    \label{structresremove}
    \\
-    E \setminus \vec{A} \setminus \vec{B} & \equiv E \setminus \vec{A} \cup \vec{B}
+    E \res{A} \res{B} & \equiv E \res{A \cup B}
    \tag{StrResRes} \label{structresres}
    \\
-    (E \pc F) \setminus \vec{A} & \equiv (E \setminus \vec{B}) \pc (F
-   \setminus \vec{C})^1 \tag{StrResPar} \label{structrespar}
+    (E \pc F) \res{A} & \equiv (E \res{B}) \pc (F
+   \res{C})^1 \tag{StrResPar} \label{structrespar}
 \end{align}
 \begin{align} 
-   (1)\ & \vec{B} = \{b \in \vec{A} \pc b \not \in fn(F)\} \notag \\ 
-   & \vec{C} = \{c \in \vec{A} \pc c \not \in fn(E)\} \notag
+   (1)\ & B = \{b \in A \pc b \not \in fn(F)\} \notag \\ 
+   & C = \{c \in A \pc c \not \in fn(E)\} \notag
  \end{align} 
   \shrule
 \end{table}
@@ -434,7 +421,7 @@ presence of structural congruence and in the use of the restriction $E
       &
       \Rule{Res}
       {E \derives{\gamma} E'}
-      {E \setminus a \derives{\gamma} E' \setminus a}
+      {E \res{a} \derives{\gamma} E' \res{a}}
       {\gamma \ne a}
      \\
  \end{tabular}
@@ -567,10 +554,10 @@ or $\tout$) is emitted as a result of this three-way synchronization.
       {E \derives{a} E',
   F \xderives{\procin{a}{m}} F',
        B_1 \derives{\bin} B'_1}
-      {((E \pc G) \setminus \vec{b}) \pc F \pc 
+      {((E \pc G) \res{B}) \pc F \pc 
   \locv{m}{H}{B_1}{\vec{\sigma}}
   \derives{\tin}
-  {(G \setminus \vec{b}) \pc F' \pc \locv{m}{H \pc E'}{B'_1}{\vec{\rho}}}
+  {(G \res{b}) \pc F' \pc \locv{m}{H \pc E'}{B'_1}{\vec{\rho}}}
   }
   {}
   \\[3ex]
@@ -578,9 +565,9 @@ or $\tout$) is emitted as a result of this three-way synchronization.
   {E \derives{a} E',
   F \xderives{\procout{a}{m}} F',
   B_1 \derives{\bout} B'_1}
-  {\locv{m}{((E \;|\; G) \setminus \vec{b}) \pc F}{B_1}{\vec{\sigma}}
+  {\locv{m}{((E \;|\; G) \res{B}) \pc F}{B_1}{\vec{\sigma}}
   \derives{\tout}
-  {E' \pc \locv{m}{(G \setminus \vec{b}) \pc F'}{B'_1}{\vec{\sigma}}}
+  {E' \pc \locv{m}{(G \res{B}) \pc F'}{B'_1}{\vec{\sigma}}}
   }
   {}
  \end{tabular}
@@ -652,9 +639,9 @@ context is known.
 
 Returning to the semantics, note that channels in $E$ may become
 unrestricted due to the movement of the process to a different environ.
-This is illustrated in the rules by $((E \pc G) \setminus \vec{b})$,
-which becomes simply $G \setminus \vec{b}$ when $E$ changes position.
-As a result, any names that were members of $\vec{b}$ and thus
+This is illustrated in the rules by $((E \pc G) \res{B})$,
+which becomes simply $G \res{B}$ when $E$ changes position.
+As a result, any names that were members of $B$ and thus
 restricted in $E$ are no longer in this situation following the movement
 of the process.  Actions are scoped to individual environs, and the
 names are unique, so $E$ can neither see the name in the old environ,
@@ -757,7 +744,7 @@ basis of all later rules.
      &
      \Rule{Res}
      {\Gamma \vdash a : Name, E : g : Group}
-     {\Gamma \vdash E \setminus a : g}
+     {\Gamma \vdash E \res{a} : g}
      {}
  \end{tabular}
   \end{center}
@@ -768,7 +755,7 @@ The remaining rules in Table \ref {tab:basictypes} provide types for the
 processes.  Via $Nil$ and $Stop$, both $\nil$ and $\Delta$ are given a
 type of $g$, where $g$ is a group.  The only precondition for these
 derivations is that $g$ is typeable as a $Group$ in the environment,
-$Gamma$.  Likewise, $\Omega$ can be typed as a $Bouncer$, thus
+$\Gamma$.  Likewise, $\Omega$ can be typed as a $Bouncer$, thus
 distinguishing it from normal processes, such as $\nil$.
 
 The other rules are also relatively straightforward.  $Stall$ simply
@@ -890,17 +877,17 @@ group, $g$.
   \\[3ex]
      \Rule{ProcIn\ \ }
   {\Gamma \vdash a : Name,
-  \Gamma \vdash \loc{n}{P \mid Q \mid \loc{n}{\nil}{B_1}{\vec{\sigma}}}{B_2}{\vec{\rho}} : g : Group, 
+  \Gamma \vdash \loc{n}{P \mid Q \mid \loc{m}{\nil}{B_1}{\vec{\sigma}}}{B_2}{\vec{\rho}} : g : Group, 
   m \in g(\mathscr{E})}
-     {\loc{n}{\procin{a}{m}.P \mid a.Q \mid \loc{n}{\nil}{B_1}{\vec{\sigma}}}{B_2}{\vec{\rho}} : g : Group}
+     {\loc{n}{\procin{a}{m}.P \mid a.Q \mid \loc{m}{\nil}{B_1}{\vec{\sigma}}}{B_2}{\vec{\rho}} : g : Group}
      {}  
   \\[3ex]
      \Rule{ProcOut\ \ \ \ }
   {\Gamma \vdash a : Name,
-  \Gamma \vdash \loc{n}{\loc{m}{P \mid Q}{B_1}{\vec{\sigma}}}{B_2}{\vec{\rho}} : g : Group, 
+  \Gamma \vdash \locv{n}{\loc{m}{P \mid Q}{B_1}{\vec{\sigma}}}{B_2}{\vec{\rho}} : g : Group, 
   m \in g(\mathscr{L}),
   n \in g(\mathscr{E})}
-     {\Gamma \vdash \loc{n}{\loc{m}{\procout{a}{m}.P \mid a.Q}{B}{\vec{\sigma}}}{B_2}{\vec{\rho}} :
+     {\Gamma \vdash \locv{n}{\loc{m}{\procout{a}{m}.P \mid a.Q}{B}{\vec{\sigma}}}{B_2}{\vec{\rho}} :
   g}
      {}  
  \end{tabular}
