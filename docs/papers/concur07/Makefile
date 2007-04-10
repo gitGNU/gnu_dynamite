@@ -8,9 +8,9 @@ all: $(TEX)
 	bibtex $*
 	latex $<
 	latex $<
-	dvips -Ppdf -G0 $*.dvi -o $*.ps
-	ps2pdf -dPDFsettings=/prepress -dAutoFilterColorImages=false -dColorImageFilter=/FlateEncode $*.ps $@
-	ps2ascii $*.ps| wc -w
+	#dvips -Ppdf -G0 $*.dvi -o $*.ps
+	#ps2pdf -dPDFsettings=/prepress -dAutoFilterColorImages=false -dColorImageFilter=/FlateEncode $*.ps $@
+	#ps2ascii $*.ps| wc -w
 
 clean:
 	rm -f *.{aux,blg,dvi,log,out,ps,pdf}

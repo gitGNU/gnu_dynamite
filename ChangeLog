@@ -1,4 +1,10 @@
-2007-04-08  Andrew John Hughes  <andrew@dcs.shef.ac.uk>
+2007-04-10  Andrew John Hughes  <andrew@dcs.shef.ac.uk>
+
+	* docs/papers/concur07/concur.tex,
+	* docs/papers/concur07/macros.tex:
+	Mad correction session.
+
+2007-04-10  Andrew John Hughes  <andrew@dcs.shef.ac.uk>
 
 	* docs/papers/concur07/concur.tex:
 	Corrections of syntax and footnotes.
