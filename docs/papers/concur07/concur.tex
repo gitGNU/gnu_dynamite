@@ -289,61 +289,68 @@ rearrangement and simplification of process terms. $A$, $B$
 and $C$ range over subsets of \actions, while $fn(E)$ denotes the
 \emph{free names} of the process, $E$ (names that occur within $E$ which
 are not bound by the restriction operator).  Notably, the rules allow:
- 
 \begin{itemize}
 \item The set of restricted actions to be split between two parallel
       composed processes so that the restricted actions are not in the
-      free names of the other process \textsf{(\ref{structrespar})}.
+      free names of the other process (StrResPar).
 \item Multiple restriction operators to be combined into a single set
-      \textsf{(\ref{structresres})}.
+      (StrResRes).
 \end{itemize}
 
 \begin{table}
-  \caption{Semantics: Structural Congruence Laws}
+ \caption{Structural Congruence Laws}
  \label{tab:structcong}
  \vspace{-3mm}
-  \shrule
-  \begin{align}
-   E + F & \equiv F + E \tag{StrSum1} \label{structsum1}
-  \\
-   E + (F + G) & \equiv (E + F) + G \tag{StrSum2} \label{structsum2}
-   \\
-    E \pc F & \equiv F \pc E \tag{StrPar1} \label{structpar1}
-  \\
-   E \pc (F \pc G) & \equiv (E \pc F) \pc G \tag{StrPar2} \label{structpar2}
- \\
-    E \pc \nil & \equiv E \tag{StrIdent} \label{structident}
-   \\
-    \nil \res{A} & \equiv \nil \tag{StrResRem}
-   \label{structresremove}
-   \\
-    E \res{A} \res{B} & \equiv E \res{A \cup B}
-   \tag{StrResRes} \label{structresres}
-   \\
-    (E \pc F) \res{A} & \equiv (E \res{B}) \pc (F
-   \res{C})^1 \tag{StrResPar} \label{structrespar}
-\end{align}
-\begin{align} 
-   (1)\ & B = \{b \in A \pc b \not \in fn(F)\} \notag \\ 
-   & C = \{c \in A \pc c \not \in fn(E)\} \notag
- \end{align} 
+  \shrule \centering
+  \begin{tabular}{rcrcl}
+  StrSum1 & \quad\quad &  
+  $E + F$              & $\equiv$ & $F + E$
+\\
+  StrSum2 &&  
+  $E + (F + G)$        & $\equiv$ & $(E + F) + G$
+\\
+  StrPar1 &&  
+  $E \pc F$            & $\equiv$ & $F \pc E$
+\\
+  StrPar2 &&  
+  $E \pc (F \pc G)$    & $\equiv$ & $(E \pc F) \pc G$
+\\
+  StrIdent &&  
+  $E \pc \nil$         & $\equiv$ & $E$
+\\
+  StrResRem &&  
+  $\nil \res{A}$       & $\equiv$ & $\nil$
+\\
+  StrResRes &&  
+  $E \res{A} \res{B}$  & $\equiv$ & $E \res{A \cup B}$
+\\
+  StrResPar &&  
+  $(E \pc F) \res{A}$  & $\equiv$ & $(E \res{B}) \pc (F \res{C})^1$
+\\
+\\
+ \multicolumn{5}{c}{$
+   {}^{(1)}  B = \{b \in A \pc b \not \in fn(F)\},
+              C = \{c \in A \pc c \not \in fn(E)\}
+  $}
+  \end{tabular}
   \shrule
 \end{table}
 
-Table \ref{tab:casesubset} shows the subset of the semantics inherited
-from CaSE, for which the reader is refered to \cite{case}.  The ones
-presented here differ in that commutativity is now implied by the
-presence of structural congruence and in the use of the restriction $E
-\;|\; F \nderives{h}$ to enforce prioritisation.  Included in the table
-are rules which allow the mobility prefix to evolve, thus completing the
-semantics for expressions, and linking the structural congruence rules
-to the labelled transition system.  $LHd1$ provides the conversion of
-ticks emitted by the hidden clocks to silent actions; if $E$ can perform
-a $\sigma$ transition, then it performs a $\tau$ transition in a context
-where $\sigma$ is one of the hidden clocks.
+Table \ref{tab:casesubset} shows the operational semantics, some of
+which are inherited from CaSE, for which the reader is refered to
+\cite{case}.  The ones presented here differ in that commutativity is
+now implied by the presence of structural congruence and in the use of
+the restriction $E \;|\; F \nderives{h}$ to enforce prioritisation.
+Included in the table are rules which allow the mobility prefix to
+evolve, thus completing the semantics for expressions, and linking the
+structural congruence rules to the labelled transition system.  $LHd1$
+provides the conversion of ticks emitted by the hidden clocks to silent
+actions; if $E$ can perform a $\sigma$ transition, then it performs a
+$\tau$ transition in a context where $\sigma$ is one of the hidden
+clocks.
 
 \begin{table}
-  \caption{Semantics: Rules Related to CaSE \cite{case}}
+  \caption{Semantics}
  \label{tab:casesubset}
  \vspace{-3mm}
   \shrule
@@ -462,88 +469,52 @@ where $\sigma$ is one of the hidden clocks.
      {E \equiv E', E' \derives{\gamma} F', F' \equiv F}
      {E \derives{\gamma} F}
      {}
- \end{tabular}
-  \end{center}
-  \shrule
-\end{table}
-
-The remaining semantics focus on the provision of mobility.  Table
-\ref{tab:locmobsubset} gives the rules required to move an environ
-around the hierarchy.  $InLoc$ allows a $\tin$ transition to occur and
-$n$ to move into $m$ if matching $\tntin{m}$ and $\bin$ transitions are
-available from the process $\tntin{m}.E$ and bouncer, $B_1$.  $OutLoc$
-gives the converse for $\tntout{m}.E$ and $\bout$, allowing a $\tout$
-transition to occur and $n$ to move outside $n$.  Likewise,
-$\tntopen{m}$ causes a $\topen$ transition to occur when both an
-$\tntopen{m}$ and an $\bopen$ transition are available.  The named
-environ, $m$, is destroyed and the two clock contexts unified.
-
-
-\begin{table}
-  \caption{Semantics: Environ Behaviour}
-  \label{tab:locmobsubset}
- \vspace{-3mm}
-  \shrule
- \begin{center}
- \begin{tabular}{rl}
-  \Rule{InEnv}
+  \\
+  \\
+  \multicolumn{4}{c}{
+  \Rulea{InEnv}
   {E \derives{\tntin{m}} E', B_1 \derives{\bin} B'_1}
   {\locv{n}{E}{B_2}{\vec{\sigma}} \;|\;
   \locv{m}{G}{B_1}{\vec{\rho}}
   \derives{\tin}
   \locv{m}{G \pc \locv{n}{E'}{B_2}{\vec{\sigma}}}{B'_1}{\vec{\rho}}}
   {}
+  }
   \\[3ex]
-  \Rule{OutEnv\ \ }
+  \multicolumn{4}{c}{
+  \Rulea{OutEnv}
   {E \derives{\tntout{m}} E', B_1 \derives{\bout} B'_1}
   {\locv{m}{G \pc \locv{n}{E}{B_2}{\vec{\sigma}}}{B_1}{\vec{\rho}}
   \derives{\tout}
   \locv{n}{E'}{B_2}{\vec{\sigma}} \pc
   \locv{m}{G}{B'_1}{\vec{\rho}}}
+  }
   {}
   \\[3ex]
-  \Rule{Open}
+  \multicolumn{4}{c}{
+  \Rulea{Open}
   {E \derives{\tntopen{m}} E', B_1 \derives{\bopen} B'_1}
   {\locv{n}{E \;|\; \locv{m}{F}{B_1}{\vec{\sigma}}}{B_2}{\vec{\gamma}}
   \derives{\topen} 
   \locv{n}{E' \;|\; F}{B_2}{\vec{\gamma} \cup \vec{\sigma}}}
   {}
- \end{tabular}
-  \end{center}
-  \shrule
-\end{table}
-
-Finally, Table \ref{tab:procmobsubset} shows the semantics which
-describe the movement of processes between environs.  In both rules, $E$
-moves due to a mobility primitive which is part of $F$.  This occurs if
-$\procin{a}{m}$ or $\procout{a}{m}$, $a$ and $\bin$ or $\bout$
-transitions take place, respectively.  An appropriate mobility
-transition ($\tin$ or $\tout$) is emitted as a result of this three-way
-synchronization.  Process mobility, in this form, is \emph{objective}.
-The process which emits the mobility primitive synchronises with a
-partner process, and it is this partner which actually moves.  The
-partner should be a process in the same environ, due to the scoping of
-actions described above.
-
-\begin{table}
-  \caption{Semantics: Process Mobility}
-  \label{tab:procmobsubset}
- \vspace{-3mm}
-  \shrule
- \begin{center}
- \begin{tabular}{rl}
-      \Rule{ProcIn\ }
-      {E \derives{a} E',
+  }
+  \\[3ex]
+  \multicolumn{4}{c}{
+  \Rulea{ProcIn}
+  {E \derives{a} E',
   F \xderives{\procin{a}{m}} F',
-       B_1 \derives{\bin} B'_1}
-      {((E \pc G) \res{B}) \pc F \pc 
+  B_1 \derives{\bin} B'_1}
+  {((E \pc G) \res{B}) \pc F \pc 
   \locv{m}{H}{B_1}{\vec{\sigma}}
   \derives{\tin}
   {(G \res{B}) \pc F' \pc \locv{m}{H \pc E'}{B'_1}{\vec{\rho}}}
   }
+  }
   {}
   \\[3ex]
-      \Rule{ProcOut\ \ \ }
+  \multicolumn{4}{c}{
+      \Rulea{ProcOut}
   {E \derives{a} E',
   F \xderives{\procout{a}{m}} F',
   B_1 \derives{\bout} B'_1}
@@ -551,11 +522,58 @@ actions described above.
   \derives{\tout}
   {E' \pc \locv{m}{(G \res{B}) \pc F'}{B'_1}{\vec{\sigma}}}
   }
+  }
   {}
  \end{tabular}
   \end{center}
   \shrule
 \end{table}
+
+The remaining semantics focus on the provision of mobility.  $InLoc$
+allows a $\tin$ transition to occur and $n$ to move into $m$ if matching
+$\tntin{m}$ and $\bin$ transitions are available from the process
+$\tntin{m}.E$ and bouncer, $B_1$.  $OutLoc$ gives the converse for
+$\tntout{m}.E$ and $\bout$, allowing a $\tout$ transition to occur and
+$n$ to move outside $n$.  Likewise, $\tntopen{m}$ causes a $\topen$
+transition to occur when both an $\tntopen{m}$ and an $\bopen$
+transition are available.  The named environ, $m$, is destroyed and the
+two clock contexts unified.
+
+
+%\begin{table}
+%  \caption{Semantics: Environ Behaviour}
+%  \label{tab:locmobsubset}
+% \vspace{-3mm}
+%  \shrule
+% \begin{center}
+% \begin{tabular}{rl}
+% \end{tabular}
+%  \end{center}
+%  \shrule
+%\end{table}
+
+Finally, $ProcIn$ and $ProcOut$ describe the movement of processes
+between environs.  In both rules, $E$ moves due to a mobility primitive
+which is part of $F$.  This occurs if $\procin{a}{m}$ or
+$\procout{a}{m}$, $a$ and $\bin$ or $\bout$ transitions take place,
+respectively.  An appropriate mobility transition ($\tin$ or $\tout$) is
+emitted as a result of this three-way synchronization.  Process
+mobility, in this form, is \emph{objective}.  The process which emits
+the mobility primitive synchronises with a partner process, and it is
+this partner which actually moves.  The partner should be a process in
+the same environ, due to the scoping of actions described above.
+
+%\begin{table}
+%  \caption{Semantics: Process Mobility}
+%  \label{tab:procmobsubset}
+% \vspace{-3mm}
+%  \shrule
+% \begin{center}
+% \begin{tabular}{rl}
+% \end{tabular}
+%  \end{center}
+%  \shrule
+%\end{table}
 
 Such behaviour is initially difficult to understand, but can be made
 clearer with a simple example.  Take the process,
@@ -606,12 +624,11 @@ appropriate bouncers being defined) as
 \noindent where $F$ is the process that will move into $m$, $E$ is the
 continuation and $z$ is a new name. 
 
-Notice in Table \ref{tab:procmobsubset} that channels may become
-unrestricted due to the movement of an expression into a different
-environ.  For example, $((E \pc G) \res{B})$ becomes $G \res{B}$ when
-$E$ changes position.  As a result, any names that were restricted in
-$E$ (since members of $B$) are no longer restricted following its
-movement.
+Notice that channels may become unrestricted due to the movement of an
+expression into a different environ.  For example, $((E \pc G) \res{B})$
+becomes $G \res{B}$ when $E$ changes position.  As a result, any names
+that were restricted in $E$ (since members of $B$) are no longer
+restricted following its movement.
 
 \subsection{Type System}
 \label{typesys}
@@ -663,7 +680,10 @@ $g$.  In contrast, $\Omega$ can only be typed as a $Bouncer$, thus
 distinguishing it from the behaviourally equivalent process, $\Delta$.
 Notice also that $FTO$ and $STO$ require that $\sigma$ is typeable as a
 clock, another restriction which makes explicit a number of issues
-implied in the syntax.
+implied in the syntax.  $BRec$ allows recursive bouncers to be defined,
+while $BIn$, $BOut$ and $BOpen$ allow an existing bouncer, $B$, to be
+prefixed with one of the three bouncer primitives ($\bin$, $\bout$ and
+$\bopen$)
 
 
 \begin{table}
@@ -763,118 +783,6 @@ implied in the syntax.
    {\Gamma \vdash F : \pi_{R} g}
    {}
    \\[3ex]
-  \multicolumn{4}{c}{
-  \Rulea{STOS}
-   {\Gamma \vdash \stimeout{E}{\sigma}{F} : g : Group}
-   {\Gamma \vdash \stimeout{E'}{\sigma}{F} : g}
-   {(E \derives{\rho} E', \rho \ne \sigma)}
-  }
-  \\[3ex]
-  \multicolumn{4}{c}{
-   \Rulea{BSum}
-   {\Gamma \cup \Gamma^\prime \vdash B : Bouncer,
-   \Gamma \cup \Gamma^\prime  \vdash B^\prime : Bouncer}
-   {\Gamma \cup \Gamma^\prime \vdash B + B^\prime : Bouncer}
-   {}
-  }
- \end{tabular}
-  \end{center}
-  \shrule
-\end{table}
-
-The mobility types presented in table \ref{tab:mobilitytypes} form the
-remaining focus of our type system.  We write $g(\mathscr{R})$,
-$g(\mathscr{O})$, $g(\mathscr{L})$ and $g(\mathscr{E})$ for the
-components of the group $g$.  $Environ$ is a fundamental rule, which
-links environs, bouncers, clocks and processes.  If $m$ is a environ
-name ($Environ$), $E$ is a process of type $g$ (where $g$ is a $Group$)
-and $B$ is a $Bouncer$, then the process $E$ may be typed as $g$ while
-encapsulated within the environ $m$, with its bouncer $B$.  The later
-rules rely on this to provide a type for the existing environ.
-
-\begin{table}
-  \caption{Types: Mobility}
-  \label{tab:mobilitytypes}
- \vspace{-3mm}
-  \shrule
- \begin{center}
- \begin{tabular}{rlrl}
-     \Rule{Environ}
-     {\Gamma \vdash m : Environ,
-     \Gamma \vdash E : g : Group,
-     \Gamma \vdash B : Bouncer,
-     m \in g(\mathscr{R})}
-     {\Gamma \vdash \loc{m}{E}{B}{\vec{\sigma}} : g}
-     {}
-  \\[3ex]
-     \Rule{EnvIn}
-     {\Gamma \vdash m : Environ,
-  \Gamma \vdash E : g : Group,
-  m \in g(\mathscr{E})}
-     {\Gamma \vdash \tntin{m}.E : g}
-     {}
-     \\[3ex]
-     \Rule{EnvOut\ \ }
-     {\Gamma \vdash \loc{n}{\loc{m}{E}{B_1}{\vec{\sigma}}}{B_2}{\vec{\rho}} : g : Group,
-  m \in g(\mathscr{L}),
-  n \in g(\mathscr{E})}
-     {\Gamma \vdash \tntout{m}.E : g}
-     {}
-     \\[3ex]
-     \Rule{Open}
-     {\Gamma \vdash \loc{n}{E}{B_1}{\vec{\sigma}} : g : Group,
-  \Gamma \vdash \loc{m}{F}{B}{\vec{\sigma}} : h : Group,
-  m \in g(\mathscr{O}),
-  n \in h(\mathscr{E})}
-     {\Gamma \vdash \tntopen{m}.E : g}
-     {}
-  \\[3ex]
-     \Rule{ProcIn\ \ }
-  {\Gamma \vdash a : Name,
-  \Gamma \vdash \loc{n}{E \mid F \mid \loc{m}{\nil}{B_1}{\vec{\sigma}}}{B_2}{\vec{\rho}} : g : Group, 
-  m \in g(\mathscr{E})}
-     {\loc{n}{\procin{a}{m}.E \mid a.F \mid \loc{m}{\nil}{B_1}{\vec{\sigma}}}{B_2}{\vec{\rho}} : g : Group}
-     {}  
-  \\[3ex]
-     \Rule{ProcOut\ \ \ \ }
-  {\Gamma \vdash a : Name,
-  \Gamma \vdash \locv{n}{\loc{m}{E \mid F}{B_1}{\vec{\sigma}}}{B_2}{\vec{\rho}} : g : Group, 
-  m \in g(\mathscr{L}),
-  n \in g(\mathscr{E})}
-     {\Gamma \vdash \locv{n}{\loc{m}{\procout{a}{m}.E \mid a.F}{B}{\vec{\sigma}}}{B_2}{\vec{\rho}} :
-  g}
-     {}  
- \end{tabular}
-  \end{center}
-  \shrule
-\end{table}
-
-The $EnvOut$ rule differs from $EnvIn$ in that it provides a context for
-the movement which will occur when $\tntout{m}$ is performed.  This is
-necessary because, not only must the resulting process, $\tntout{m}.E$,
-be able to leave $m$, but it must also be able to enter the environ $n$.
-These restrictions are enforced by the constraints $m \in
-g(\mathscr{L})$ and $m \in g(\mathscr{E})$.
-
-$Open$ has similar requirements.  $E$ is the process that performs the
-mobility primitive, $\tntopen{m}$ ($m \in g(\mathscr{O})$).  However,
-the destruction of $m$ also has an effect on its process ($F$).  As a
-result, $F$ must have an appropriate type, $h$, such that $F$ can reside
-in the parent environ, $n$, after $m$ is removed. 
-
-Finally, Table \ref{tab:bouncertypes} adds some simple rules to
-complete the typing of the bouncers.  $BRec$ allows recursive bouncers
-to be defined, while $BIn$, $BOut$ and $BOpen$ allow an existing
-bouncer, $B$, to be prefixed with one of the three bouncer primitives
-($\bin$, $\bout$ and $\bopen$).
-
-\begin{table}
-  \caption{Types: Bouncers}
-  \label{tab:bouncertypes}
- \vspace{-3mm}
-  \shrule
- \begin{center}
- \begin{tabular}{rlrl}
   \Rule{BRec}
   {\Gamma \vdash B : Bouncer}
   {\Gamma \vdash \mu X.B : Bouncer}
@@ -894,10 +802,130 @@ bouncer, $B$, to be prefixed with one of the three bouncer primitives
   {\Gamma \vdash B : Bouncer}
   {\Gamma \vdash \bopen .B : Bouncer}
   {}
-  \end{tabular}
+  \\[3ex]
+  \multicolumn{4}{c}{
+  \Rulea{STOS}
+   {\Gamma \vdash \stimeout{E}{\sigma}{F} : g : Group}
+   {\Gamma \vdash \stimeout{E'}{\sigma}{F} : g}
+   {(E \derives{\rho} E', \rho \ne \sigma)}
+  }
+  \\[3ex]
+  \multicolumn{4}{c}{
+   \Rulea{BSum}
+   {\Gamma \cup \Gamma^\prime \vdash B : Bouncer,
+   \Gamma \cup \Gamma^\prime  \vdash B^\prime : Bouncer}
+   {\Gamma \cup \Gamma^\prime \vdash B + B^\prime : Bouncer}
+   {}
+  }
+  \\[3ex]
+  \multicolumn{4}{c}{
+     \Rulea{Environ}
+     {\Gamma \vdash m : Environ,
+     \Gamma \vdash E : g : Group,
+     \Gamma \vdash B : Bouncer,
+     m \in g(\mathscr{R})}
+     {\Gamma \vdash \loc{m}{E}{B}{\vec{\sigma}} : g}
+     {}
+  }
+  \\[3ex]
+  \multicolumn{4}{c}{
+     \Rulea{EnvIn}
+     {\Gamma \vdash m : Environ,
+  \Gamma \vdash E : g : Group,
+  m \in g(\mathscr{E})}
+     {\Gamma \vdash \tntin{m}.E : g}
+     {}
+  }
+     \\[3ex]
+  \multicolumn{4}{c}{
+     \Rulea{EnvOut}
+     {\Gamma \vdash \loc{n}{\loc{m}{E}{B_1}{\vec{\sigma}}}{B_2}{\vec{\rho}} : g : Group,
+  m \in g(\mathscr{L}),
+  n \in g(\mathscr{E})}
+     {\Gamma \vdash \tntout{m}.E : g}
+     {}
+  }
+     \\[3ex]
+  \multicolumn{4}{c}{
+     \Rulea{Open}
+     {\Gamma \vdash \loc{n}{E}{B_1}{\vec{\sigma}} : g : Group,
+  \Gamma \vdash \loc{m}{F}{B}{\vec{\sigma}} : h : Group,
+  m \in g(\mathscr{O}),
+  n \in h(\mathscr{E})}
+     {\Gamma \vdash \tntopen{m}.E : g}
+     {}
+  }
+  \\[3ex]
+  \multicolumn{4}{c}{
+     \Rulea{ProcIn}
+  {\Gamma \vdash a : Name,
+  \Gamma \vdash \loc{n}{E \mid F \mid \loc{m}{\nil}{B_1}{\vec{\sigma}}}{B_2}{\vec{\rho}} : g : Group, 
+  m \in g(\mathscr{E})}
+     {\loc{n}{\procin{a}{m}.E \mid a.F \mid \loc{m}{\nil}{B_1}{\vec{\sigma}}}{B_2}{\vec{\rho}} : g : Group}
+     {}  
+  }
+  \\[3ex]
+  \multicolumn{4}{c}{
+     \Rulea{ProcOut}
+  {\Gamma \vdash a : Name,
+  \Gamma \vdash \locv{n}{\loc{m}{E \mid F}{B_1}{\vec{\sigma}}}{B_2}{\vec{\rho}} : g : Group, 
+  m \in g(\mathscr{L}),
+  n \in g(\mathscr{E})}
+     {\Gamma \vdash \locv{n}{\loc{m}{\procout{a}{m}.E \mid a.F}{B}{\vec{\sigma}}}{B_2}{\vec{\rho}} :
+  g}
+     {}
+  }
+ \end{tabular}
   \end{center}
   \shrule
 \end{table}
+
+The mobility types form the remaining focus of our type system.  We
+write $g(\mathscr{R})$, $g(\mathscr{O})$, $g(\mathscr{L})$ and
+$g(\mathscr{E})$ for the components of the group $g$.  $Environ$ is a
+fundamental rule, which links environs, bouncers, clocks and processes.
+If $m$ is a environ name ($Environ$), $E$ is a process of type $g$
+(where $g$ is a $Group$) and $B$ is a $Bouncer$, then the process $E$
+may be typed as $g$ while encapsulated within the environ $m$, with its
+bouncer $B$.  The later rules rely on this to provide a type for the
+existing environ.
+
+%\begin{table}
+%  \caption{Types: Mobility}
+%  \label{tab:mobilitytypes}
+% \vspace{-3mm}
+%  \shrule
+% \begin{center}
+% \begin{tabular}{rlrl}
+% \end{tabular}
+%  \end{center}
+%  \shrule
+%\end{table}
+
+The $EnvOut$ rule differs from $EnvIn$ in that it provides a context for
+the movement which will occur when $\tntout{m}$ is performed.  This is
+necessary because, not only must the resulting process, $\tntout{m}.E$,
+be able to leave $m$, but it must also be able to enter the environ $n$.
+These restrictions are enforced by the constraints $m \in
+g(\mathscr{L})$ and $m \in g(\mathscr{E})$.
+
+$Open$ has similar requirements.  $E$ is the process that performs the
+mobility primitive, $\tntopen{m}$ ($m \in g(\mathscr{O})$).  However,
+the destruction of $m$ also has an effect on its process ($F$).  As a
+result, $F$ must have an appropriate type, $h$, such that $F$ can reside
+in the parent environ, $n$, after $m$ is removed. 
+
+%\begin{table}
+%  \caption{Types: Bouncers}
+%  \label{tab:bouncertypes}
+% \vspace{-3mm}
+%  \shrule
+% \begin{center}
+% \begin{tabular}{rlrl}
+%  \end{tabular}
+%  \end{center}
+%  \shrule
+%\end{table}
 
 \section{Equivalence Theory}
 \label{sec:equivalence-theory}
@@ -1108,9 +1136,6 @@ The following results are immediate.
 \begin{proposition}
 Suppose $\expr \not\Does{x}$ where $x$ is either $a$ or $\sigma$. If
 $C[\expr] \Does{x}$ then the $\Does{x}$ transition is global.
-\end{proposition}
-
-\begin{proposition}
 The only distributed transitions are $\Does{\sigma}$, $\Does{\tau}$,
 $\Does{\tin}$, $\Does{\tout}$ and $\Does{\topen}$.
 \end{proposition}

@@ -1,5 +1,10 @@
 2007-04-11  Andrew John Hughes  <andrew@dcs.shef.ac.uk>
 
+	* docs/papers/concur07/concur.tex:
+	Table merging fun.
+
+2007-04-11  Andrew John Hughes  <andrew@dcs.shef.ac.uk>
+
 	* docs/papers/concur07/concur.tex,
 	* docs/papers/concur07/proofmacros.tex:
 	The big proof merge.
