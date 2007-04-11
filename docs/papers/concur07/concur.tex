@@ -1,14 +1,12 @@
 \documentclass[orivec,envcountsame]{llncs}
 \usepackage{verbatim}
-\usepackage[T1]{fontenc}
+%\usepackage[T1]{fontenc}
 \usepackage[latin1]{inputenc}
 \usepackage{amsfonts, amssymb, amsmath}
 
 \input{macros}
-\input{mpsmacros}
 \input{proofmacros}
 \pagestyle{plain}
-%\newtheorem{prop}{Proposition}
 
 \title{Timed Mobile Systems}
 
@@ -16,7 +14,7 @@
 
 \institute{Department of Computer Science, University of Sheffield, \\
   Regent Court, 211 Portobello Street, Sheffield S1 4DP, UK. \\
-  \email{a.hughes@dcs.shef.ac.uk}
+  \email{\{a.hughes,~m.stannett\}@dcs.shef.ac.uk}
 }
 
 \begin{document}
@@ -27,7 +25,7 @@
 
 We present \emph{TNT}, a novel calculus combining explicit clocks and
 run-to-completion semantics with mobility, and demonstrate its
-suitability for modelling complex hierarachical systems with dynamic
+suitability for modelling complex hierarchical systems with dynamic
 topology.
 
 \end{abstract}
@@ -60,7 +58,7 @@ of \emph{global} synchronisation, or else (which we reject) of an
 infinite set of defining equations.
 
 The idea of global synchronisation via \emph{clock signals} is made explicit by
-various discrete timed process algebras, including TPL \cite{hennessy:tpl}, PMC
+various process algebras, including TPL \cite{hennessy:tpl}, PMC
 \cite{pmc}, CSA \cite{csa} and CaSE \cite{case,norton05alg}. Our contribution is
 to combine the notions of \emph{location}, \emph{clocks} and \emph{mobility} to
 create a calculus capable of modelling dynamic componentised systems, where
@@ -106,7 +104,7 @@ $m$ may be equal to the empty string, $\epsilon$, thus facilitating the
 use of anonymous environs\footnote{A primary motivation for this is that
 it allows TNT to be a conservative extension of CaSE. To obtain an
 encoding for clock hiding, there must be a way of mapping the operator
-to an equivalent environ}. $X$ ranges over a countably infinite set of
+to an equivalent environ.}. $X$ ranges over a countably infinite set of
 variables, which are used to bind process behaviour in recursive process
 definitions.  As usual, we often write $a$ for $\{a\}$, so for example
 $P \res{a}$ means $P \res{\{a\}}$.
@@ -138,38 +136,37 @@ $P \res{a}$ means $P \res{\{a\}}$.
 
 At its heart, TNT is a conservative extension of Milner's CCS.
 Specifically, within each environment lie processes which interact with
-one another via \emph{handshake} synchronization; to proceed, one
+one another via \emph{handshake} synchronisation; to proceed, one
 process must emit an action as another simultaneously emits the
 corresponding co-action.  This is something TNT shares with its
 predecessor, CaSE, from which it also acquires the following features:
 
 \begin{enumerate}
-\item Multiple \emph{abstract clocks}, denoted by $\sigma, \rho, \dots$,
+\item Multiple \emph{abstract clocks}, denoted $\sigma, \rho, \dots$,
       which are interpreted not as quantitative values, but in a
       qualitative fashion as signals of recurring events.
-\item Two \emph{timeout} operators, $\timeout{E}{\sigma}{F}$ and
-      $\stimeout{E}{\sigma}{F}$, which allow the behaviour of
-      processes to depend upon the occurrence of a particular clock
-      signal.
+\item Two \emph{timeout} operators, \emph{fragile} ($\timeout{E}{\sigma}{F}$) and
+      \emph{stable} ($\stimeout{E}{\sigma}{F}$), which allow the behaviour of
+      processes to depend upon the occurrence of specific clock
+      signals.
 \item Two \emph{timelock} operators, $\Delta$ and $\Delta_{\sigma}$,
       which prevent all clocks, or a single
-      clock, $\sigma$, from ticking, respectively.
-\item The concept of \emph{maximal progress} or, more generally,
-      prioritisation.  A signal from a clock may be pre-empted by the
-      existence of a process that engages in a higher priority
+      clock $\sigma$, from ticking, respectively.
+\item The concept of \emph{maximal progress} or
+      prioritisation.  A signal from a clock may be pre-empted by a process that engages in a higher priority
       transition.  In CaSE, the only such transition is the internal action,
-      $\tau$, which results in processes performing the maximal amount
-      of possible behaviour before allowing a clock to tick.
+      $\tau$, which results in processes performing maximal
+      behaviour before allowing a clock to tick.
 \item Encapsulation, realised in CaSE by the process of \emph{clock
       hiding}, which is analogous to the notion of hiding found in
       CSP \cite{hoare:csp78}.  This facilities the amalgamation of clock ticks
       from a child component into the cycle of its parent.
 \end{enumerate}
 
-The notion of clocks and their associated operators are maintained
-verbatim within TNT,while \emph{encapsulation} and
-\emph{prioritisation, which permit componentisation and synchronous
-event cycles respectively}, are extended.
+Clocks and their associated operators are retained verbatim within
+TNT, while \emph{encapsulation} and \emph{prioritisation}, which permit
+\emph{componentisation} and \emph{synchronous event cycles}
+respectively, are extended.
 
 Within CaSE, encapsulation is implicitly realised by the notion of clock
 hiding.  When a clock, $\sigma$, is hidden it appears indistinguishable
@@ -177,56 +174,52 @@ from an internal action to observers outside the scope of the hiding
 operator.  When combined with maximal progress, an entire subsystem
 (defined by the clock's scope) appears equivalent to a single process,
 with respect to the cycles of clocks with a wider scope.  Just as with
-processes, the subsystem performs the maximal amount of behaviour before
+processes, the subsystem performs maximal behaviour before
 any of the parent's clocks tick.
 
 In TNT, we make this notion explicit by representing the boundaries of
-the component within the syntax itself.  The effect of these is also
-extended to processes, with interaction being disallowed between those
-in separate environments.  In doing so, we look towards the existing
-area of \emph{localities} \cite{obslocal,pawl} which have been used in
-various ways in a number of existing calculi.  After surveying this area
-at some length, we draw most of our inspiration from Cardelli and
-Gordon's ambient calculus, which focuses primarily on this concept and
-forms the framework for many of the results in this field.
+the component syntactically.  These scope boundaries indirectly affect
+processes, with interaction being disallowed between those in separate
+environments.  This construction looks to the existing area of
+\emph{localities} \cite{obslocal,pawl}, which have been used in various
+ways in a number of existing calculi.  We draw our inspiration mostly
+from Cardelli and Gordon's ambient calculus, which forms the framework
+for many of the results in this field.
 
-Our localities or \emph{environs} are realised in the process
-$\locv{m}{\expr}{\exprb}{\vec{\sigma}}$.  The environ is given a name
+Our localities or \emph{environs} are realised in the process form
+$\locv{m}{\expr}{\exprb}{\vec{\sigma}}$.  The environ has a name
 ($m$), some behaviour ($\expr$), a security model in the form of a
-`bouncer' ($\exprb$) and a set of clocks, $\vec{\sigma}$.  Environs incorporate clock hiding,
-similar to CaSE's operator, with $\seml E \hide{\sigma} \semr \eqdef \loc{}{E}{\Omega}{\sigma}$.
+`bouncer' ($\exprb$) and a set of clocks, $\vec{\sigma}$.  Environs implement clock hiding;
+in terms of the corresponding CaSE operator, we have $\seml E \hide{\sigma} \semr \eqdef \loc{}{E}{\Omega}{\sigma}$.
 
 The environ, $m$, is used with TNT's mobility primitives, as in Cardelli
-and Gordon's ambient calculus.  We maintain $in\ m$, $out\ m$ and $open\
+and Gordon's ambient calculus.  We retain their $in\ m$, $out\ m$ and $open\
 m$ primitives, but represent them using the mnemonics $\tntin{m}$,
 $\tntout{m}$ and $\tntopen{m}$ to prevent confusion with the names of
 actions.  In addition, we add two primitives for process mobility,
 $\procin{\beta}{m}$ and $\procout{\beta}{m}$, which allow objective
-mobility to occur via synchronization on the action $\beta$.
+mobility to occur via synchronisation on the action $\beta$.
 
 Transitions are divided into three sets:
 
 \begin{enumerate}
-\item \emph{High priority transitions}, which includes $\tau$ and
-      the mobility transitions, $\tin$, $\tout$ and $\topen$.  We denote
-      these using the set, $\highpris$.
-\item \emph{Low priority transitions}, which includes all
+\item a set of \emph{high priority transitions} (denoted $\highpris$), which includes $\tau$ and
+      the mobility transitions, $\tin$, $\tout$ and $\topen$.
+\item a set of \emph{low priority transitions}, which includes all
       clock transitions.
-\item \emph{Independent transitions}, which arise from the occurrence of
-      actions that don't pair up with a corresponding co-action (or
-      vice versa).  These neither pre-empt nor inhibit any other
-      transitions.  These are transitions with labels drawn from the set
-      $\names \cup \conames$.
+\item a set of \emph{independent transitions} with labels drawn from the
+      set $\names \cup \conames$. These neither pre-empt nor inhibit any other
+      transitions.
 \end{enumerate}
 
 If a process may emit a transition in $\highpris$, then low-priority
 transitions are prevented from occurring.  This also applies to CaSE,
 where $\highpris$ is simply $\{ \tau \}$.
 
-Finally, TNT provides a method of security based on the research into
+Finally, TNT provides a method for security based on research into
 safe ambients \cite{sangiorgi:mobsafeambients}.  \emph{Grave
 interferences} occur when two logically different mobility transitions may
-occur at the same time, a scenario which clearly leads to two radically
+occur at the same time, a scenario which leads to radically
 different reductions.  These are unlike normal interferences, where more
 than one action competes for synchronisation, and tend to represent
 errors rather than an intentional notion of competition for resources.
@@ -236,66 +229,69 @@ ambients and TNT solve this problem by introducing the equivalent of
 co-names for mobility primitives, so that a similar synchronisation
 process must take place before movement occurs.
 
-In TNT, this is realised by \emph{bouncers}.  Named after the person who
-restricts access to a night club, the bouncer is an additional property
-of a environ which appears in the top right of the expression.  It has
-no real behaviour of its own, but instead performs the job of protecting
-the environ, essentially being a process with a more limited choice of
-available constructs\footnote{This limited choice is only explicitly
-imposed by the type system.  There is no restriction in the abstract
-syntax.}.  The bouncer provides zero or more instances of a co-primitive
-($\bin$, $\bout$ and $\bopen$), and as a result dictates which mobility
-transitions may occur and their cardinality.
+In TNT, this is realised by \emph{bouncers}.  Named after the staff who
+restrict access to a night club\footnote{American usage:
+doorman/woman.}, the bouncer is an additional property of an environ
+which appears in the top right of the expression.  It has no real
+behaviour of its own, but instead performs the job of protecting the
+environ, being a process with a limited choice of available
+constructs\footnote{This limited choice is only explicitly imposed by
+the type system.  There is no restriction in the abstract syntax.}.  The
+bouncer provides a structured selection of co-primitives ($\bin$,
+$\bout$ and $\bopen$), and dictates which mobility transitions may
+occur, and when.
 
-This implementation differs from that in existing calculi, such as
-Sangiorgi's safe ambients, in specialising the process which may provide
-these co-primitives and also in attaching it to the environ itself.
+This implementation differs from that in other calculi, such as
+Sangiorgi's safe ambients, both by specialising the process which may provide
+these co-primitives and also by attaching it to the environ itself.
 When a TNT environ moves, its bouncer moves with it and so an
 association is maintained between the two which is not present where the
 co-primitives are provided by an normal arbitrary process.  To maintain
 this distinction between bouncers and normal processes, $\Omega$ is used
-to represent a bouncer with no behaviour, as opposed to $\nil$.  The
-effect of this addition is shown later in the type system of section
-\ref{typesys}.
+to represent a bouncer with no behaviour, as opposed to CCS's $\nil$.  The
+effect of adding this process term is considered in more detail in section
+\ref{typesys}, where we discuss the type system.
 
 \subsection{Operational Semantics}
 
 This section gives TNT an operational semantics in terms of a labelled
-transition system, $(\procs, \labels, \rightarrow, s)$, defined
-up to structural congruence.  $\procs$ is the set of states, $\labels$ the
-alphabet $\actions \cup \timers \cup \mobprim$, $\rightarrow$ the
-transition relation and $s$ the start state.  Transitions with labels in
+transition system, $(\procs, \labels, \rightarrow)$, defined
+up to structural congruence.  $\procs$ is the set of TNT expressions; $\labels$ the
+alphabet comprising actions, clocks and mobility primitives; and $\rightarrow$ the
+transition relation.  Transitions with labels in
 $\actions$ are known as \emph{action transitions}, those in $\timers$ as
 \emph{clock transitions} and those in $\mobprim$ as \emph{mobility
-transitions}.  The transition relation, $\rightarrow \subseteq
-\procs \times \labels \times \procs$ is defined in the tables that follow.
-$E$, $F$ and $G$ range over process terms, $\sigma$ and $\rho$ over the
-set of clocks ($\timers$), $\alpha$ over the set of actions
-($\actions$), $h$ over $\highpris$, $a$ and $b$ over the actions
-sans $\tau$, $\kappa$ over $\actions \cup \mobprim$
-and $\gamma$ over the whole alphabet.  The semantics exhibit the
-following properties:
+transitions}.  The transition relation, $\mathop{\rightarrow} \mathrel{\subseteq}
+\procs \times \labels \times \procs$ is defined in Table \ref{tab:casesubset}.
+We use $E$, $F$ and $G$ to range over process terms; $\sigma$ and $\rho$ over the
+set of clocks ($\timers$); $\alpha$ over the set of actions
+($\actions$); $h$ over $\highpris$; $a$ and $b$ over 
+$\symbols \eqdef
+\left(\labels \setminus \{\tau\}\right) 
+\cup 
+\{ \tntin{m}, \tntout{m}, \tntopen{m} \} 
+\cup
+\{ \procin{\beta}{m}, \procout{\beta}{m} \}
+$;
+$\kappa$ over $\actions \cup \mobprim$;
+and $\gamma$ over $\actions \cup \timers \cup \mobprim$.
+
+\clearpage
 \begin{proposition}
-the prioritisation property
-i.e. $E \derives{\sigma}$ implies $E \nderives{h}$ 
+The semantics exhibit the following properties:
+\begin{enumerate}
+\item prioritisation;
+$E \derives{\sigma}$ implies $E \nderives{h}$ 
+\item time determinacy; $E \derives{\sigma} E'$ and $E
+\derives{\sigma} E''$ implies $E' = E''$.\qed
+\end{enumerate}
 \end{proposition}
-\begin{proposition}
-the time determinacy property i.e. $E \derives{\sigma} E'$ and $E
-\derives{\sigma} E''$ implies $E' = E''$.
-\end{proposition}
+
 Structural congruence is the least congruence relation that satisfies
 the laws given in Table \ref{tab:structcong}, allowing structural
-rearrangement and simplification of process terms. $A$, $B$
-and $C$ range over subsets of \actions, while $fn(E)$ denotes the
-\emph{free names} of the process, $E$ (names that occur within $E$ which
-are not bound by the restriction operator).  Notably, the rules allow:
-\begin{itemize}
-\item The set of restricted actions to be split between two parallel
-      composed processes so that the restricted actions are not in the
-      free names of the other process (StrResPar).
-\item Multiple restriction operators to be combined into a single set
-      (StrResRes).
-\end{itemize}
+rearrangement and simplification of process terms. $A$, $B$ and $C$
+range over subsets of \symbols.  Notably, the rules allow multiple
+restriction operators to be combined into a single set (StrResRes).
 
 \begin{table}
  \caption{Structural Congruence Laws}
@@ -323,31 +319,22 @@ are not bound by the restriction operator).  Notably, the rules allow:
 \\
   StrResRes &&  
   $E \res{A} \res{B}$  & $\equiv$ & $E \res{A \cup B}$
-\\
-  StrResPar &&  
-  $(E \pc F) \res{A}$  & $\equiv$ & $(E \res{B}) \pc (F \res{C})^1$
-\\
-\\
- \multicolumn{5}{c}{$
-   {}^{(1)}  B = \{b \in A \pc b \not \in fn(F)\},
-              C = \{c \in A \pc c \not \in fn(E)\}
-  $}
   \end{tabular}
   \shrule
 \end{table}
 
 Table \ref{tab:casesubset} shows the operational semantics, some of
-which are inherited from CaSE, for which the reader is refered to
-\cite{case}.  The ones presented here differ in that commutativity is
-now implied by the presence of structural congruence and in the use of
-the restriction $E \;|\; F \nderives{h}$ to enforce prioritisation.
-Included in the table are rules which allow the mobility prefix to
-evolve, thus completing the semantics for expressions, and linking the
-structural congruence rules to the labelled transition system.  $LHd1$
-provides the conversion of ticks emitted by the hidden clocks to silent
-actions; if $E$ can perform a $\sigma$ transition, then it performs a
-$\tau$ transition in a context where $\sigma$ is one of the hidden
-clocks.
+which is inherited from CaSE, for which the reader is referred to
+\cite{case}.  However, commutativity is now implied by the presence of
+structural congruence, and the use of the restriction $E \mid F
+\nderives{h}$ enforces prioritisation.  Rule $LHd1$ provides the
+conversion of ticks emitted by the hidden clocks to silent actions: if
+$E$ can perform a $\sigma$ transition, then it performs a $\tau$
+transition in any context where $\sigma$ is hidden.  Also included in
+the table is the rule $SCong$, which links the structural congruence
+rules to the labelled transition system, and rules which allow the
+mobility prefix, $\ambop$, to evolve, thus completing the semantics for
+expressions.
 
 \begin{table}
   \caption{Semantics}
@@ -505,10 +492,10 @@ clocks.
   {E \derives{a} E',
   F \xderives{\procin{a}{m}} F',
   B_1 \derives{\bin} B'_1}
-  {((E \pc G) \res{B}) \pc F \pc 
+  {((E \pc G) \res{A}) \pc F \pc 
   \locv{m}{H}{B_1}{\vec{\sigma}}
   \derives{\tin}
-  {(G \res{B}) \pc F' \pc \locv{m}{H \pc E'}{B'_1}{\vec{\rho}}}
+  {(G \res{A}) \pc F' \pc \locv{m}{H \pc E'}{B'_1}{\vec{\rho}}}
   }
   }
   {}
@@ -518,9 +505,9 @@ clocks.
   {E \derives{a} E',
   F \xderives{\procout{a}{m}} F',
   B_1 \derives{\bout} B'_1}
-  {\locv{m}{((E \;|\; G) \res{B}) \pc F}{B_1}{\vec{\sigma}}
+  {\locv{m}{((E \;|\; G) \res{A}) \pc F}{B_1}{\vec{\sigma}}
   \derives{\tout}
-  {E' \pc \locv{m}{(G \res{B}) \pc F'}{B'_1}{\vec{\sigma}}}
+  {E' \pc \locv{m}{(G \res{A}) \pc F'}{B'_1}{\vec{\sigma}}}
   }
   }
   {}
@@ -529,105 +516,79 @@ clocks.
   \shrule
 \end{table}
 
-The remaining semantics focus on the provision of mobility.  $InLoc$
-allows a $\tin$ transition to occur and $n$ to move into $m$ if matching
-$\tntin{m}$ and $\bin$ transitions are available from the process
-$\tntin{m}.E$ and bouncer, $B_1$.  $OutLoc$ gives the converse for
+The remaining semantics focus on mobility.  $InEnv$ allows a $\tin$
+transition to occur and $n$ to move into $m$ if matching $\tntin{m}$ and
+$\bin$ transitions are available from the process $\tntin{m}.E$ and
+bouncer, $B_1$.  Conversely, $OutEnv$ concerns the interaction between
 $\tntout{m}.E$ and $\bout$, allowing a $\tout$ transition to occur and
-$n$ to move outside $n$.  Likewise, $\tntopen{m}$ causes a $\topen$
+$n$ to move outside $m$.  Likewise, $\tntopen{m}$ causes a $\topen$
 transition to occur when both an $\tntopen{m}$ and an $\bopen$
 transition are available.  The named environ, $m$, is destroyed and the
 two clock contexts unified.
 
-
-%\begin{table}
-%  \caption{Semantics: Environ Behaviour}
-%  \label{tab:locmobsubset}
-% \vspace{-3mm}
-%  \shrule
-% \begin{center}
-% \begin{tabular}{rl}
-% \end{tabular}
-%  \end{center}
-%  \shrule
-%\end{table}
-
 Finally, $ProcIn$ and $ProcOut$ describe the movement of processes
 between environs.  In both rules, $E$ moves due to a mobility primitive
-which is part of $F$.  This occurs if $\procin{a}{m}$ or
-$\procout{a}{m}$, $a$ and $\bin$ or $\bout$ transitions take place,
-respectively.  An appropriate mobility transition ($\tin$ or $\tout$) is
-emitted as a result of this three-way synchronization.  Process
+which is part of $F$.  This occurs if an $a$ transition takes place in
+the presence of matching $\procin{a}{m}$ and $\bin$, or
+$\procout{a}{m}$ and $\bout$, actions.  An appropriate mobility transition ($\tin$ or $\tout$) is
+emitted as a result of this three-way synchronisation.  Process
 mobility, in this form, is \emph{objective}.  The process which emits
 the mobility primitive synchronises with a partner process, and it is
-this partner which actually moves.  The partner should be a process in
+this partner which actually moves.  The partner is necessarily a process in
 the same environ, due to the scoping of actions described above.
 
-%\begin{table}
-%  \caption{Semantics: Process Mobility}
-%  \label{tab:procmobsubset}
-% \vspace{-3mm}
-%  \shrule
-% \begin{center}
-% \begin{tabular}{rl}
-% \end{tabular}
-%  \end{center}
-%  \shrule
-%\end{table}
-
 Such behaviour is initially difficult to understand, but can be made
-clearer with a simple example.  Take the process,
-
-\begin{equation}
-\procin{go}{m}.E \pc go.F \pc \loc{m}{\nil}{\bin.\Omega}{\sigma}
-\end{equation}
-
-\noindent where the first process may perform $\procin{go}{m}$, causing
+clearer with a simple example.  Consider the composition
+%
+\[
+  \procin{go}{m}.E \pc go.F \pc \loc{m}{\nil}{\bin.\bout.\Omega}{\sigma}
+\]
+%
+where the first process may perform $\procin{go}{m}$, causing
 the second to move,
-
+%
 \begin{equation}
-\procin{go}{m}.E \pc go.F \pc \loc{m}{\nil}{\bin.\Omega}{\sigma} \derives{\tin}
+\procin{go}{m}.E \pc go.F \pc \loc{m}{\nil}{\bin.\bout.\Omega}{\sigma} ~\derives{\tin}~
 E \pc \loc{m}{F \pc \nil}{\Omega}{\sigma}
+\label{eqn:binbout}
 \end{equation}
-
-\noindent with the continuation, $F$, continuing to evolve in the
-environ $m$.  Process mobility in this objective form may still be used
-to perform subjective movement.  As processes can fork, a process that
-wishes to move can evolve into a situation where it is composed in
-parallel with a new process that exhibits the required movement
-primitive.  To demonstrate the converse, $out$, in the scenario
-above, $F$ can be defined as
-
-\begin{equation}
+%
+with the continuation, $F$, continuing to evolve in the
+environ $m$.  Process mobility in this objective form can nonetheless be used
+to perform \emph{subjective} movement.  Since processes can fork, a process that
+wishes to move can evolve into a situation where it is composed with a new process that exhibits the required movement
+primitive. For example, suppose the continuation $F$ is defined as
+%
+\[
 F \eqdef leave.F^\prime \pc \procout{leave}{m}
-\end{equation}
-
-\noindent where the process on the right moves the one on the left
-outside $m$.  In context, this performs as follows:
-
-\begin{equation}
+\]
+%
+where the process on the right moves the one on the left
+outside $m$. Then the derivation (\ref{eqn:binbout}) continues with the transition
+%
+\[
 E \pc \loc{m}{leave.F^\prime \pc \procout{leave}{m}.\nil \pc
  \nil}{\bout.\Omega}{\sigma} 
-\derives{\tout}
+~\derives{\tout}~
 E \pc F^\prime \pc \loc{m}{\nil \pc \nil}{\Omega}{\sigma}
-\end{equation}
-
-\noindent to give a final process which is very similar to the original.
-More generally, subjective process movement may be encoded (subject to
+\]
+%
+to give a final process which is very similar to the original.
+More generally, subjective movement may be encoded (subject to
 appropriate bouncers being defined) as
-
+%
 \begin{eqnarray*}
-\seml in\ m\ F.E \semr & \eqdef & z.F \pc \procin{z}{m}.E \\
-\seml out\ m\ F.E \semr & \eqdef & z.F \pc \procout{z}{m}.E
+\seml \sprocin{m}{E}.F \semr & \eqdef & z.E \pc \procin{z}{m}.F \\
+\seml \sprocout{m}{E}.F \semr & \eqdef & z.E \pc \procout{z}{m}.F
 \end{eqnarray*}
-
-\noindent where $F$ is the process that will move into $m$, $E$ is the
+%
+where $E$ is the process that will move into $m$, $F$ is the
 continuation and $z$ is a new name. 
 
 Notice that channels may become unrestricted due to the movement of an
-expression into a different environ.  For example, $((E \pc G) \res{B})$
-becomes $G \res{B}$ when $E$ changes position.  As a result, any names
-that were restricted in $E$ (since members of $B$) are no longer
+expression into a different environ.  For example, $((E \pc G) \res{A})$
+becomes $G \res{A}$ when $E$ changes position.  As a result, any names
+that were restricted by $A$ in $E$ are no longer
 restricted following its movement.
 
 \subsection{Type System}
@@ -648,12 +609,12 @@ calculus, which fulfils two main goals:
       secondary mechanism orthogonal to the use of bouncers.
 \end{enumerate}
 
-Inspiration for the type system is taken from the ambient calculus,
+Our rudimentary type system is inspired in part by that of the ambient calculus,
 specifically the notion of groups presented in \cite{ambienttypes} and
 \cite{m3}.  Each process is assigned a group type, which determines the
 use of the mobility primitives.  Each group is a tuple comprising four
-sets of environ names\footnote{Each group is therefore of kind $Group
-\eqdef (\wp\mathit{Environ})^4$.}:
+sets of environ names\footnote{Each group $g$ is defined abstractly to
+be of kind $Group$.}:
 
 \begin{tabular}{rlcl}
 $\quad \bullet$ & $\mathscr{R}$ & -- & Environs in which the process may
@@ -668,26 +629,40 @@ clearly, if a process may enter or leave a environ, it must also be able
 to reside within it.  As an example, consider the group
 $(\{n\},\emptyset, \emptyset,\{n\})$.  Processes of this type may enter
 and reside in $n$, but, once there, they may not leave.  They also lack
-the ability to destroy $n$.
+the ability to destroy $n$.  We write $g(\mathscr{R})$,
+$g(\mathscr{O})$, $g(\mathscr{L})$ and $g(\mathscr{E})$ for the
+components of the group $g$.
 
-Table \ref{tab:basictypes} presents the basic rules and the rudimentary
-types used for the basic elements of the syntax. The rule $Env$ states
-that if $\xi$ of type $T$ is a member of $\Gamma$, then a typing
-derivation $\vdash \xi : T$ may be made in the context of $\Gamma$.
-This forms the basis of all later rules.  Notice that our system is
-naturally polymorphic; both $\nil$ and $\Delta$ can have any group type
-$g$.  In contrast, $\Omega$ can only be typed as a $Bouncer$, thus
-distinguishing it from the behaviourally equivalent process, $\Delta$.
-Notice also that $FTO$ and $STO$ require that $\sigma$ is typeable as a
-clock, another restriction which makes explicit a number of issues
-implied in the syntax.  $BRec$ allows recursive bouncers to be defined,
-while $BIn$, $BOut$ and $BOpen$ allow an existing bouncer, $B$, to be
-prefixed with one of the three bouncer primitives ($\bin$, $\bout$ and
-$\bopen$)
+The type system is presented in Table \ref{tab:basictypes}; the general
+syntax for a type $T$ is given by\footnote{Notice that no construct is
+available (none is needed) for recovering the components of a product
+type in this system.}
+
+\begin{equation*}\begin{aligned}
+T \mathrel{::=} & \quad P \mid Act \mid Clock \mid Name \mid Bouncer \mid
+ Environ \\
+P \mathrel{::=} & \quad g \mid P \oplus P \mid P \otimes P \mid \pi_L P \mid
+ \pi_R P \\
+                & \quad \text{where $g \colon Group$ ranges over group types.}
+\end{aligned}
+\end{equation*}
+
+The rule $Env$ states that if $\xi$ of type $T$ is a member of
+$\Gamma$, then a typing derivation $\vdash \xi : T$ may be made in the
+context of $\Gamma$.  This forms the basis of all later rules.  Notice
+that our system is naturally polymorphic; both $\nil$ and $\Delta$ can
+have any group type $g$.  In contrast, $\Omega$ can only be typed as a
+$Bouncer$, thus distinguishing it from the behaviourally equivalent
+process, $\Delta$.  Notice also that $FTO$ and $STO$ require that
+$\sigma$ is typeable as a clock, another restriction which makes
+explicit a number of issues implied in the syntax.  $BRec$ allows
+recursive bouncers to be defined, while $BIn$, $BOut$ and $BOpen$ allow
+an existing bouncer, $B$, to be prefixed with one of the three bouncer
+primitives ($\bin$, $\bout$ and $\bopen$)
 
 
 \begin{table}
-  \caption{Types: Basics}
+  \caption{Types}
   \label{tab:basictypes}
  \vspace{-3mm}
   \shrule
@@ -798,7 +773,7 @@ $\bopen$)
   {\Gamma \vdash \bout .B : Bouncer}
   {}
   &
-  \Rule{BOpen\ }
+  \Rule{BOpen}
   {\Gamma \vdash B : Bouncer}
   {\Gamma \vdash \bopen .B : Bouncer}
   {}
@@ -880,124 +855,76 @@ $\bopen$)
   \shrule
 \end{table}
 
-The mobility types form the remaining focus of our type system.  We
-write $g(\mathscr{R})$, $g(\mathscr{O})$, $g(\mathscr{L})$ and
-$g(\mathscr{E})$ for the components of the group $g$.  $Environ$ is a
-fundamental rule, which links environs, bouncers, clocks and processes.
-If $m$ is a environ name ($Environ$), $E$ is a process of type $g$
-(where $g$ is a $Group$) and $B$ is a $Bouncer$, then the process $E$
-may be typed as $g$ while encapsulated within the environ $m$, with its
-bouncer $B$.  The later rules rely on this to provide a type for the
-existing environ.
-
-%\begin{table}
-%  \caption{Types: Mobility}
-%  \label{tab:mobilitytypes}
-% \vspace{-3mm}
-%  \shrule
-% \begin{center}
-% \begin{tabular}{rlrl}
-% \end{tabular}
-%  \end{center}
-%  \shrule
-%\end{table}
-
-The $EnvOut$ rule differs from $EnvIn$ in that it provides a context for
-the movement which will occur when $\tntout{m}$ is performed.  This is
-necessary because, not only must the resulting process, $\tntout{m}.E$,
-be able to leave $m$, but it must also be able to enter the environ $n$.
-These restrictions are enforced by the constraints $m \in
-g(\mathscr{L})$ and $m \in g(\mathscr{E})$.
-
-$Open$ has similar requirements.  $E$ is the process that performs the
-mobility primitive, $\tntopen{m}$ ($m \in g(\mathscr{O})$).  However,
-the destruction of $m$ also has an effect on its process ($F$).  As a
-result, $F$ must have an appropriate type, $h$, such that $F$ can reside
-in the parent environ, $n$, after $m$ is removed. 
-
-%\begin{table}
-%  \caption{Types: Bouncers}
-%  \label{tab:bouncertypes}
-% \vspace{-3mm}
-%  \shrule
-% \begin{center}
-% \begin{tabular}{rlrl}
-%  \end{tabular}
-%  \end{center}
-%  \shrule
-%\end{table}
+The mobility types form the remaining focus of our type system; the type
+$g$ of an environ $\locv{m}{E}{B}{\vec{\sigma}}$ is that of its
+encapsulated process $E$, subject to the constraint $m \in
+g(\mathscr{R})$. Similar sanity checks are performed in the other
+rules. For example, in $Open$, $E$ is the process that performs the
+mobility primitive, $\tntopen{m}$ (subject to the constraint $m \in
+g(\mathscr{O})$).  However, the destruction of $m$ also has an effect on
+its process ($F$).  As a result, $F$ must have an appropriate type, $h$,
+such that $F$ can reside in the parent environ, $n$, after $m$ is
+removed.
 
 \section{Equivalence Theory}
 \label{sec:equivalence-theory}
 
-What does it mean for two environs $\locv{m}{\expr}{B}{\vec\rho}$ and
-$\locv{n}{\exprb}{C}{\vec\sigma}$ to be equivalent? We will adopt the standard
-Morris-style \cite{Mor68} (or \emph{may-testing} \cite{DNH84}) approach used to
-characterise both equivalence of Mobile Ambients \cite{GC99} and barbed
-congruence in the $\pi$-calculus \cite{sangiorgi:book}. Having defined
-equivalence, we can prove various safety properties. In particular, we show that
-$\expr \Eq \exprb$ implies that $\expr$ and $\exprb$ have the same type relative
-to our type system.
+What does it mean for two expressions $E$ and $F$ to be equivalent? We
+will adopt the standard Morris-style \cite{Mor68} (or \emph{may-testing}
+\cite{DNH84}) approach used to characterise both equivalence of mobile
+ambients \cite{GC99} and some descriptions of barbed congruence in the $\pi$-calculus
+\cite{sangiorgi:book}. 
 
 \subsection{Observability}
 \label{sec:observability}
 
-We first define three predicates $\expr \ExhibitsA \alpha$, $\expr \ExhibitsT
-\sigma$ and $\expr \ExhibitsE n$, describing the immediate observability of
-actions and clocks, and the immediate top-level placement of environs,
-respectively. For each predicate $\Exhibits{\bullet}$ we then define a
-corresponding contextual equivalence $\Eq_{\bullet}$. Finally, we define
-equivalence $\Eq$ for TNT processes to be the conjunction of these three
-equivalences. We use the word \emph{symbol} to mean any action, clock or environ
-name; recall that symbols are ranged over by $\gamma$.
-
 The notion of immediate observability of an action or clock needs to take
 account of possible timeouts. For example, the action $a$ can occur immediately
-in both $a\pref\nil$ and $\timeout{a\pref\nil}{\sigma}{b\pref\nil}$, while the
+in both $a.\nil$ and $\timeout{a.\nil}{\sigma}{b.\nil}$, while the
 action $b$ can occur immediately in neither. We can capture the required
 behaviour quite simply, however, by appealing to our semantics.
 
 \begin{definition}
-We say that $\expr$ \emph{exhibits} the action $\alpha$, and write $\expr
-\ExhibitsA \alpha$, provided $\expr \Does{\alpha}$. We say that $\expr$
-\emph{exhibits} the clock $\sigma$, and write $\expr \ExhibitsT \sigma$,
-provided $\expr \Does{\sigma}$.
+We say that $E$ \emph{exhibits} the action $\alpha$, and write $E
+\ExhibitsA \alpha$, provided $E \Does{\alpha}$. We say that $E$
+\emph{exhibits} the clock $\sigma$, and write $E \ExhibitsT \sigma$,
+provided $E \Does{\sigma}$.
 \end{definition}
 
-Gordon and Cardelli \cite{GC99} define an expression $\expr$ to exhibit an
-environ $n$ provided $n$ occurs at top-level in $\expr$. We adapt this
+Gordon and Cardelli \cite{GC99} define an expression $E$ to exhibit an
+environ $n$ provided $n$ occurs at top-level in $E$. We adapt this
 definition to include information about bouncers and clock sets, and say that
-$\expr$ exhibits the environ (actually an environ \emph{context})
+$E$ exhibits the environ (actually an environ \emph{context})
 $\locv{n}{}{B}{\vec{\sigma}}$ provided this occurs at top-level. However, our
 definition again needs to take account of potential time-outs. For example,
-$\loc{n}{}{B}{\rho}$ is exhibited in both $\loc{n}{\expr}{B}{\rho}$ and
-$\timeout{\loc{n}{\exprb}{B}{\rho}}{\sigma}{\nil}$.
+$\loc{n}{}{B}{\rho}$ is exhibited in both $\loc{n}{E}{B}{\rho}$ and
+$\timeout{\loc{n}{F}{B}{\rho}}{\sigma}{\nil}$.
 
 \begin{definition}
-We say that $\expr$ \emph{exhibits} the environ $\locv{n}{\,}{B}{\vec{\sigma}}$,
-and write $\expr \ExhibitsE \locv{n}{\,}{B}{\vec{\sigma}}$, provided $\expr$ is 
+We say that $E$ \emph{exhibits} the environ $\locv{n}{\,}{B}{\vec{\sigma}}$,
+and write $E \ExhibitsE \locv{n}{\,}{B}{\vec{\sigma}}$, provided $E$ is 
 of one of the forms
 
 \begin{enumerate}
 \item
-    $\locv{n}{\exprb}{B}{\vec{\sigma}}$; or
+    $\locv{n}{F}{B}{\vec{\sigma}}$; or
 \item
-    $\timeout{\expr' }{\rho}{\exprb}$ or $\stimeout{\expr' }{\rho}{\exprb}$,
-    where $\expr' \ExhibitsE \locv{n}{\,}{B}{\vec{\sigma}}$;
+    $\timeout{E' }{\rho}{F}$ or $\stimeout{E' }{\rho}{F}$,
+    where $E' \ExhibitsE \locv{n}{\,}{B}{\vec{\sigma}}$;
 \end{enumerate}
 \end{definition}
 
 
 A symbol $x$ is \emph{eventually observable} (we shall usually say it
-is \emph{revealed}) in an expression $\expr$ precisely when $x$ is the
+is \emph{revealed}) in an expression $E$ precisely when $x$ is the
 first \emph{relevant} action of the appropriate class. As usual, we
 write $\DoesTaus$ for the reflexive transitive closure of $\Does{\tau}$ and 
 $\Weak{\gamma}$ for $\DoesTaus\Does{\gamma}\DoesTaus$.
 
 \begin{definition}
-We say that $\expr$ \emph{reveals} the action $\alpha$, and write $\expr
-\RevealsA \alpha$, provided there is some $\expr'$ such that $\expr
-\DoesTaus \expr' \ExhibitsA \alpha$.
+We say that $E$ \emph{reveals} the action $\alpha$, and write $E
+\RevealsA \alpha$, provided there is some $E'$ such that $E
+\DoesTaus E' \ExhibitsA \alpha$.
 \end{definition}
 
 Clocks are used to delimit activities, so we should allow non-clock transitions
@@ -1005,10 +932,10 @@ to proceed between clock ticks without prejudicing the subsequent tick's
 right to be considered eventually observed.
 
 \begin{definition}
-We say that $\expr$ \emph{reveals} the clock $\sigma$, and write $\expr
-\RevealsT \sigma$, provided there is some $\expr'$ and some $\vec{\kappa} \in
-\left( \actions \cup \{ \tin, \tout, \topen \}\right)^*$ such that $\expr
-\Does{\vec{\kappa}} \expr' \ExhibitsT \sigma$.
+We say that $E$ \emph{reveals} the clock $\sigma$, and write $E
+\RevealsT \sigma$, provided there is some $E'$ and some $\vec{\kappa} \in
+\left( \actions \cup \{ \tin, \tout, \topen \}\right)^*$ such that $E
+\Does{\vec{\kappa}} E' \ExhibitsT \sigma$.
 \end{definition}
 
 An environ is eventually observed provided it can be brought to top
@@ -1016,10 +943,10 @@ level by some sequence of reductions.
 
 \begin{definition}
 
-We say that $\expr$ \emph{reveals} the environ $\locv{n}{\,}{B}{\vec{\sigma}}$,
-and write $\expr \RevealsE \locv{n}{\,}{B}{\vec{\sigma}}$, provided there is
-some $\expr'$ and some $\vec{\gamma}$ such that $\expr \Does{\vec{\gamma}}
-\expr' \ExhibitsE \locv{n}{\,}{B}{\vec{\sigma}}$.
+We say that $E$ \emph{reveals} the environ $\locv{n}{\,}{B}{\vec{\sigma}}$,
+and write $E \RevealsE \locv{n}{\,}{B}{\vec{\sigma}}$, provided there is
+some $E'$ and some $\vec{\gamma}$ such that $E \Does{\vec{\gamma}}
+E' \ExhibitsE \locv{n}{\,}{B}{\vec{\sigma}}$.
 
 \end{definition}
 
@@ -1029,46 +956,46 @@ some $\expr'$ and some $\vec{\gamma}$ such that $\expr \Does{\vec{\gamma}}
 
 Before we can define contextual congruence, we need to decide what it is for 
 two expressions to reveal the \emph{same} environ. Our definition is
-recursive, since the equivalence of $\locv{m}{}{\expr}{\vec{\sigma}}$ and
-$\locv{n}{}{\exprb}{\vec{\rho}}$ relies on the equivalence of $\expr$ and
-$\exprb$.
+recursive, since the equivalence of $\locv{m}{}{E}{\vec{\sigma}}$ and
+$\locv{n}{}{F}{\vec{\rho}}$ relies on the equivalence of $E$ and
+$F$.
 
 As usual, a \emph{context} $C$ is an expression with one or more
-\emph{holes}. We write $[\,]$ for a hole, and $C[\expr]$ for the expression
-obtained by filling $C$'s holes with copies of $\expr$ (this may result
-in free names and variables in $\expr$ becoming bound).
+\emph{holes}. We write $[\,]$ for a hole, and $C[E]$ for the expression
+obtained by filling $C$'s holes with copies of $E$ (this may result
+in free names and variables in $E$ becoming bound).
 
 \begin{definition}
 
-We say that $\expr$ and $\exprb$ are (contextually) \emph{congruent}, and write
-$\expr \Eq \exprb$, if for all contexts $C[\,]$, expressions $\expr$ and
-$\exprb$, $\alpha \in \actions$, $\sigma \in \timers$, and environs
+We say that $E$ and $F$ are (contextually) \emph{congruent}, and write
+$E \Eq F$, if for all contexts $C$, expressions $E$ and
+$F$, $\alpha \in \actions$, $\sigma \in \timers$, and environs
 $\locv{n}{\,}{B}{\vec{\sigma}}$,
 
 \begin{enumerate}
 \item
-     $C[\expr] \RevealsA \alpha \Longleftrightarrow C[\exprb] \RevealsA \alpha$;
-     we say the expressions are \emph{action equivalent}, written $\expr \EqA
-     \exprb$; 
+     $C[E] \RevealsA \alpha \Longleftrightarrow C[F] \RevealsA \alpha$;
+     we say the expressions are \emph{action equivalent}, written $E \EqA
+     F$; 
 \item
-     $C[\expr] \RevealsT \sigma \Longleftrightarrow C[\exprb] \RevealsT \sigma$; we
-     say the expressions are \emph{timer equivalent}, written   $\expr \EqT
-     \exprb$; 
+     $C[E] \RevealsT \sigma \Longleftrightarrow C[F] \RevealsT \sigma$; we
+     say the expressions are \emph{timer equivalent}, written   $E \EqT
+     F$; 
 \item
      they reveal the same environs (up to equivalence of bouncers) in every 
      context:
      \begin{enumerate}
      \item
-        If $C[\expr] \RevealsE \locv{n}{\,}{\expr'}{\vec{\sigma}}$ then
-        $C[\exprb] \RevealsE \locv{n}{\,}{\exprb'}{\vec{\sigma}}$
-        for some $\exprb' \Eq \expr'$;
+        If $C[E] \RevealsE \locv{n}{\,}{E'}{\vec{\sigma}}$ then
+        $C[F] \RevealsE \locv{n}{\,}{F'}{\vec{\sigma}}$
+        for some $F' \Eq E'$;
      \item
-        If $C[\exprb] \RevealsE \locv{n}{\,}{\exprb'}{\vec{\sigma}}$ then
-        $C[\expr] \RevealsE \locv{n}{\,}{\expr'}{\vec{\sigma}}$
-        for some $\expr \Eq \exprb'$.
+        If $C[F] \RevealsE \locv{n}{\,}{F'}{\vec{\sigma}}$ then
+        $C[E] \RevealsE \locv{n}{\,}{E'}{\vec{\sigma}}$
+        for some $E' \Eq F'$.
      \end{enumerate}
-     We say the expressions are \emph{environ equivalent}, written $\expr \EqE 
-     \exprb$.
+     We say the expressions are \emph{environ equivalent}, written $E \EqE 
+     F$.
 \end{enumerate}
 
 \end{definition}
@@ -1076,15 +1003,15 @@ $\locv{n}{\,}{B}{\vec{\sigma}}$,
 
 \begin{proposition}
 \label{prop:context-substitution} 
-Suppose $\expr \Eq \exprb$. Given any context $C[]$, we have $C[\expr]
-\Eq C[\exprb]$.
+Suppose $E \Eq F$. Given any context $C$, we have $C[E]
+\Eq C[F]$.
 \end{proposition}
 \begin{proof}
-Given any context $C'[]$, let $C'[C[]]$ be the result of filling the
-holes in $C'$ with copies of $C$. Then $C'[C[]]$ is itself a context,
-whence $C'[C[\expr]]$ and $C'[C[\exprb]]$ reveal the same actions,
-clocks and environs. Since $C'[]$ was arbitrary, we have $C[\expr] \Eq
-C[\exprb]$, as claimed.
+Given any context $C'$, let $C'[C]$ be the result of filling the
+holes in $C'$ with copies of $C$. Then $C'[C]$ is itself a context,
+whence $C'[C[E]]$ and $C'[C[F]]$ reveal the same actions,
+clocks and environs. Since $C'$ was arbitrary, we have $C[E] \Eq
+C[F]$, as claimed.
 \qed \end{proof}
 
 \begin{theorem}
@@ -1094,63 +1021,64 @@ The relation $\Eq$ is a congruence on TNT expressions. \qed
 
 
 Proving that two expressions are not congruent is generally easy. For
-example, $a\pref\nil \NotEq b\pref\nil$ because $a\pref\nil$ reveals $a$
-but $b\pref\nil$ doesn't. Proving that two expressions are congruent is
+example, $a.\nil \NotEq b.\nil$ because $a.\nil$ reveals $a$
+but $b.\nil$ doesn't. Proving congruence is
 more difficult. We illustrate the technique we use by proving the simple
-congruence $\left(a\pref\expr \res{a}\right) \Eq \nil$, which is useful
+congruence $\left(a. E \res{a}\right) \Eq \nil$, which is useful
 for tidying up expression reductions. Our proof technique relies on the
 nature of reductions in contextual expressions.
 
-Suppose the context $C[\,]$ contains $n$ holes; we will write
-$C[\,]_1\dots[\,]_n$. Then $C[\expr]$ means $C[\expr]_1\dots[\expr]_n$. If
-$\expr \Does{x} \expr'$, then (depending on the nature of $C$), it is possible
-that $C[\expr] \Does{x} C[\expr]_1\dots[\expr']_j\dots[\expr]_n$ for some $j$.
-We say that such a transition is \emph{local} to $\expr$ in $C$. On the other
-hand, there are some transitions that $C[\expr]$ can perform, regardless of
-$\expr$. We call these transitions \emph{global} in $C$. For example, the
-transition \[ \out{a}.[\,] \mid a \pref b \pref [\,] \quad\Does{\tau}\quad [\,]
-\mid b \pref [\,] \] is global. All other transitions in $C[\expr]$ are
+Suppose the context $C$ contains $n$ holes; we will write
+$C[\,]_1\dots[\,]_n$. Then $C[E]$ means $C[E]_1\dots[E]_n$. If
+$E \Does{x} E'$, then (depending on the nature of $C$), it is possible
+that $C[E] \Does{x} C[E]_1\dots[E']_j\dots[E]_n$ for some $j$.
+We say that such a transition is \emph{local} to $E$ in $C$. On the other
+hand, there are some transitions that $C[E]$ can perform, regardless of
+$E$. We call these transitions \emph{global} in $C$. For example, the
+transition \[ \out{a}.[\,] \mid a . b . [\,] \quad\Does{\tau}\quad [\,]
+\mid b . [\,] \] is global. All other transitions in $C[E]$ are
 \emph{distributed}.
 
+\clearpage
 Distributed transitions are those that involve reduction of subcontexts of the
 form $C'|[\,]$, $C' + [\,]$ and $\locv{n}{\,}{B}{\vec{\sigma}}$. For example,
 
 \begin{itemize}
 \item
-    $\nil + a\pref\nil \Does{\sigma}$ but $\nil + \Delta_\sigma
+    $\nil + a.\nil \Does{\sigma}$ but $\nil + \Delta_\sigma
      \not\Does{\sigma}$, so clock transitions are distributed in the
      context $\nil + [\,]$.
 \item
-    $a\pref\nil \mid \out{a}\pref\nil \Does{\tau}$ but $a\pref\nil \mid
+    $a.\nil \mid \out{a}.\nil \Does{\tau}$ but $a.\nil \mid
      \nil \not\Does{\tau}$, so $\Does{\tau}$ is distributed in the
-     context $a\pref\nil \mid [\,]$.
+     context $a.\nil \mid [\,]$.
 \item
-    $\locv{m}{ \locv{n}{\tntout{m}\pref\nil}{B}{\vec{\sigma}}}%
-     {(\bout\pref\Omega)}{\vec{\rho}} \Does{\tout}$ but
-    $\locv{m}{ \nil }{(\bout\pref\Omega)}{\vec{\rho}} \not\Does{\tout}$,
+    $\locv{m}{ \locv{n}{\tntout{m}.\nil}{B}{\vec{\sigma}}}%
+     {\bout.\Omega}{\vec{\rho}} ~\Does{\tout}$ but
+    $\locv{m}{ \nil }{\bout.\Omega}{\vec{\rho}} ~\not\Does{\tout}$,
      so $\Does{\tout}$ is distributed in the context $\locv{m}{\,}%
-     {(\bout\pref\Omega)}{\vec{\rho}}$.
+     {\bout.\Omega}{\vec{\rho}}$.
 \end{itemize}
 The following results are immediate.
 
 \begin{proposition}
-Suppose $\expr \not\Does{x}$ where $x$ is either $a$ or $\sigma$. If
-$C[\expr] \Does{x}$ then the $\Does{x}$ transition is global.
+Suppose $E \not\Does{x}$ where $x$ is either $a$ or $\sigma$. If
+$C[E] \Does{x}$ then the $\Does{x}$ transition is global.
 The only distributed transitions are $\Does{\sigma}$, $\Does{\tau}$,
 $\Does{\tin}$, $\Does{\tout}$ and $\Does{\topen}$.
-\end{proposition}
+\qed \end{proposition}
 
-We can now prove the congruence claimed above. To see that $\left(a\pref\expr
-\res{a}\right) \Eq \nil$, we observe that $\left(a\pref\expr \res{a}\right)$
-cannot reveal any actions. Consequently, any visible action in $C[a\pref\expr
+We can now prove the congruence claimed above. To see that $\left(a. E
+\res{a}\right) \Eq \nil$, we observe that $\left(a. E \res{a}\right)$
+cannot reveal any actions. Consequently, any visible action in $C[a. E
 \res{a}]$ must be global, and hence revealed by $C[\nil]$. Moreover, the lack of
 visible actions means that $\Does{\tau}$ cannot be generated by interaction
-between $a\pref\expr \res{a}$ and a neighbouring subexpression. Therefore,
-$\left(a\pref\expr \res{a}\right) \EqA \nil$. Since neither expression can
+between $a. E \res{a}$ and a neighbouring subexpression. Therefore,
+$\left(a. E \res{a}\right) \EqA \nil$. Since neither expression can
 reveal top-level environs or mobility transitions, they cannot contribute to
-distributed mobility transitions in any context $C$, whence $\left(a\pref\expr
+distributed mobility transitions in any context $C$, whence $\left(a. E
 \res{a}\right) \EqE \nil$. Finally, we note that both expressions reveal all
-clocks $\sigma$, so that $\left(a\pref\expr \res{a}\right) \EqT \nil$, and we
+clocks $\sigma$, so that $\left(a. E \res{a}\right) \EqT \nil$, and we
 are done.
 
 
@@ -1158,28 +1086,27 @@ are done.
 \label{sec:ltoc}
 
 Following an idea in \cite{case}, we now use $\Eq$ to define a
-subcongruence $\LTOC$ which adds bisimulation propeties to the
-contextual equivalence already encapsulated.
+subcongruence $\LTOC$ which adds bisimulation properties to the
+contextual equivalence described above.
 
 \begin{definition}
 
 A symmetric relation $R\mathrel{\subseteq}\mathop{\EqE}$ is a
 \emph{located temporal observation equivalence (l.t.o.e.)} if for every
-context $C$, and every $(\expr,\exprb) \in R$, $\kappa \in \actions \cup
+context $C$, and every $(E,F) \in R$, $\kappa \in \actions \cup
 \{ \tntin, \tntout, \tntopen \}$, $\vec{\kappa} \in \left(\actions \cup
 \{ \tntin, \tntout, \tntopen \}\right)^*$ and $\sigma \in \timers$,
 
 \begin{enumerate}
 \item
-    $C[\expr] \Weak{\kappa} \expr' \Longrightarrow 
-       \exists \exprb' ~.~ C[\exprb] \Weak{\kappa} \exprb' \mbox{ and } \expr' \Eq \exprb' \mbox{ and } (\expr', \exprb') \in R$ 
+    $C[E] \Weak{\kappa} E' \mbox{ implies }
+       \exists F' ~.~ C[F] \Weak{\kappa} F' \mbox{ and } E' \Eq F' \mbox{ and } (E', F') \in R$ 
 \item
-    $C[\expr] \Does{\vec{\kappa}}\Does{\sigma} \expr' \Longrightarrow
-       \exists \vec{\kappa}', \exprb' ~.~ 
-       C[\exprb] \Does{\vec{\kappa}'}\Does{\sigma} \exprb' \mbox{ and } (\expr', \exprb') \in R$
+    $C[E] \Does{\vec{\kappa}}\Does{\sigma} E' \mbox{ implies }
+       \exists \vec{\kappa}', F' ~.~ 
+       C[F] \Does{\vec{\kappa}'}\Does{\sigma} F' \mbox{ and } (E', F') \in R$
 \end{enumerate}
-Write $\expr \LTOC \exprb$ if $(\expr,\exprb) \in R$ for some located temporal observation
-equivalence $R$.
+We write $E \LTOC F$ if $(E,F) \in R$ for some l.t.o.e. $R$.
 \end{definition}
 
 In view of the following result, which follows immediately from the
@@ -1196,69 +1123,80 @@ be generated using l.o.t.c., we conclude this section by proving a
 useful cancellation lemma.
 
 \begin{definition}
-Given any expression $\expr$ and any visible action $a \in
-\actions\setminus\tau$, the process $\expr\After{a}$, pronounced
-\emph{$\expr$ after $a$}, is defined by
+Given any expression $E$ and any visible action $a \in
+\actions\setminus\tau$, the process $E\After{a}$, pronounced
+\emph{$E$ after $a$}, is defined by
 \[
-    \expr\After{a} \eqdef \sum \{ \expr' \mid \expr \Weak{a} \expr' \}
+    E\After{a} \eqdef \sum \{ E' \mid E \Weak{a} E' \}
 \]
 \end{definition}
 
 Notice that $\Weak{a}$ need not be image-finite -- consider, for
-example, the process $\mu X .(\tau\pref X + a\pref\nil)$. In such cases
+example, the process $\mu X .(\tau. X + a.\nil)$. In such cases
 the operator $\After{a}$ is not well-defined in the stated formulation.
 
 \begin{theorem}[Cancellation Lemma]
 \label{thm:cancellation}
 
-Suppose given the expressions $\expr$, $\exprb$ and any visible action
-$a \in \actions\setminus\tau$ for which $\exprb$ has only finitely many
+Suppose given the expressions $E$, $F$ and any visible action
+$a \in \actions\setminus\tau$ for which $F$ has only finitely many
 $\Weak{a}$ derivatives. Then
 \[
-    a\pref\expr ~\LTOC~ \exprb 
+    a. E ~\LTOC~ F 
     \quad\Longrightarrow\quad 
-    \expr ~\LTOC~ \exprb\After{a}
+    E ~\LTOC~ F\After{a}
 \]
 \end{theorem}
 \begin{proof}
 
-Suppose $R$ is some l.t.o.e. with $(a\pref\expr,\exprb) \in R$. We know
-that $a\pref\expr \Does{a} \expr$ must be matched by a move $\exprb
-\Weak{a} \exprb'$ where $(\exprb', \expr) \in R$.
+Suppose $R$ is some l.t.o.e. with $(a. E,F) \in R$. We know
+that $a. E \Does{a} E$ must be matched by a move $F
+\Weak{a} F'$ where $(F', E) \in R$.
 
-Suppose $\expr \Weak{\kappa} \expr'$. Then there exists some $\exprb''$
-such that $\exprb' \Weak{\kappa} \exprb''$ and $(\exprb'',\expr') \in
-R$. However, $\exprb'$ is one of the summands of $\exprb\After{a}$, so
-the latter can also perform the transition $\exprb\After{a}
-\Weak{\kappa} \exprb''$, as required.
+Suppose $E \Weak{\kappa} E'$. Then there exists some $F''$
+such that $F' \Weak{\kappa} F''$ and $(F'',E') \in
+R$. However, $F'$ is one of the summands of $F\After{a}$, so
+the latter can also perform the transition $F\After{a}
+\Weak{\kappa} F''$ with $(F'',E') \in R$, as required.
 
-Conversely, suppose $\exprb\After{a} \Weak{\kappa} \exprb''$. Since
-$\exprb\After{a}$ is a sum, we know that one of its summands,
-$\exprb'''$ (say), can perform the same transition sequence: $\exprb'''
-\Weak{\kappa} \exprb''$. By definition, we have $\exprb \Weak{a}
-\exprb'''$, which must be matched by some derivation $a\pref\expr
-\Weak{a} \expr'$ with $(\exprb''', \expr') \in R$. Thus $\expr'
-\Weak{\kappa} \expr''$ with $(\expr'',\exprb'') \in R$. However, we know
-that the only non-clock action $a\pref\expr$ can perform initially is
-$a$. Consequently, the derivation $a\pref\expr \Weak{a} \expr'$ can be
-factorised as $a\pref\expr \Does{a} \expr \DoesTaus \expr'$. Putting the
+Conversely, suppose $F\After{a} \Weak{\kappa} F''$. Since
+$F\After{a}$ is a sum, we know that one of its summands,
+$F'''$ (say), can perform the same transition sequence: $F'''
+\Weak{\kappa} F''$. By definition, we have $F \Weak{a}
+F'''$, which must be matched by some derivation $a. E
+\Weak{a} E'$ with $(F''', E') \in R$. Thus $E'
+\Weak{\kappa} E''$ with $(E'',F'') \in R$. However, we know
+that the only non-clock transition $a.E$ can perform initially is
+$a$. Consequently, the derivation $a.E \Weak{a} E'$ can be
+factorised as $a.E \Does{a} E \DoesTaus E'$. Putting the
 pieces together gives
 \[
-    a\pref\expr \Does{a} \expr \DoesTaus \expr' \Weak{\kappa} \expr''
+    a. E \Does{a} E \DoesTaus E' \Weak{\kappa} E''
 \]
-or in other words, $\expr\Weak{\kappa} \expr''$ where $(\expr'',\exprb'') \in R$, as required.
+or in other words, $E\Weak{\kappa} E''$ where
+$(E'',F'') \in R$, as required.
 
-The proof for clock transitions is similar.  \qed \end{proof}
+The proof for clock transitions is similar.
+\qed \end{proof}
 
 \section{Conclusions and Future Work}
 \label{futurework}
 
 We have presented a novel combination of process synchronisation and
-timed mobility, and introduced the concept of synchronization-based
+timed mobility, and introduced the concept of synchronisation-based
 objective process mobility and specific security processes; these are
 believed to be new to the field of process algebra.  The resulting
 process calculus is designed to provide a sufficient framework to tackle
 the concepts mentioned in the introduction.
+
+We have also introduced two congruence relations on TNT expressions, and
+used them to develop an equivalence theory. Both congruences
+respect the underlying motivation for our work; in particular, the
+equivalence of clock behaviours captures the idea that workflow
+progresses by distinct stages. Our second congruence, located temporal
+observation congruence, combines aspects of simulation and contextual
+equivalence, enabling us to prove results using techniques from either
+approach.
 
 With regard to future work, we have begun development of a tool,
 DynamiTE (\emph{Dynamic Theory Execution}), which will allow both

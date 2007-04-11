@@ -1,26 +1,26 @@
-\usepackage{bussproofs}
+\newcommand{\Suffix}[1]{\textsf{#1}}
 
-\newcommand{\Exhibits}[1]{\mathrel{\downarrow_{#1}}}
+\newcommand{\Exhibits}[1]{\mathrel{\downarrow_\Suffix{#1}}}
 \newcommand{\ExhibitsA}{\Exhibits{A}}
 \newcommand{\ExhibitsT}{\Exhibits{T}}
 \newcommand{\ExhibitsE}{\Exhibits{E}}
 
-\newcommand{\Reveals}[1]{\mathrel{\Downarrow_{#1}}}
+\newcommand{\Reveals}[1]{\mathrel{\Downarrow_\Suffix{#1}}}
 \newcommand{\RevealsA}{\Reveals{A}}
 \newcommand{\RevealsT}{\Reveals{T}}
 \newcommand{\RevealsE}{\Reveals{E}}
 
-\newcommand{\DEq}{\bumpeq}
-\newcommand{\NotDEq}{\not\bumpeq}
-\newcommand{\DEqA}{\mathrel{\DEq_{A}}}
-\newcommand{\DEqT}{\mathrel{\DEq_{T}}} 
-\newcommand{\DEqE}{\mathrel{\DEq_{E}}} 
+%\newcommand{\DEq}{\bumpeq}
+%\newcommand{\NotDEq}{\not\bumpeq}
+\newcommand{\DEqA}{\mathrel{\DEq_\Suffix{A}}}
+\newcommand{\DEqT}{\mathrel{\DEq_\Suffix{T}}} 
+\newcommand{\DEqE}{\mathrel{\DEq_\Suffix{E}}} 
 
 \newcommand{\Eq}{\approx}
 \newcommand{\NotEq}{\not\approx}
-\newcommand{\EqA}{\mathrel{\Eq_{A}}}
-\newcommand{\EqT}{\mathrel{\Eq_{T}}} 
-\newcommand{\EqE}{\mathrel{\Eq_{E}}}
+\newcommand{\EqA}{\mathrel{\Eq_\Suffix{A}}}
+\newcommand{\EqT}{\mathrel{\Eq_\Suffix{T}}} 
+\newcommand{\EqE}{\mathrel{\Eq_\Suffix{E}}}
 
 \newcommand{\LTOC}{\approxeq}
 

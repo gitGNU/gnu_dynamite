@@ -2,14 +2,14 @@ TEX=concur.pdf
 
 all: $(TEX)
 
-%.pdf: %.tex literature.bib
+%.pdf: %.tex literature.bib macros.tex
 	rm -vf $*.bbl
 	latex $<
 	bibtex $*
 	latex $<
 	latex $<
-	#dvips -Ppdf -G0 $*.dvi -o $*.ps
-	#ps2pdf -dPDFsettings=/prepress -dAutoFilterColorImages=false -dColorImageFilter=/FlateEncode $*.ps $@
+	dvips -Ppdf -G0 $*.dvi -o $*.ps
+	ps2pdf -dPDFsettings=/prepress -dAutoFilterColorImages=false -dColorImageFilter=/FlateEncode $*.ps $@
 	#ps2ascii $*.ps| wc -w
 
 clean:
