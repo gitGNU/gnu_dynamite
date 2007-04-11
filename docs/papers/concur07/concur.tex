@@ -6,6 +6,7 @@
 
 \input{macros}
 \input{mpsmacros}
+\input{proofmacros}
 \pagestyle{plain}
 %\newtheorem{prop}{Proposition}
 
@@ -897,6 +898,332 @@ bouncer, $B$, to be prefixed with one of the three bouncer primitives
   \end{center}
   \shrule
 \end{table}
+
+\section{Equivalence Theory}
+\label{sec:equivalence-theory}
+
+What does it mean for two environs $\locv{m}{\expr}{B}{\vec\rho}$ and
+$\locv{n}{\exprb}{C}{\vec\sigma}$ to be equivalent? We will adopt the standard
+Morris-style \cite{Mor68} (or \emph{may-testing} \cite{DNH84}) approach used to
+characterise both equivalence of Mobile Ambients \cite{GC99} and barbed
+congruence in the $\pi$-calculus \cite{sangiorgi:book}. Having defined
+equivalence, we can prove various safety properties. In particular, we show that
+$\expr \Eq \exprb$ implies that $\expr$ and $\exprb$ have the same type relative
+to our type system.
+
+\subsection{Observability}
+\label{sec:observability}
+
+We first define three predicates $\expr \ExhibitsA \alpha$, $\expr \ExhibitsT
+\sigma$ and $\expr \ExhibitsE n$, describing the immediate observability of
+actions and clocks, and the immediate top-level placement of environs,
+respectively. For each predicate $\Exhibits{\bullet}$ we then define a
+corresponding contextual equivalence $\Eq_{\bullet}$. Finally, we define
+equivalence $\Eq$ for TNT processes to be the conjunction of these three
+equivalences. We use the word \emph{symbol} to mean any action, clock or environ
+name; recall that symbols are ranged over by $\gamma$.
+
+The notion of immediate observability of an action or clock needs to take
+account of possible timeouts. For example, the action $a$ can occur immediately
+in both $a\pref\nil$ and $\timeout{a\pref\nil}{\sigma}{b\pref\nil}$, while the
+action $b$ can occur immediately in neither. We can capture the required
+behaviour quite simply, however, by appealing to our semantics.
+
+\begin{definition}
+We say that $\expr$ \emph{exhibits} the action $\alpha$, and write $\expr
+\ExhibitsA \alpha$, provided $\expr \Does{\alpha}$. We say that $\expr$
+\emph{exhibits} the clock $\sigma$, and write $\expr \ExhibitsT \sigma$,
+provided $\expr \Does{\sigma}$.
+\end{definition}
+
+Gordon and Cardelli \cite{GC99} define an expression $\expr$ to exhibit an
+environ $n$ provided $n$ occurs at top-level in $\expr$. We adapt this
+definition to include information about bouncers and clock sets, and say that
+$\expr$ exhibits the environ (actually an environ \emph{context})
+$\locv{n}{}{B}{\vec{\sigma}}$ provided this occurs at top-level. However, our
+definition again needs to take account of potential time-outs. For example,
+$\loc{n}{}{B}{\rho}$ is exhibited in both $\loc{n}{\expr}{B}{\rho}$ and
+$\timeout{\loc{n}{\exprb}{B}{\rho}}{\sigma}{\nil}$.
+
+\begin{definition}
+We say that $\expr$ \emph{exhibits} the environ $\locv{n}{\,}{B}{\vec{\sigma}}$,
+and write $\expr \ExhibitsE \locv{n}{\,}{B}{\vec{\sigma}}$, provided $\expr$ is 
+of one of the forms
+
+\begin{enumerate}
+\item
+    $\locv{n}{\exprb}{B}{\vec{\sigma}}$; or
+\item
+    $\timeout{\expr' }{\rho}{\exprb}$ or $\stimeout{\expr' }{\rho}{\exprb}$,
+    where $\expr' \ExhibitsE \locv{n}{\,}{B}{\vec{\sigma}}$;
+\end{enumerate}
+\end{definition}
+
+
+A symbol $x$ is \emph{eventually observable} (we shall usually say it
+is \emph{revealed}) in an expression $\expr$ precisely when $x$ is the
+first \emph{relevant} action of the appropriate class. As usual, we
+write $\DoesTaus$ for the reflexive transitive closure of $\Does{\tau}$ and 
+$\Weak{\gamma}$ for $\DoesTaus\Does{\gamma}\DoesTaus$.
+
+\begin{definition}
+We say that $\expr$ \emph{reveals} the action $\alpha$, and write $\expr
+\RevealsA \alpha$, provided there is some $\expr'$ such that $\expr
+\DoesTaus \expr' \ExhibitsA \alpha$.
+\end{definition}
+
+Clocks are used to delimit activities, so we should allow non-clock transitions
+to proceed between clock ticks without prejudicing the subsequent tick's
+right to be considered eventually observed.
+
+\begin{definition}
+We say that $\expr$ \emph{reveals} the clock $\sigma$, and write $\expr
+\RevealsT \sigma$, provided there is some $\expr'$ and some $\vec{\kappa} \in
+\left( \actions \cup \{ \tin, \tout, \topen \}\right)^*$ such that $\expr
+\Does{\vec{\kappa}} \expr' \ExhibitsT \sigma$.
+\end{definition}
+
+An environ is eventually observed provided it can be brought to top
+level by some sequence of reductions.
+
+\begin{definition}
+
+We say that $\expr$ \emph{reveals} the environ $\locv{n}{\,}{B}{\vec{\sigma}}$,
+and write $\expr \RevealsE \locv{n}{\,}{B}{\vec{\sigma}}$, provided there is
+some $\expr'$ and some $\vec{\gamma}$ such that $\expr \Does{\vec{\gamma}}
+\expr' \ExhibitsE \locv{n}{\,}{B}{\vec{\sigma}}$.
+
+\end{definition}
+
+
+\subsection{Contextual Congruence}
+\label{sec:contextual-congruence}
+
+Before we can define contextual congruence, we need to decide what it is for 
+two expressions to reveal the \emph{same} environ. Our definition is
+recursive, since the equivalence of $\locv{m}{}{\expr}{\vec{\sigma}}$ and
+$\locv{n}{}{\exprb}{\vec{\rho}}$ relies on the equivalence of $\expr$ and
+$\exprb$.
+
+As usual, a \emph{context} $C$ is an expression with one or more
+\emph{holes}. We write $[\,]$ for a hole, and $C[\expr]$ for the expression
+obtained by filling $C$'s holes with copies of $\expr$ (this may result
+in free names and variables in $\expr$ becoming bound).
+
+\begin{definition}
+
+We say that $\expr$ and $\exprb$ are (contextually) \emph{congruent}, and write
+$\expr \Eq \exprb$, if for all contexts $C[\,]$, expressions $\expr$ and
+$\exprb$, $\alpha \in \actions$, $\sigma \in \timers$, and environs
+$\locv{n}{\,}{B}{\vec{\sigma}}$,
+
+\begin{enumerate}
+\item
+     $C[\expr] \RevealsA \alpha \Longleftrightarrow C[\exprb] \RevealsA \alpha$;
+     we say the expressions are \emph{action equivalent}, written $\expr \EqA
+     \exprb$; 
+\item
+     $C[\expr] \RevealsT \sigma \Longleftrightarrow C[\exprb] \RevealsT \sigma$; we
+     say the expressions are \emph{timer equivalent}, written   $\expr \EqT
+     \exprb$; 
+\item
+     they reveal the same environs (up to equivalence of bouncers) in every 
+     context:
+     \begin{enumerate}
+     \item
+        If $C[\expr] \RevealsE \locv{n}{\,}{\expr'}{\vec{\sigma}}$ then
+        $C[\exprb] \RevealsE \locv{n}{\,}{\exprb'}{\vec{\sigma}}$
+        for some $\exprb' \Eq \expr'$;
+     \item
+        If $C[\exprb] \RevealsE \locv{n}{\,}{\exprb'}{\vec{\sigma}}$ then
+        $C[\expr] \RevealsE \locv{n}{\,}{\expr'}{\vec{\sigma}}$
+        for some $\expr \Eq \exprb'$.
+     \end{enumerate}
+     We say the expressions are \emph{environ equivalent}, written $\expr \EqE 
+     \exprb$.
+\end{enumerate}
+
+\end{definition}
+
+
+\begin{proposition}
+\label{prop:context-substitution} 
+Suppose $\expr \Eq \exprb$. Given any context $C[]$, we have $C[\expr]
+\Eq C[\exprb]$.
+\end{proposition}
+\begin{proof}
+Given any context $C'[]$, let $C'[C[]]$ be the result of filling the
+holes in $C'$ with copies of $C$. Then $C'[C[]]$ is itself a context,
+whence $C'[C[\expr]]$ and $C'[C[\exprb]]$ reveal the same actions,
+clocks and environs. Since $C'[]$ was arbitrary, we have $C[\expr] \Eq
+C[\exprb]$, as claimed.
+\qed \end{proof}
+
+\begin{theorem}
+The relation $\Eq$ is a congruence on TNT expressions. \qed
+\end{theorem}
+
+
+
+Proving that two expressions are not congruent is generally easy. For
+example, $a\pref\nil \NotEq b\pref\nil$ because $a\pref\nil$ reveals $a$
+but $b\pref\nil$ doesn't. Proving that two expressions are congruent is
+more difficult. We illustrate the technique we use by proving the simple
+congruence $\left(a\pref\expr \res{a}\right) \Eq \nil$, which is useful
+for tidying up expression reductions. Our proof technique relies on the
+nature of reductions in contextual expressions.
+
+Suppose the context $C[\,]$ contains $n$ holes; we will write
+$C[\,]_1\dots[\,]_n$. Then $C[\expr]$ means $C[\expr]_1\dots[\expr]_n$. If
+$\expr \Does{x} \expr'$, then (depending on the nature of $C$), it is possible
+that $C[\expr] \Does{x} C[\expr]_1\dots[\expr']_j\dots[\expr]_n$ for some $j$.
+We say that such a transition is \emph{local} to $\expr$ in $C$. On the other
+hand, there are some transitions that $C[\expr]$ can perform, regardless of
+$\expr$. We call these transitions \emph{global} in $C$. For example, the
+transition \[ \out{a}.[\,] \mid a \pref b \pref [\,] \quad\Does{\tau}\quad [\,]
+\mid b \pref [\,] \] is global. All other transitions in $C[\expr]$ are
+\emph{distributed}.
+
+Distributed transitions are those that involve reduction of subcontexts of the
+form $C'|[\,]$, $C' + [\,]$ and $\locv{n}{\,}{B}{\vec{\sigma}}$. For example,
+
+\begin{itemize}
+\item
+    $\nil + a\pref\nil \Does{\sigma}$ but $\nil + \Delta_\sigma
+     \not\Does{\sigma}$, so clock transitions are distributed in the
+     context $\nil + [\,]$.
+\item
+    $a\pref\nil \mid \out{a}\pref\nil \Does{\tau}$ but $a\pref\nil \mid
+     \nil \not\Does{\tau}$, so $\Does{\tau}$ is distributed in the
+     context $a\pref\nil \mid [\,]$.
+\item
+    $\locv{m}{ \locv{n}{\tntout{m}\pref\nil}{B}{\vec{\sigma}}}%
+     {(\bout\pref\Omega)}{\vec{\rho}} \Does{\tout}$ but
+    $\locv{m}{ \nil }{(\bout\pref\Omega)}{\vec{\rho}} \not\Does{\tout}$,
+     so $\Does{\tout}$ is distributed in the context $\locv{m}{\,}%
+     {(\bout\pref\Omega)}{\vec{\rho}}$.
+\end{itemize}
+The following results are immediate.
+
+\begin{proposition}
+Suppose $\expr \not\Does{x}$ where $x$ is either $a$ or $\sigma$. If
+$C[\expr] \Does{x}$ then the $\Does{x}$ transition is global.
+\end{proposition}
+
+\begin{proposition}
+The only distributed transitions are $\Does{\sigma}$, $\Does{\tau}$,
+$\Does{\tin}$, $\Does{\tout}$ and $\Does{\topen}$.
+\end{proposition}
+
+We can now prove the congruence claimed above. To see that $\left(a\pref\expr
+\res{a}\right) \Eq \nil$, we observe that $\left(a\pref\expr \res{a}\right)$
+cannot reveal any actions. Consequently, any visible action in $C[a\pref\expr
+\res{a}]$ must be global, and hence revealed by $C[\nil]$. Moreover, the lack of
+visible actions means that $\Does{\tau}$ cannot be generated by interaction
+between $a\pref\expr \res{a}$ and a neighbouring subexpression. Therefore,
+$\left(a\pref\expr \res{a}\right) \EqA \nil$. Since neither expression can
+reveal top-level environs or mobility transitions, they cannot contribute to
+distributed mobility transitions in any context $C$, whence $\left(a\pref\expr
+\res{a}\right) \EqE \nil$. Finally, we note that both expressions reveal all
+clocks $\sigma$, so that $\left(a\pref\expr \res{a}\right) \EqT \nil$, and we
+are done.
+
+
+\subsection{Located Temporal Observation Congruence}
+\label{sec:ltoc}
+
+Following an idea in \cite{case}, we now use $\Eq$ to define a
+subcongruence $\LTOC$ which adds bisimulation propeties to the
+contextual equivalence already encapsulated.
+
+\begin{definition}
+
+A symmetric relation $R\mathrel{\subseteq}\mathop{\EqE}$ is a
+\emph{located temporal observation equivalence (l.t.o.e.)} if for every
+context $C$, and every $(\expr,\exprb) \in R$, $\kappa \in \actions \cup
+\{ \tntin, \tntout, \tntopen \}$, $\vec{\kappa} \in \left(\actions \cup
+\{ \tntin, \tntout, \tntopen \}\right)^*$ and $\sigma \in \timers$,
+
+\begin{enumerate}
+\item
+    $C[\expr] \Weak{\kappa} \expr' \Longrightarrow 
+       \exists \exprb' ~.~ C[\exprb] \Weak{\kappa} \exprb' \mbox{ and } \expr' \Eq \exprb' \mbox{ and } (\expr', \exprb') \in R$ 
+\item
+    $C[\expr] \Does{\vec{\kappa}}\Does{\sigma} \expr' \Longrightarrow
+       \exists \vec{\kappa}', \exprb' ~.~ 
+       C[\exprb] \Does{\vec{\kappa}'}\Does{\sigma} \exprb' \mbox{ and } (\expr', \exprb') \in R$
+\end{enumerate}
+Write $\expr \LTOC \exprb$ if $(\expr,\exprb) \in R$ for some located temporal observation
+equivalence $R$.
+\end{definition}
+
+In view of the following result, which follows immediately from the
+definitions, we call the relation, $\LTOC$, \emph{located temporal
+observation congruence} (l.t.o.c.).
+
+\begin{lemma}
+The equivalence $\LTOC$ is a subcongruence of $\Eq$. \qed
+\end{lemma}
+
+We do not know at present whether the two congruences are in fact
+identical. To give a flavour of the sorts of elementary proofs that can
+be generated using l.o.t.c., we conclude this section by proving a
+useful cancellation lemma.
+
+\begin{definition}
+Given any expression $\expr$ and any visible action $a \in
+\actions\setminus\tau$, the process $\expr\After{a}$, pronounced
+\emph{$\expr$ after $a$}, is defined by
+\[
+    \expr\After{a} \eqdef \sum \{ \expr' \mid \expr \Weak{a} \expr' \}
+\]
+\end{definition}
+
+Notice that $\Weak{a}$ need not be image-finite -- consider, for
+example, the process $\mu X .(\tau\pref X + a\pref\nil)$. In such cases
+the operator $\After{a}$ is not well-defined in the stated formulation.
+
+\begin{theorem}[Cancellation Lemma]
+\label{thm:cancellation}
+
+Suppose given the expressions $\expr$, $\exprb$ and any visible action
+$a \in \actions\setminus\tau$ for which $\exprb$ has only finitely many
+$\Weak{a}$ derivatives. Then
+\[
+    a\pref\expr ~\LTOC~ \exprb 
+    \quad\Longrightarrow\quad 
+    \expr ~\LTOC~ \exprb\After{a}
+\]
+\end{theorem}
+\begin{proof}
+
+Suppose $R$ is some l.t.o.e. with $(a\pref\expr,\exprb) \in R$. We know
+that $a\pref\expr \Does{a} \expr$ must be matched by a move $\exprb
+\Weak{a} \exprb'$ where $(\exprb', \expr) \in R$.
+
+Suppose $\expr \Weak{\kappa} \expr'$. Then there exists some $\exprb''$
+such that $\exprb' \Weak{\kappa} \exprb''$ and $(\exprb'',\expr') \in
+R$. However, $\exprb'$ is one of the summands of $\exprb\After{a}$, so
+the latter can also perform the transition $\exprb\After{a}
+\Weak{\kappa} \exprb''$, as required.
+
+Conversely, suppose $\exprb\After{a} \Weak{\kappa} \exprb''$. Since
+$\exprb\After{a}$ is a sum, we know that one of its summands,
+$\exprb'''$ (say), can perform the same transition sequence: $\exprb'''
+\Weak{\kappa} \exprb''$. By definition, we have $\exprb \Weak{a}
+\exprb'''$, which must be matched by some derivation $a\pref\expr
+\Weak{a} \expr'$ with $(\exprb''', \expr') \in R$. Thus $\expr'
+\Weak{\kappa} \expr''$ with $(\expr'',\exprb'') \in R$. However, we know
+that the only non-clock action $a\pref\expr$ can perform initially is
+$a$. Consequently, the derivation $a\pref\expr \Weak{a} \expr'$ can be
+factorised as $a\pref\expr \Does{a} \expr \DoesTaus \expr'$. Putting the
+pieces together gives
+\[
+    a\pref\expr \Does{a} \expr \DoesTaus \expr' \Weak{\kappa} \expr''
+\]
+or in other words, $\expr\Weak{\kappa} \expr''$ where $(\expr'',\exprb'') \in R$, as required.
+
+The proof for clock transitions is similar.  \qed \end{proof}
 
 \section{Conclusions and Future Work}
 \label{futurework}
