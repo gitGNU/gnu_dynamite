@@ -1,0 +1,463 @@
+% sigproc-sp.tex
+% A Framework for Mobile Java Applications
+% Author: A.J. Hughes
+% based upon LaTeX2.09 Guidelines, 9 June 1996
+% Revisions:  17th June 2007
+
+\documentclass{acm_proc_article-sp}
+\input{macros}
+\begin{document}
+
+\title{A Framework for Mobile Java Applications}
+\numberofauthors{1}
+\author{
+\alignauthor
+Andrew Hughes\\
+       \affaddr{Department of Computer Science,}
+       \affaddr{University of Sheffield}\\
+       \affaddr{Regent Court,}
+       \affaddr{211 Portobello Street}\\
+       \affaddr{Sheffield, UK}\\
+       \affaddr{S1 4DP}\\
+       \email{andrew@dcs.shef.ac.uk}
+}
+\maketitle
+
+\begin{abstract}
+\end{abstract}
+
+\category{D.3.3}{Programming Languages}{Language Constructs and Features}[Frameworks]
+\category{D.1.3}{Programming Techniques}{Concurrent Programming}
+\category{D.1.5}{Programming Techniques}{Object-oriented Programming}
+%\category{D.3.2}{Programming Languages}{Language Classifications}[Java]
+%\category{F.4.3}{Mathematical Logic and Formal Languages}{Formal Languages}[CCS]
+
+\terms{Design}
+
+\keywords{Java, Mobility, Process Calculus, CCS, Ambient Calculus, CaSE,
+TNT}
+
+\section{Introduction}
+
+\section{The Theoretical Backbone}
+
+DynamiTE is grounded in the process calculus TNT (\emph{Typed Nomadic
+Time}) \cite{hughes:nt, tnt}, which provides a formal abstraction of
+concurrent process behaviour.  Using this theoretical framework, a
+thread of execution can be described as a series of sequential actions
+which incorporates internal behaviour, interprocess communication
+(\ref{ipc}), multiprocess synchronisation (\ref{sync}) and mobility
+(\ref{structmob}, \ref{procmob}).  TNT utilises and combines
+well-established concepts from existing process calculi, including
+synchronisation from Milner's CCS \cite{milner:ccs}, mobility from
+Cardelli and Gordon's Ambient Calculus \cite{amb} and global discrete
+time from Norton, L{\"u}ttgen and Mendler's CaSE \cite{case}.
+
+Take the following example process, $a.\tau.b.\nil$.  The $.$ operator
+is used to prefix a process with an action and is used repetitively to
+form a complete description of the behaviour of a process.  In a formal
+syntactic definition, this is written $a.P$ to denote an action $a$
+followed by another process, $P$, which may itself be of the form $a.P$.
+This example states that three actions should be performed, $a$, $\tau$
+and $b$ before the process evolves into the predefined $\nil$ process,
+which represents a process with no explicit behaviour\footnote{It still
+exhibits some behaviour, as it can idle over time.}.
+
+We generally classify actions by their observability.  The action with
+the name $\tau$ is special, as it denotes arbitrary internal behaviour.
+Other actions ($a$ and $b$ in the above example) are observable;
+generally, when comparing two processes, it is usual only to match only
+on such observable behaviour, and discount internal activity.
+
+Such sequential behaviour can be made more interesting by introducing
+non-deterministic behaviour via three control flow operators, $+$,
+$\timeout{P}{\sigma}{Q}$ and $\stimeout{P}{\sigma}{Q}$.  The first of
+these, $+$, is a basic choice operator inherited from CCS.  When two
+processes, $P$ and $Q$, are connected by this operator, a
+non-deterministic choice will be made which causes one to execute and
+the other to be lost.  From the process, $a.P + b.Q$ either $P$ or $Q$
+may result, following the $a$ or $b$ action being performed
+respectively.
+
+The other operators interact with TNT's notion of global discrete time,
+realised by \emph{clock signals}.  Such signals occur in situations
+where they can not be pre-empted by the presence of an internal action.
+All other action prefixes and the $\nil$ process can idle, while time
+passes.  The two timeout operators allow processes to respond to the
+ticks of a specific clock, the left-hand process executing if the clock
+does not emit a signal and the right-hand executing if it does.  In
+$\timeout{a.P}{\sigma}{b.Q}$, we are left with $b.Q$ if the clock
+$\sigma$ ticks.  If it doesn't, then the $a$ action is performed and the
+resulting process is simply $P$.
+
+TNT provides two timeout operators, which have different behaviour with
+respect to processes idling.  The above example uses the fragile
+variant, where, if the left-hand side ($a.P$) can idle over another
+clock, the process will evolve into just being that process.  The
+alternate stable operator $\stimeout{P}{\sigma}{Q}$ lets the timeout
+stay in place; it is only removed when an explicit action from $P$
+occurs or $\sigma$ ticks.
+
+A clock may be prevented from ticking by using the $\Delta_\sigma$
+operator.  More generally, $\Delta$ stops all clocks.  This transcends
+up through the binary operators, $+$ and $\mid$ (introduced below), as
+they require the constituent processes to both be able to idle in order
+for the resulting process to do so.  For example, $\sigma$ may not tick
+over $a.\nil + \Delta_\sigma$.
+
+Finally, a process can also be defined with recursive behaviour.  The
+process, $\mu X.a.X$ repeatedly produces $a$ actions.  This is achieved
+by the appearance of $\mu X$ which binds the variable, $X$, to the
+content appearing after the $X.$.  When $X$ occurs in the process body,
+it results in a substitution.  More simply put, when the $a$ action in this
+example is performed, the process will become simply $X$.  This is then
+replaced by its value, $a.X$, allowing further $a$ actions to occur.
+
+\subsection{Interprocess Communication}
+\label{ipc}
+
+The constructs we describe above are fine for specifying sequential
+systems, but the main focus of process calculi is to provide an abstract
+representation of concurrent systems.  TNT, and its predecessors, make
+provision for this via the parallel composition operator, $\mid$.  When
+two processes, $P$ and $Q$ are joined with this operator, they are said
+to execute concurrently.  
+
+The actual concurrent operation of the two processes is realised through
+\emph{interleaving}.  A process $a.P \mid b.Q$ will evolve into one of
+two possible processes, $P \mid b.Q$ or $a.P \mid Q$ by performing
+either the $a$ or $b$ action respectively.  Thus, the behaviour of
+$\mid$ is just like that of $+$, except that, as this represents two
+concurrent processes rather than a control branch in a single process,
+both sides remain in place.
+
+With this mechanism, we can represent two orthogonal processes running
+at the same time and the different permutations of action sequences
+possible from applying an interleaved semantics to concurrency.
+However, to represent truly interesting behaviour, we need to also
+allow the processes to interact.  Action naming again becomes
+significant here, as we assume that two processes interact if they emit
+a corresponding pair of actions simultaneously.
+
+We've tended to use actions named $a$ and $b$ above.  One of the reasons
+for this is that these two actions don't pair up.  An action $a$ can
+only pair up with a corresponding co-action, $\overline{a}$.  It is
+common to see the name $a$ as being a reference to a channel $a$, with
+the action $a$ being an input and $\overline{a}$ being the output.
+Indeed, this is how they are used within DynamiTE.
+
+A process such as $a.P \mid \overline{a}.Q$ can evolve to $P \mid
+\overline{a}.Q$ or $a.P \mid Q$, just as we saw above.  However, as $a$
+and $\overline{a}$ are both available at the same time, the two
+processes can synchronise, causing both processes to evolve in one
+step to $P \mid Q$.  Such behaviour can be enforced by restricting the
+scope of the name $a$.  In the process, $(a.P \mid \overline{a}.Q)
+\hide{a}$, actions involving $a$ (both $a$ and $\overline{a}$) can only
+be observed within the brackets due to the presence of the restriction
+operator, $\hide{a}$.  As a result, the two are forced to synchronise
+with each other.
+
+\subsection{Process Synchronisation}
+\label{sync}
+
+Synchronisation is a fundamental part of the calculus, and observable
+actions, in practice, are used for this purpose.  Thus, actions should
+be restricted at appropriate points to enforce this behaviour.  Clearly,
+combinatorial explosion may result if restriction is not appropriately
+applied, as each pair of actions will produce three alternatives, rather
+than one deterministic action.  
+
+Another pertinent point is that synchronisation emits an internal
+action.  Recall the behaviour of clocks described above; clock ticks are
+pre-empted by such internal actions and so communication also takes
+precedence over time progression.  This puts process interaction on an
+equal footing with the internal behaviour of a single process.
+
+This synergy of process synchronisation and time is interesting, because
+it allows us to effectively detect when all possible interactions have
+taken place.  A classic example of this is when a process wants to
+broadcast to an arbitrary number of recipients.  How can we construct
+such a process, given what we've seen above?
+
+The obvious solution is for the process to output on the channel just
+the required number of times.  However, this doesn't give a flexible
+solution for an arbitrary number.  Instead of having a general broadcast
+agent, we have a process that can transmit to three processes
+($\overline{o}.\overline{o}.\overline{o}.P$) and we need a new one for
+transmitting to four ($\overline{o}.\overline{o}.\overline{o}.P$).
+
+Alternatively, we can define the process using our recursion operator,
+$\mu X.\overline{o}.X$.  This, of course, works for any number of
+recipients, but is fundamentally flawed.  What happens when no-one wants
+to receive on $o$ any more?  This process will still go on providing an
+output; note that there is no $P$ process in this version, because the
+process never continues on to do something else.  This is especially
+relevant where we wish to use this model as the foundation for a
+practical implementation, as this process translates into a thread that
+never terminates.
+
+The solution is to utilise the timeout operator to provide a base case
+for the recursion.  When $\overline{o}$ can synchronise with a
+recipient, $o$, the resulting internal action, $\tau$, will stop the
+clock from ticking.  Thus, when the clock does tick, it is indicative of
+the fact that no further synchronisations can take place and so our
+broadcast agent can go and do something else, which we simply refer to
+as $P$.  Formally, this is written as
+\begin{displaymath} 
+\mu X.\stimeout{\overline{o}.X}{\sigma}{P} \mid o.Q \mid o.R
+\end{displaymath}
+where $o.Q$ and $o.R$ are two recipients.  We can trivially add more,
+due to the way this process is now constructed.  For each recipient, a
+synchronisation will take place between it and the broadcast agent.  The
+broadcast agent will then recurse, recreating the original situation
+with one less recipient.  When there are no further recipients, $\sigma$
+will be allowed to tick, causing the broadcast agent to evolve into $P$.
+
+Such a n-ary process synchronisation mechanism is believed to be novel
+within the field of mobile process calculi, originating from a
+non-mobile process calculus (CaSE) and extended within TNT.
+
+\subsection{Structural Mobility}
+\label{structmob}
+
+The interactions described so far are all localised.  Mobility in TNT is
+realised by a hierarchy of locations we refer to as \emph{environs}.
+Processes reside within these environs, and their interaction is limited
+to within their bounds.  Environs also restrict the behaviour of clocks.
+Each environ has an associated set of clocks, which can tick within that
+environ and any sub-environs.  Outside the environ's bounds, the clock
+ticks are transformed into internal actions, which again introduces a
+form of precedence.  If a clock hidden inside a environ ticks, it will
+prevent the ticks of any clock further up the hierarchy.  
+
+Environs are given a name and a security policy in the form of a special
+`bouncer'\footnote{Named after the staff who restrict access to a night
+club.  American usage: doorman/woman.} process.  Syntactically, they
+appear as
+\begin{displaymath}
+\loc{m}{\nil}{\bin.\bout.\Omega}{\sigma}
+\end{displaymath}
+The environ is called $m$\footnote{Names may be of any length, but we
+ prefer single letters for formal representations to maintain brevity.
+ The same also applies to channel names.} and contains the simple
+ process, $\nil$.  The clock $\sigma$ may tick within the bounds of $m$,
+ but such ticks appear as internal actions outside.  The sequence
+ $\bin.\bout.\Omega$ represents the bouncer process, which restricts the
+ usage of mobility primitives with respect to $m$.
+
+These mobility primitives are provided through further syntactic
+ constructs, three of which allow the hierarchy to change during
+ execution and two which allow processes to move (see \ref{procmob}).
+ All five must pair up with a corresponding co-primitive (in much the
+ same way as actions match co-actions) provided by the bouncer of the
+ environ concerned.  Such behaviour is best demonstrated by example.
+ In the following process,
+\begin{displaymath}
+\locv{n}{\tntin{m}.P}{\Omega}{\emptyset} \mid \loc{m}{\nil}{\bin.\bout.\Omega}{\sigma}
+\end{displaymath}
+$\tntin{m}$ instructs the surrounding environ $n$ to attempt to move
+inside $m$.  It may only do so if the bouncer of $m$ provides the
+corresponding co-primitive $\bin$.  This is true in the above, where
+$\locv{n}{\tntin{m}.P}{\Omega}{\emptyset}$ may move inside the environ
+$m$ and continue as $\locv{n}{P}{\Omega}{\emptyset}$ within this new
+environment.  This results in
+\begin{displaymath}
+\loc{m}{\nil \mid \locv{n}{P}{\Omega}{\emptyset}}{\bout.\Omega}{\sigma}
+\end{displaymath}
+
+$\tntout{m}$ provides the opposite behaviour, allowing the surrounding
+environ to leave $m$.  If we assume $P$ in the above expands to
+$\tntout{m}.P'$, then the process can again interact with the bouncer
+and cause $n$ to move outside $m$ to give
+\begin{displaymath}
+\locv{n}{P'}{\Omega}{\emptyset} \mid \loc{m}{\nil}{\Omega}{\sigma}
+\end{displaymath}
+which is fairly close to the original process, the exception being that
+$\tntin{m}.P$ has evolved into $P'$ and the bouncer has become simply
+$\Omega$.  Note that $\Omega$ is the equivalent of $\nil$ for bouncers,
+and so no further mobility interactions can involve $m$, making it
+immobile (this is the case with the bouncer of $n$ from the start).
+
+Clearly, via these two primitives, the hierarchy may be rearranged
+arbitrarily.  The final structural primitive allows environs to be
+removed completely\footnote{The opposite of this, creating an environ,
+is achieved by simply evolving a process into a new environ
+e.g. $a.b.\locv{n}{P}{\Omega}{\sigma}$}.  Again, such an operation must
+be permitted by the bouncer of the environ.  This prevents arbitrary
+destruction of environs.  Instead, an environ must be defined as
+removable on creation.
+
+The bouncer of $m$ in the example below allows $m$ to be destroyed.
+When run in parallel with the process $\tntopen{m}.P$, as in
+\begin{displaymath}
+\tntopen{m}.P \mid \loc{m}{Q}{\bopen.\Omega}{\sigma}
+\end{displaymath}
+the environ $m$ will disappear and the process inside will enter the
+environ above
+\begin{displaymath}
+P \mid Q
+\end{displaymath}
+The bouncer of the removed environ is simply lost.  The clock set is
+unified with the clock set of the parent environ.  Thus, this has an
+effect both on $Q$ (which now executes in a different context) and $P$
+(which can now see the ticks of any clock previously hidden in $m$).
+
+\subsection{Process Mobility}
+\label{procmob}
+
+The final feature of TNT is process mobility. Unlike the structural
+mobility described above, this is \emph{objective}; the process which
+exhibits the mobility primitive does not move itself, but instead causes
+another process to move.  The migrating process is determined by
+matching the action name mentioned in the mobility primitive with one
+emitted by another process.  Consider the composition
+\begin{displaymath}
+  \procin{a}{m}.P \mid a.Q \mid \loc{m}{\nil}{\bin.\bout.\Omega}{\sigma}
+\end{displaymath}
+where the first process may perform $\procin{a}{m}$, causing the second
+to move,
+\begin{displaymath}
+P \mid \loc{m}{\nil \mid Q}{\bout.\Omega}{\sigma}
+\end{displaymath}
+its continuation $Q$ now evolving inside the environ $m$.
+
+\emph{Subjective} movement can still be performed by forking a process
+in two. For example, suppose $Q$ forks to become $b.Q' \mid
+\procout{leave}{m}.\nil$, where the process on the right moves the one
+on the left outside $m$. This then allows the inverse operation to be
+performed subjectively,
+\begin{displaymath}
+P \mid Q' \mid \loc{m}{\nil \pc \nil}{\Omega}{\sigma}
+\end{displaymath}
+to again give a final process which is very similar to the original.
+
+To summarise, the full syntax of TNT is presented below:
+\begin{equation*}
+  \begin{aligned}
+    \expr, \exprb \quad \mathrel{::=} \quad &
+      \nil  \mid
+      \Omega \mid
+      \Delta \mid
+      \Delta_{\sigma} \mid
+      \alpha . \expr  \mid
+      \expr + \exprb \mid
+      \expr \mathrel{\!|\!} \exprb \mid
+      \timeout{\expr}{\sigma}{\exprb} \mid \\
+    & \stimeout{\expr}{\sigma}{\exprb} \mid 
+      \mu X . \expr \mid
+      X \mid 
+      \expr \res{A} \mid
+      \locv{m}{\expr}{\exprb}{\vec{\sigma}} \mid
+      \ambop . \expr \\
+   \ambop \quad \mathrel{::=} \quad & \tntin{m} \mid \tntout{m} \mid \tntopen{m} \mid
+      \procin{\beta}{m} \mid \procout{\beta}{m} \mid \\
+   & \bin \mid \bout \mid \bopen
+   \end{aligned}
+\end{equation*}
+
+\section{Mapping Theory to Practicality}
+
+DynamiTE uses the TNT process calculus described above as the basis for
+a concurrent object-oriented framework.  Each syntactic construct is
+mapped to an appropriate Java class, which provides the required
+functionality.  Operation follows a top-down approach; the complete
+system is represented by a single instance of one of these classes.  In
+most cases, this will be an appropriate operator which composes further
+instances as appropriate.
+
+The simplest of these are the representation of $\nil$ and the internal
+action, $\tau$.  $\nil$ provides process termination, while $\tau$
+allows the user to implement arbitrary sequential behaviour as required,
+using individual instances of the class.
+
+Observable actions form part of the channel subsystem, described in
+\ref{channels}.  The realisation of the $+$ operator is achieved as a
+class which contains a list of subprocesses from which one is chosen is
+at random.  Restriction is also simply a case of stopping actions
+travelling further up the hierarchy.  More interesting is the $\mid$
+operator, which must allow its subprocesses to operate concurrently.
+
+The most obvious way to achieve this is by mapping individual processes
+onto Java threads.  This also means that data can be stored with the
+process by means of thread-local variables.  However, we are keen to
+offer flexibility in how the individual features of the framework are
+implemented.  As a result, a Java thread mapping should be only one of
+many possible ways of implementing concurrent processing and, where
+possible, we abstract away from this as much as possible, allowing it to
+be replaced by other implementations at a later date.  For example,
+concurrent processing could also be provided by distinct processes
+spawned by the VM or a more complex distributed solution may become
+apparent.
+
+\subsection{The Channel Abstraction}
+\label{channels}
+
+In the same vein, the implementation of synchronisation channels is also
+abstracted in such as way as to allow for differing implementations.
+Here, the provision of multiple implementations is more prevalent.  At
+its simplest, DynamiTE should provide a way of testing TNT processes and
+ensuring they perform as expected.  In this respect, the channels need
+do nothing more than exist.
+
+More complex solutions are of course possible and are needed to make the
+framework both usable and interesting.  Although currently there is no
+realisation of data within the formal layer of the calculus, this only
+matters to the extent that we wish transmitted data to alter the
+constructs themselves via substitution\footnote{The $\pi$ calculus
+\cite{milner:pi, picalctutorial} is an obvious example of this
+behaviour, which goes to the extreme of not only allowing data to be
+transferred but also references to channels which can then later be used
+in the language constructs.  This, in essence, provides the form of
+mobility presented in the calculus.}.  Data can be transferred between
+processes and used within internal actions without having to be
+explictly realised at the formal level.
+
+There are a multitude of ways of implementing such behaviour, ranging
+from simple mechanisms like files and TCP/IP sockets to more full-blown
+interprocess communication protocols such as Java's RMI, CORBA and web
+services.  Fortunately, Java already has plenty of support for plugin
+based frameworks (imaging and sound already being implemented in this
+fashion) and the new \texttt{java.util.ServiceLoader} API provided in
+1.6 makes this simpler still.  This means the user will have a choice of
+channel implementation, which may even be further extended by their own
+or third-party plugins.
+
+While the implementations of the channels themselves can provide the
+input and output mechanisms, interoperability between the two has to
+take place at a higher level.  Thus, the onus is on the parallel
+implementation to co-ordinate the communication between the two, by
+virtue of discovering which names are exposed at the point of
+composition.  
+
+A possible simplification becomes apparent here, as some implementations
+may make use of channel naming.  For example, if the channel name refers
+to a host and port for a TCP/IP implementation, then the sender need
+only try and connect to see if a recipient is available.  Channel names
+are assumed to be unique, so such a mapping is possible.  However, they
+are not unique to a particular process, making it perfectly plausible
+for the channel name to occur simultaneously on multiple processes.
+There is also the issue of whether they can see each other, according to
+the constraints of the calculus, so the decision should still be left to
+an appropriate parallel composition operator.
+
+\subsection{Signalling}
+\label{signalling}
+
+\subsection{Structural Changes}
+\label{structchange}
+
+\subsection{Migration}
+\label{migration}
+
+\section{Related Work}
+
+\section{Future Work}
+
+\subsection*{Acknowledgements}
+
+This work is supported by a doctoral training award from the Engineering
+and Physical Sciences Research Council ({EPSRC}).
+
+\bibliographystyle{abbrv}
+\bibliography{literature}
+\end{document}

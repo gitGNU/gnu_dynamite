@@ -1,3 +1,13 @@
+2007-06-17  Andrew John Hughes  <andrew@dcs.shef.ac.uk>
+
+	* docs/papers/ja4mo07/literature.bib,
+	* docs/papers/ja4mo07/Makefile,
+	* docs/papers/ja4mo07/macros.tex,
+	* docs/papers/ja4mo07/acm_proc_article-sp.cls:
+	Added.
+	* docs/papers/ja4mo07/paper.tex:
+	New paper for Java workshop.
+	
 2007-04-11  Andrew John Hughes  <andrew@dcs.shef.ac.uk>
 
 	* docs/papers/concur07/concur.tex:

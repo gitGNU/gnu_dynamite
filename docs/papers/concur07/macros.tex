@@ -37,7 +37,7 @@
 \newcommand{\nil}{\textbf{0}}
 \newcommand{\pref}{\,.\,}
 \newcommand{\res}[1]{\setminus {#1}}
-\newcommand{\hide}[1]{/ {#1}}
+\newcommand{\hide}[1]{/ \{{#1}\}}
 \newcommand{\timeout}[3]{\lfloor{#1}\rfloor {#2} ({#3})}
 \newcommand{\stimeout}[3]{\lceil{#1}\rceil {#2} ({#3})}
 
@@ -79,8 +79,8 @@
 \newcommand{\bout}{\overline{\varowedge}}
 \newcommand{\bopen}{\overline{\varoast}}
 \newcommand{\tntin}[1]{\tin #1}
-\newcommand{\tntout}[1]{\varowedge #1}
-\newcommand{\tntopen}[1]{\varoast #1}
+\newcommand{\tntout}[1]{\tout #1}
+\newcommand{\tntopen}[1]{\topen #1}
 \newcommand{\tin}{\varovee}
 \newcommand{\tout}{\varowedge}
 \newcommand{\topen}{\varoast}
