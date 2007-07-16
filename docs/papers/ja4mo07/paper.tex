@@ -25,10 +25,11 @@ Andrew Hughes\\
 
 \begin{abstract}
 We present the Dynamic Theory Execution (DynamiTE) framework for
- concurrent object-oriented applications, with semantics grounded in a
- process calculus.  DynamiTE allows a system to be split into distinct
- mobile components called \emph{environs} which can change position
- during execution, and between which individual processes can migrate.
+ creating concurrent object-oriented applications, with semantics
+ grounded in a process calculus.  DynamiTE allows a system to be
+ constructed as a series of distinct mobile components called
+ \emph{environs} which can change position during execution, and between
+ which individual processes can migrate.
 \end{abstract}
 
 \category{D.3.3}{Programming Languages}{Language Constructs and Features}[Frameworks]
@@ -49,11 +50,13 @@ very ad-hoc way, resulting in complex concepts such as interprocess
 communication and code migration becoming difficult to manage and
 control.  DynamiTE provides a framework which abstracts away the
 implementation details of such concepts, allowing the programmer to
-concentrate instead on a set of simpler constructs grounded in the formal
-theory of the process calculus, TNT.  In this paper, we first present an
-overview of TNT (section \ref{backbone}), before looking at how its
-concepts are implemented within DynamiTE (section \ref{dynamite}) and
-closing with a consideration of related and future work.
+concentrate instead on a set of simpler constructs grounded in the
+formal theory of the process calculus, TNT.  In this paper, we first
+present an overview of TNT (section \ref{backbone})\footnote{The reader
+is refered to the cited papers for the exact semantics and examples, as
+space is limited here}, before looking at how its concepts are
+implemented within DynamiTE (section \ref{dynamite}) and closing with a
+consideration of related and future work.
  
 \section{The Theoretical Backbone}
 \label{backbone}
@@ -204,34 +207,33 @@ solution which can handle an arbitrary number.  Instead of having a
 general broadcast agent, we have a process that can transmit to three
 processes ($\overline{o}.\overline{o}.\overline{o}.P$) and we need a new
 one for transmitting to four
-($\overline{o}.\overline{o}.\overline{o}.P$).
+($\overline{o}.\overline{o}.\overline{o}.\overline{o}.P$).
 
 Alternatively, we can define the process using our recursion operator,
 $\mu X.\overline{o}.X$.  This, of course, works for any number of
 recipients, but is fundamentally flawed.  What happens when no-one wants
 to receive on $o$ any more?  This process will still go on providing an
 output; note that there is no $P$ process in this version, because the
-process never continues on to do something else.  This is especially
-relevant where we wish to use this model as the foundation for a
-practical implementation, as this process translates into a thread that
-never terminates.
+process never continues on to do something else.  In a practical
+implementation, this corresponds to a thread that never terminates.
 
 The solution is to utilise the timeout operator to provide a base case
 for the recursion.  When $\overline{o}$ can synchronise with a
 recipient, $o$, the resulting internal action, $\tau$, will stop the
-clock from ticking.  Thus, when the clock does tick, it is indicative of
-the fact that no further synchronisations can take place and so our
-broadcast agent can go and do something else, which we simply refer to
-as $P$.  Formally, this is written as
+clock from ticking.  Thus, when the clock does tick, it demonstrates
+that no further synchronisations can take place and so our broadcast
+agent can go and do something else, which we simply refer to as $P$.
+Formally, this is written as
 \begin{displaymath} 
 \mu X.\stimeout{\overline{o}.X}{\sigma}{P} \mid o.Q \mid o.R
 \end{displaymath}
-where $o.Q$ and $o.R$ are two recipients.  We can trivially add more,
-due to the way this process is now constructed.  For each recipient, a
-synchronisation will take place between it and the broadcast agent.  The
-broadcast agent will then recurse, recreating the original situation
-with one less recipient.  When there are no further recipients, $\sigma$
-will be allowed to tick, causing the broadcast agent to evolve into $P$.
+where $o.Q$ and $o.R$ are two recipients.  We can trivially add more, as
+prior knowledge of the recipients is no longer required.  If any process
+is listening on $o$, a synchronisation will take place between it and
+the broadcast agent.  The broadcast agent will then recurse, recreating
+the original situation with one less recipient.  When there are no
+further recipients, $\sigma$ will be allowed to tick, causing the
+broadcast agent to evolve into $P$.
 
 Such a n-ary process synchronisation mechanism is believed to be novel
 within the field of mobile process calculi, originating from a
@@ -246,9 +248,8 @@ Processes reside within these environs, and their interaction is limited
 to within their bounds.  Environs also restrict the behaviour of clocks.
 Each environ has an associated set of clocks, which can tick within that
 environ and any sub-environs.  Outside the environ's bounds, the clock
-ticks are transformed into internal actions, which again introduces a
-form of precedence.  If a clock hidden inside an environ ticks, it will
-prevent the ticks of any clock further up the hierarchy.
+ticks are transformed into internal actions, which then pre-empt the
+ticks of any clock further up the hierarchy.
 
 Environs are given a name and a security policy in the form of a special
 `bouncer'\footnote{Named after the staff who restrict access to a night
@@ -403,8 +404,9 @@ Observable actions form part of the channel subsystem, described in
 \ref{channels}.  The $+$ operator is implemented as a class which
 contains a list of subprocesses from which one is chosen at random.
 Restriction is also simply a case of stopping actions travelling further
-up the hierarchy.  More interesting is the $\mid$ operator, which must
-allow its subprocesses to operate concurrently.
+up the hierarchy.  More interesting is the \texttt{Par} class which
+implements the $\mid$ operator, as it must allow its subprocesses to
+operate concurrently.
 
 The most obvious way to achieve this is by mapping individual processes
 onto Java threads.  This also means that data can be stored with the
@@ -671,11 +673,11 @@ and implemented for the ambient calculus.
 \section{Conclusions and Future Work}
 
 To conclude, we have presented the overall structure of the DynamiTE
-framework, with particular note to its more interesting aspects
-involving the use of signalling (via clock ticks) and process
-migration.  We have also outlined its underlying theoretical basis in
-the form of the process calculus TNT, further details of which are
-provided in the cited references.
+framework for concurrent systems, with particular note to its more
+interesting aspects involving the use of signalling (via clock ticks)
+and process migration.  We have also outlined its underlying theoretical
+basis in the form of the process calculus TNT, further details of which
+are provided in the cited references.
 
 We believe that the framework provides a unique way of developing
 concurrent systems.  It provides features which have already proved
