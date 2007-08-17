@@ -1,0 +1,13 @@
+The software in this package is distributed under the GNU General Public
+License version 2 (or, at your option, any later version).
+
+A copy of the GNU General Public License (GPL) is included in this
+distribution, in the file COPYING. 
+
+This excludes the code under the nongnu/cashews/plugin sub-directory.
+This code may be copied, modified, and redistributed under the terms of
+the GNU General Public License version 2 (or, at your option, any later
+version), and/or the Eclipse Public License version 1.0.
+
+A copy of the Eclipse Public License version 1.0 is included in this
+distribution, in the file COPYING.plugin.

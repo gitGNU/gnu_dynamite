@@ -1,3 +1,23 @@
+2007-08-17  Andrew John Hughes  <andrew@dcs.shef.ac.uk>
+
+	* LICENSE,
+	* AUTHORS,
+	* README,
+	* BUGS,
+	* THANKYOU,
+	* configure.ac,
+	* HACKING,
+	* lib/gen-classlist.sh.in,
+	* lib/Makefile.am,
+	* lib/.cvsignore,
+	* acinclude.m4,
+	* COPYING,
+	* autogen.sh,
+	* NEWS:
+	Initial build infrastructure.
+	* docs/papers/ja4mo07/paper.tex:
+	Added copyright data.
+	
 2007-06-18  Andrew John Hughes  <andrew@dcs.shef.ac.uk>
 
 	* docs/papers/ja4mo07/paper.tex,

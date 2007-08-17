@@ -1,0 +1,45 @@
+CASheW-s Editor README - Last updated: Jan 30, 2005
+
+The CASheW-s editor is a project to create a process editor,
+which allows individual web services to be visually composed.
+The primary output target will be OWL-S, with possible extensions
+in the form of high-level functions. as seen in functional languages.
+
+The visual editor is implemented as a plug-in for the Eclipse
+development environment using Java, and makes use of Java-based
+models of RDF, RDFS, OWL and OWL-S.
+ 
+This is a development snapshot release only and is not for general
+purpose use.  
+
+See the file INSTALL for details on installing the CASheW-s editor.
+See the file NEWS for details on what is included in this release.
+See the file TODO for the latest to do list.
+See the file HACKING for working on (non-released) CVS development versions.
+
+Homepage: http://wiki.dcs.shef.ac.uk/bin/view/Darwin/DarwinFour
+
+General Mailing List: cashew-s-editor@nongnu.org
+  --> Bugs and patches can be reported via Savannah if you have a browser
+      or via this address otherwise.
+  --> To subscribe send email to cashew-s-editor-request@nongnu.org with a 
+      subject and body of "subscribe".  To unsubscribe do the same,
+      only with a body and subject of "unsubscribe".  This is a
+      smartlist managed mailing list.
+
+CVS Commit, Bugs and Patches List: commit-classpath@gnu.org
+  --> Please send pending patches to cashew-s-editor-patches@nongnu.org.
+      Automatic notifications such as commit messages and bug updates
+      appear on cashew-s-editor-auto@nongnu.org.
+  --> To subscribe send email to cashew-s-editor-patches-request@nongnu.org
+      or cashew-s-editor-auto@nongnu.org with a subject and body of
+      "subscribe".  To unsubscribe do the same, only with a body and subject
+      of "unsubscribe".  This is a smartlist managed mailing list.
+
+Anonymous CVS:
+  --> export CVS_RSH="ssh"
+  --> cvs -z3 -d:ext:anoncvs@savannah.gnu.org:/cvsroot/cashew-s-editor co cashew-s-editor
+  --> More detailed instructions available on the Savannah project website.
+      http://savannah.nongnu.org/projects/cashew-s-editor
+
+Happy Hacking!
