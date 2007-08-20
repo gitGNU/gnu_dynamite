@@ -2,19 +2,13 @@
 # @configure_input@
 
 echo "Adding java source files from srcdir '@top_srcdir@'."
-if test @ECLIPSE@; then
-	@FIND@ @top_srcdir@/src/nongnu \
+	@FIND@ @top_srcdir@/src/uk \
        -follow -type f -print | grep '\.java$' > ${top_builddir}/lib/classes.1
-else
-	@FIND@ @top_srcdir@/src/nongnu \
-       -follow -type f -print | grep '\.java$' \
-	| grep -v 'eclipse' > ${top_builddir}/lib/classes.1
-fi
 
 # Only include generated files once.
 if test ! "${top_builddir}" -ef "@top_srcdir@"; then
   echo "Adding generated files in builddir '${top_builddir}'."
-  @FIND@ ${top_builddir}/nongnu -follow -type f -print \
+  @FIND@ ${top_builddir}/src -follow -type f -print \
   | grep '\.java$' >> ${top_builddir}/lib/classes.1
 fi
 

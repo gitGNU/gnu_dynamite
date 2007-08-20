@@ -20,16 +20,14 @@ dnl Require a copy of 'find'
 AC_PATH_PROG(FIND, find)
 
 dnl Choose zipping methodology
-CLASSPATH_WITH_GLIBJ
+CLASSPATH_WITH_DYNAMITE
 
 dnl Enable API docs?
 CLASSPATH_WITH_GJDOC
 
-dnl Check for Eclipse path
-CASHEWS_WITH_ECLIPSE
-
 dnl Generate classlist and other output
 AC_CONFIG_FILES([Makefile
-	lib/Makefile])
+	lib/Makefile
+	lib/gen-classlist.sh])
 AC_CONFIG_COMMANDS([gen-classlist],[chmod 755 lib/gen-classlist.sh])
 AC_OUTPUT

@@ -24,6 +24,8 @@ conditions of the GNU General Public License cover the whole
 combination.
 */
 
+package uk.ac.shef.dcs.dynamite;
+
 public interface Process
 {
 }

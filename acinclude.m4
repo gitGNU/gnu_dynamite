@@ -7,26 +7,22 @@ AC_DEFUN([CLASSPATH_FIND_JAVAC],
   user_specified_javac=
 
   CLASSPATH_WITH_GCJ
-  CLASSPATH_WITH_JIKES
-  CLASSPATH_WITH_KJC
-  CLASSPATH_WITH_GCJX
   CLASSPATH_WITH_ECJ
+  CLASSPATH_WITH_JAVAC
 
   if test "x${user_specified_javac}" = x; then
     AM_CONDITIONAL(FOUND_GCJ, test "x${GCJ}" != x)
-    AM_CONDITIONAL(FOUND_JIKES, test "x${JIKES}" != x)
     AM_CONDITIONAL(FOUND_ECJ, test "x${ECJ}" != x)
+    AM_CONDITIONAL(FOUND_JAVAC, test "x${JAVAC}" != x)
   else
     AM_CONDITIONAL(FOUND_GCJ, test "x${user_specified_javac}" = xgcj)
-    AM_CONDITIONAL(FOUND_JIKES, test "x${user_specified_javac}" = xjikes)
     AM_CONDITIONAL(FOUND_ECJ, test "x${user_specified_javac}" = xecj)
+    AM_CONDITIONAL(FOUND_JAVAC, test "x${user_specified_javac}" = xjavac)
   fi
-  AM_CONDITIONAL(FOUND_KJC, test "x${user_specified_javac}" = xkjc)
-  AM_CONDITIONAL(FOUND_GCJX, test "x${user_specified_javac}" = xgcjx)
 
-  if test "x${GCJ}" = x && test "x${JIKES}" = x && test "x${user_specified_javac}" != xkjc && test "x${user_specified_javac}" != xgcjx; then
+  if test "x${GCJ}" = x && test "x${ECJ}" = x && test "x${JAVAC}" = x && test "x${user_specified_javac}" != xecj; then
       # FIXME: use autoconf error function
-      echo "configure: cannot find javac, try --with-gcj, --with-jikes, --with-kjc, --with-ecj or --with-gcjx" 1>&2
+      echo "configure: cannot find javac, try --with-gcj, --with-javac or--with-ecj" 1>&2
       exit 1    
   fi
 ])
@@ -109,127 +105,6 @@ AC_DEFUN([CLASSPATH_CHECK_GCJ],
   fi 
 ])
 
-dnl -----------------------------------------------------------
-AC_DEFUN([CLASSPATH_WITH_JIKES],
-[
-  AC_ARG_WITH([jikes],
-	      [AS_HELP_STRING(--with-jikes,bytecode compilation with jikes)],
-  [
-    if test "x${withval}" != x && test "x${withval}" != xyes && test "x${withval}" != xno; then
-      CLASSPATH_CHECK_JIKES(${withval})
-    else
-      if test "x${withval}" != xno; then
-        CLASSPATH_CHECK_JIKES
-      fi
-    fi
-    user_specified_javac=jikes
-  ],
-  [ 
-    CLASSPATH_CHECK_JIKES
-  ])
-  AC_SUBST(JIKES)
-])
-
-dnl -----------------------------------------------------------
-AC_DEFUN([CLASSPATH_CHECK_JIKES],
-[
-  if test "x$1" != x; then
-    if test -f "$1"; then
-      JIKES="$1"
-    else
-      AC_PATH_PROG(JIKES, "$1")
-    fi
-  else
-    AC_PATH_PROG(JIKES, "jikes")
-  fi
-  if test "x$JIKES" != "x"; then
-    dnl Require at least version 1.19
-    AC_MSG_CHECKING(jikes version)
-    JIKES_VERSION=`$JIKES --version | awk '/^Jikes Compiler/' | cut -d ' ' -f 5`
-    JIKES_VERSION_MAJOR=`echo "$JIKES_VERSION" | cut -d '.' -f 1`
-    JIKES_VERSION_MINOR=`echo "$JIKES_VERSION" | cut -d '.' -f 2`
-    if expr "$JIKES_VERSION_MAJOR" == 1 > /dev/null; then
-      if expr "$JIKES_VERSION_MINOR" \< 19 > /dev/null; then
-        JIKES=""
-      fi
-    fi
-    if test "x$JIKES" != "x"; then
-      AC_MSG_RESULT($JIKES_VERSION)
-    else
-      AC_MSG_WARN($JIKES_VERSION: jikes 1.19 or higher required)
-    fi
-  fi
-])
-
-dnl -----------------------------------------------------------
-AC_DEFUN([CLASSPATH_WITH_KJC],
-[
-  AC_ARG_WITH([kjc], 
-  	      [AS_HELP_STRING(--with-kjc,bytecode compilation with kjc)],
-  [
-    if test "x${withval}" != x && test "x${withval}" != xyes && test "x${withval}" != xno; then
-      CLASSPATH_CHECK_KJC(${withval})
-    else
-      if test "x${withval}" != xno; then
-        CLASSPATH_CHECK_KJC
-      fi
-    fi
-    user_specified_javac=kjc
-  ],
-  [ 
-    CLASSPATH_CHECK_KJC
-  ])
-  AC_SUBST(KJC)
-])
-
-dnl -----------------------------------------------------------
-AC_DEFUN([CLASSPATH_CHECK_KJC],
-[
-  if test "x$1" != x; then
-    if test -f "$1"; then
-      KJC="$1"
-    else
-      AC_PATH_PROG(KJC, "$1")
-    fi
-  else
-    AC_PATH_PROG(KJC, "kJC")
-  fi
-])
-
-dnl -----------------------------------------------------------
-AC_DEFUN([CLASSPATH_WITH_GCJX],
-[
-  AC_ARG_WITH([gcjx], 
-  	      [AS_HELP_STRING(--with-gcjx,bytecode compilation with gcjx)],
-  [
-    if test "x${withval}" != x && test "x${withval}" != xyes && test "x${withval}" != xno; then
-      CLASSPATH_CHECK_GCJX(${withval})
-    else
-      if test "x${withval}" != xno; then
-        CLASSPATH_CHECK_GCJX
-      fi
-    fi
-    user_specified_javac=gcjx
-  ],
-  [ 
-    CLASSPATH_CHECK_GCJX
-  ])
-  AC_SUBST(GCJX)
-])
-
-dnl -----------------------------------------------------------
-AC_DEFUN([CLASSPATH_CHECK_GCJX],
-[
-  if test "x$1" != x; then
-    if test -f "$1"; then
-      GCJX="$1"
-    else
-      AC_PATH_PROG(GCJX, "$1")
-    fi
-  else
-    AC_PATH_PROG(GCJX, "gcjx")
-  fi
-])
 
 dnl -----------------------------------------------------------
 AC_DEFUN([CLASSPATH_WITH_JAVAH],
@@ -305,12 +180,12 @@ AC_DEFUN([CLASSPATH_WITH_CLASSLIB],
 ])
 
 dnl -----------------------------------------------------------
-dnl CLASSPATH_WITH_GLIBJ - specify what to install
+dnl CLASSPATH_WITH_DYNAMITE - specify what to install
 dnl -----------------------------------------------------------
-AC_DEFUN([CLASSPATH_WITH_GLIBJ],
+AC_DEFUN([CLASSPATH_WITH_DYNAMITE],
 [
   AC_ARG_WITH([glibj],
-              [AS_HELP_STRING([--with-glibj],[define what to install (zip|flat|both|none) [default=zip]])],
+              [AS_HELP_STRING([--with-dynamite],[define what to install (zip|flat|both|none) [default=zip]])],
               [
                 if test "x${withval}" = xyes || test "x${withval}" = xzip; then
       		  AC_PATH_PROG(JAR, jar)
@@ -332,7 +207,7 @@ AC_DEFUN([CLASSPATH_WITH_GLIBJ],
 		AC_PATH_PROG(JAR, jar)
 		install_class_files=no
 	      ])
-  AM_CONDITIONAL(INSTALL_GLIBJ_ZIP, test "x${JAR}" != x)
+  AM_CONDITIONAL(INSTALL_ZIP, test "x${JAR}" != x)
   AM_CONDITIONAL(INSTALL_CLASS_FILES, test "x${install_class_files}" = xyes)
 
   AC_ARG_ENABLE([examples],
@@ -414,23 +289,33 @@ AC_DEFUN([CLASSPATH_CHECK_ECJ],
 ])
 
 
-dnl ------------------------------------------------------------
-AC_DEFUN([CASHEWS_WITH_ECLIPSE],
+dnl -----------------------------------------------------------
+AC_DEFUN([CLASSPATH_WITH_JAVAC],
 [
-  AC_ARG_WITH([eclipse],
-	     [AS_HELP_STRING(--with-eclipse,compile the Eclipse plug-in)],
-	[	
-    AC_MSG_CHECKING(eclipse version)
+  AC_ARG_WITH([javac],
+	      [AS_HELP_STRING(--with-javac,bytecode compilation with javac)],
+  [
     if test "x${withval}" != x && test "x${withval}" != xyes && test "x${withval}" != xno; then
-      		ECLIPSE="$withval"
-		AC_SUBST(ECLIPSE)
-    fi
-    if test "x$ECLIPSE" != "x"; then
-      AC_MSG_RESULT($ECLIPSE)
+      CLASSPATH_CHECK_JAVAC(${withval})
     else
-      AC_MSG_WARN(not found)
+      if test "x${withval}" != xno; then
+        CLASSPATH_CHECK_JAVAC
+      fi
     fi
+    user_specified_javac=javac
+  ],
+  [ 
+    CLASSPATH_CHECK_JAVAC
   ])
-    AM_CONDITIONAL(FOUND_ECLIPSE, test "x${ECLIPSE}" != x)
+  AC_SUBST(JAVAC)
 ])
 
+dnl -----------------------------------------------------------
+AC_DEFUN([CLASSPATH_CHECK_JAVAC],
+[
+  if test "x$1" != x; then
+    JAVAC="$1"
+  else
+    AC_PATH_PROG(JAVAC, "javac")
+  fi
+])
