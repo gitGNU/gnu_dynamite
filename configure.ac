@@ -2,7 +2,7 @@ dnl Process this file with autoconf to produce a configure script.
 
 dnl Initialise autoconf
 AC_INIT([DynamiTE],[0.00+cvs],[cashew-s-editor@nongnu.org],[cashew-s-editor])
-AC_CONFIG_SRCDIR(src/uk/ac/shef/dcs/tnt-dynamite/Process.java)
+AC_CONFIG_SRCDIR(src/uk/ac/shef/dcs/dynamite/Process.java)
 
 dnl Initialise automake
 AM_INIT_AUTOMAKE(dynamite, 0.01)

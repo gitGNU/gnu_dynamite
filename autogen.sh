@@ -8,7 +8,7 @@ ORIGDIR=`pwd`
 cd $srcdir
 PROJECT=CASheW-s
 TEST_TYPE=-f
-FILE=src/uk/ac/shef/dcs/tnt-dynamite/Process.java
+FILE=src/uk/ac/shef/dcs/dynamite/Process.java
 
 DIE=0
 

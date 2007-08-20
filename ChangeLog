@@ -1,5 +1,10 @@
 2007-08-20  Andrew John Hughes  <andrew@dcs.shef.ac.uk>
 
+	* configure.ac, autogen.sh:
+	Fix path to Process.java
+	
+2007-08-20  Andrew John Hughes  <andrew@dcs.shef.ac.uk>
+
 	* src/uk/ac/shef/dcs/dynamite/Process.java:
 	Renamed from tnt-dynamite subdirectory.
 	
