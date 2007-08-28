@@ -1,4 +1,4 @@
-/* Process.java - General interface for a process.
+/* Process.java - Represents a transition from one process to another.
    Copyright (C) 2007 The University of Sheffield
 
 This file is part of DynamiTE.
@@ -24,27 +24,43 @@ conditions of the GNU General Public License cover the whole
 combination.
 */
 
-package uk.ac.shef.dcs.dynamite;
-
-import java.util.Set;
- 
-import uk.ac.shef.dcs.dynamite.lts.State;
-import uk.ac.shef.dcs.dynamite.lts.Transition;
+package uk.ac.shef.dcs.dynamite.lts;
 
 /**
- * Represents a general evolving process.
+ * Represents a transition within a labelled transition system.
  *
  * @author Andrew John Hughes (gnu_andrew@member.fsf.org)
  */
-@State
-public interface Process
+public class Transition
 {
 
     /**
-     * Returns the set of possible transitions from this process.
-     *
-     * @return the set of possible transitions.
+     * The start state.
      */
-    Set<Transition> getPossibleTransitions();
+    private State start;
+    
+    /**
+     * The finish state.
+     */
+    private State finish;
+
+    /**
+     * The label.
+     */
+    private Label label;
+
+    /**
+     * Constructs a new {@link Transition}.
+     *
+     * @param start the start state.
+     * @param finish the finish state.
+     * @param label the label on the transition.
+     */
+    public Transition(State start, State finish, Label label)
+    {
+	this.start = start;
+	this.finish = finish;
+	this.label = label;
+    }
 
 }

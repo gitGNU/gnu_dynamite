@@ -1,3 +1,13 @@
+2007-08-28  Andrew John Hughes  <andrew@dcs.shef.ac.uk>
+
+	* src/uk/ac/shef/dcs/dynamite/lts/Label.java,
+	* src/uk/ac/shef/dcs/dynamite/lts/State.java,
+	* src/uk/ac/shef/dcs/dynamite/lts/Transition.java:
+	Implementation of an LTS.
+	* src/uk/ac/shef/dcs/dynamite/Process.java:
+	Add support for returning possible transitions.
+	* autogen.sh: Fix project title.
+	
 2007-08-20  Andrew John Hughes  <andrew@dcs.shef.ac.uk>
 
 	* configure.ac, autogen.sh:

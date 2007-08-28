@@ -6,7 +6,7 @@ test -z "$srcdir" && srcdir=.
 
 ORIGDIR=`pwd`
 cd $srcdir
-PROJECT=CASheW-s
+PROJECT=DynamiTE
 TEST_TYPE=-f
 FILE=src/uk/ac/shef/dcs/dynamite/Process.java
 

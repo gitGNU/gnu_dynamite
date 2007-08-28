@@ -1,4 +1,4 @@
-/* Process.java - General interface for a process.
+/* Label.java - Represents a transition label.
    Copyright (C) 2007 The University of Sheffield
 
 This file is part of DynamiTE.
@@ -24,27 +24,36 @@ conditions of the GNU General Public License cover the whole
 combination.
 */
 
-package uk.ac.shef.dcs.dynamite;
+package uk.ac.shef.dcs.dynamite.lts;
 
-import java.util.Set;
- 
-import uk.ac.shef.dcs.dynamite.lts.State;
-import uk.ac.shef.dcs.dynamite.lts.Transition;
-
-/**
- * Represents a general evolving process.
- *
- * @author Andrew John Hughes (gnu_andrew@member.fsf.org)
- */
-@State
-public interface Process
+public abstract class Label
 {
 
     /**
-     * Returns the set of possible transitions from this process.
-     *
-     * @return the set of possible transitions.
+     * The label.
      */
-    Set<Transition> getPossibleTransitions();
+    private String label;
+
+    /**
+     * Constructs a new label using the given string.
+     *
+     * @param label the label to use.
+     * @throws IllegalArgumentException if the label is invalid.
+     */
+    public Label(String label)
+    {
+	if (isValid(label))
+	    this.label = label;
+	else
+	    throw new IllegalArgumentException("The label " + label + " is not a valid label for this transition system.");
+    }
+
+    /**
+     * Returns true if the given string represents a valid label.
+     *
+     * @param label the label to check.
+     * @return true if the label is valid.
+     */
+    public abstract boolean isValid(String label);
 
 }
