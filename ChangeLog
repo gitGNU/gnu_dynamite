@@ -1,3 +1,19 @@
+2007-08-29  Andrew John Hughes  <andrew@dcs.shef.ac.uk>
+
+	* src/uk/ac/shef/dcs/dynamite/lts/Label.java:
+	Document the class.
+	* src/uk/ac/shef/dcs/dynamite/lts/State.java:
+	Convert to marker interface instead of annotation
+	so it can be checked for at compile time by the
+	type system.
+	* src/uk/ac/shef/dcs/dynamite/ccs/Nil.java,
+	* src/uk/ac/shef/dcs/dynamite/ccs/CCSLabel.java,
+	* src/uk/ac/shef/dcs/dynamite/ccs/Prefix.java,
+	* src/uk/ac/shef/dcs/dynamite/ccs/Action.java:
+	Add CCS constructs for nil and prefix.
+	* src/uk/ac/shef/dcs/dynamite/Process.java:
+	Extend State and mandate toString (informally).
+	
 2007-08-28  Andrew John Hughes  <andrew@dcs.shef.ac.uk>
 
 	* src/uk/ac/shef/dcs/dynamite/lts/Label.java,

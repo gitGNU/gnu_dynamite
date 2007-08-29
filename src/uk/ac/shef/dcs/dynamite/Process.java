@@ -36,8 +36,8 @@ import uk.ac.shef.dcs.dynamite.lts.Transition;
  *
  * @author Andrew John Hughes (gnu_andrew@member.fsf.org)
  */
-@State
 public interface Process
+    extends State
 {
 
     /**
@@ -46,5 +46,12 @@ public interface Process
      * @return the set of possible transitions.
      */
     Set<Transition> getPossibleTransitions();
+
+    /**
+     * Return a string representation of the process.
+     *
+     * @return a string representation.
+     */
+    String toString();
 
 }

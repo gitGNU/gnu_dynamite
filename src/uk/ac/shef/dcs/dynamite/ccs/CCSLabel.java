@@ -1,4 +1,4 @@
-/* Label.java - Represents a transition label.
+/* CCSLabel.java - A label on a CCS transition.
    Copyright (C) 2007 The University of Sheffield
 
 This file is part of DynamiTE.
@@ -24,41 +24,38 @@ conditions of the GNU General Public License cover the whole
 combination.
 */
 
-package uk.ac.shef.dcs.dynamite.lts;
+package uk.ac.shef.dcs.dynamite.ccs;
+
+import uk.ac.shef.dcs.dynamite.lts.Label;
 
 /**
- * Represents a transition label.
+ * Represents a CCS transition label.
  *
  * @author Andrew John Hughes (gnu_andrew@member.fsf.org)
  */
-public abstract class Label
+public class CCSLabel
+    extends Label
 {
-
+ 
     /**
-     * The label.
-     */
-    private String label;
-
-    /**
-     * Constructs a new label using the given string.
+     * Constructs a CCS new label using the given string.
      *
      * @param label the label to use.
      * @throws IllegalArgumentException if the label is invalid.
      */
-    public Label(String label)
+    public CCSLabel(String label)
     {
-	if (isValid(label))
-	    this.label = label;
-	else
-	    throw new IllegalArgumentException("The label " + label + " is not a valid label for this transition system.");
+	super(label);
     }
 
     /**
-     * Returns true if the given string represents a valid label.
+     * CCS allows any label, so this method always returns true.
      *
      * @param label the label to check.
-     * @return true if the label is valid.
-     */
-    public abstract boolean isValid(String label);
-
+     * @return true.
+     */   
+    public boolean isValid(String label)
+    {
+	return true;
+    }
 }

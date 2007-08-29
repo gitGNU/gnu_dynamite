@@ -1,4 +1,4 @@
-/* Label.java - Represents a transition label.
+/* Nil.java - A CCS nil process.
    Copyright (C) 2007 The University of Sheffield
 
 This file is part of DynamiTE.
@@ -24,41 +24,39 @@ conditions of the GNU General Public License cover the whole
 combination.
 */
 
-package uk.ac.shef.dcs.dynamite.lts;
+package uk.ac.shef.dcs.dynamite.ccs;
+
+import java.util.Collections;
+import java.util.Set;
+
+import uk.ac.shef.dcs.dynamite.Process;
+import uk.ac.shef.dcs.dynamite.lts.Transition;
 
 /**
- * Represents a transition label.
+ * Represents a CCS Nil process.
  *
  * @author Andrew John Hughes (gnu_andrew@member.fsf.org)
  */
-public abstract class Label
+public class Nil
+    implements Process
 {
-
     /**
-     * The label.
-     */
-    private String label;
-
-    /**
-     * Constructs a new label using the given string.
+     * There are no possible transitions for Nil.
      *
-     * @param label the label to use.
-     * @throws IllegalArgumentException if the label is invalid.
+     * @return an empty set.
      */
-    public Label(String label)
+    public Set<Transition> getPossibleTransitions()
     {
-	if (isValid(label))
-	    this.label = label;
-	else
-	    throw new IllegalArgumentException("The label " + label + " is not a valid label for this transition system.");
+	return Collections.EMPTY_SET;
     }
 
     /**
-     * Returns true if the given string represents a valid label.
+     * Returns a textual representation of the Nil process.
      *
-     * @param label the label to check.
-     * @return true if the label is valid.
+     * @return {@code "0"}.
      */
-    public abstract boolean isValid(String label);
-
+    public String toString()
+    {
+	return "0";
+    }
 }

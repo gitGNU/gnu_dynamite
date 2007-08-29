@@ -1,4 +1,4 @@
-/* Label.java - Represents a transition label.
+/* Action.java - A general CCS action used to unify channels and tau.
    Copyright (C) 2007 The University of Sheffield
 
 This file is part of DynamiTE.
@@ -24,41 +24,42 @@ conditions of the GNU General Public License cover the whole
 combination.
 */
 
-package uk.ac.shef.dcs.dynamite.lts;
+package uk.ac.shef.dcs.dynamite.ccs;
+
+import java.util.Set;
+
+import uk.ac.shef.dcs.dynamite.Process;
+import uk.ac.shef.dcs.dynamite.lts.Transition;
 
 /**
- * Represents a transition label.
+ * Represents a CCS action, unifying the silent action
+ * with channel names.
  *
  * @author Andrew John Hughes (gnu_andrew@member.fsf.org)
  */
-public abstract class Label
+public abstract class Action
 {
 
     /**
-     * The label.
+     * The label used to represent this action.
      */
-    private String label;
+    private CCSLabel label;
 
     /**
-     * Constructs a new label using the given string.
+     * Constructs a new {@link Action}.
      *
      * @param label the label to use.
-     * @throws IllegalArgumentException if the label is invalid.
      */
-    public Label(String label)
+    public Action(String label)
     {
-	if (isValid(label))
-	    this.label = label;
-	else
-	    throw new IllegalArgumentException("The label " + label + " is not a valid label for this transition system.");
+	this.label = new CCSLabel(label);
     }
 
     /**
-     * Returns true if the given string represents a valid label.
-     *
-     * @param label the label to check.
-     * @return true if the label is valid.
+     * Returns the label of this action.
      */
-    public abstract boolean isValid(String label);
-
+    public CCSLabel getLabel()
+    {
+	return label;
+    }
 }

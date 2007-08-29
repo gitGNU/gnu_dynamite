@@ -1,4 +1,4 @@
-/* State.java - Annotation to denote a class that can act as a state.
+/* State.java - Marker interface to denote a class that can act as a state.
    Copyright (C) 2007 The University of Sheffield
 
 This file is part of DynamiTE.
@@ -26,16 +26,11 @@ combination.
 
 package uk.ac.shef.dcs.dynamite.lts;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.Retention;;
-import static java.lang.annotation.RetentionPolicy.CLASS;
-
 /**
  * Represents a state in a labelled transition system.
  *
  * @author Andrew John Hughes (gnu_andrew@member.fsf.org)
  */
-@Documented @Retention(CLASS)
-public @interface State
+public interface State
 {
 }
