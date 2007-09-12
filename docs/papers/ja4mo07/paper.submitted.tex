@@ -5,7 +5,95 @@
 % Revisions:  17th June 2007
 
 \documentclass{sig-alternate}
-\input{macros}
+% Needed for: \varovee, etc
+\usepackage{stmaryrd}
+
+% Needed for: \mathscr{}
+\usepackage{mathrsfs}
+
+
+
+\newcommand{\shrule}{\vspace{0.5mm}\hrule\vspace{0.5mm}}
+\newcommand{\out}{\overline}
+
+%% CaSE macros
+
+\newcommand{\lts}[4]{\langle {#1},{#2},{#3},{#4} \rangle}   
+
+\newcommand{\derives}[1]{\stackrel{#1}{\rightarrow}}
+\newcommand{\lderives}[1]{\stackrel{#1}{\longrightarrow}}
+\newcommand{\xderives}[1]{\xrightarrow{#1}}
+\newcommand{\nderives}[1]{\stackrel{#1}{\nrightarrow}}
+
+\newcommand{\expr}{\text{$\mathcal{E}$}}
+\newcommand{\exprb}{\text{$\mathcal{F}$}}
+\newcommand{\bouncer}{\text{$\mathcal{F}$}}
+\newcommand{\ambop}{\text{$\mathcal{M}$}}
+\newcommand{\bambop}{\text{$\mathcal{N}$}}
+\newcommand{\procs}{\text{$\mathcal{P}$}}
+\newcommand{\timers}{\text{$\mathcal{T}$}}
+\newcommand{\labels}{\text{$\mathcal{L}$}}
+\newcommand{\names}{\text{$\mathcal{N}$}}
+\newcommand{\lowpris}{\text{$\mathcal{C}$}}
+\newcommand{\highpris}{\text{$\mathcal{H}$}}
+\newcommand{\independent}{\text{$\mathcal{U}$}}
+\newcommand{\conames}{\text{$\overline{\names}$}}
+\newcommand{\actions}{\text{$\mathcal{A}$}}
+\newcommand{\symbols}{\text{$\mathcal{S}$}}
+
+\newcommand{\nil}{\textbf{0}}
+\newcommand{\pref}{\,.\,}
+\newcommand{\res}[1]{\setminus {#1}}
+\newcommand{\hide}[1]{/ \{{#1}\}}
+\newcommand{\timeout}[3]{\lfloor{#1}\rfloor {#2} ({#3})}
+\newcommand{\stimeout}[3]{\lceil{#1}\rceil {#2} ({#3})}
+
+\newcommand{\eqdef}{\mathrel{~=_\mathrm{def}~}}
+
+\newcommand{\twb}[1]{\approx_{#1}}
+\newcommand{\toc}[1]{\approx^{c}_{#1}}
+
+%% operational rules
+ 
+% Derivation Rules
+% 1. parameter is name
+% 2. parameter is premise
+% 3. parameter is conclusion
+% 4. parameter is side conditions
+%
+\newlength{\lrulename}
+\setlength{\lrulename}{0.80cm}
+ 
+\newcommand{\Rule}[4]{{#1}&$\displaystyle\frac{#2}{#3}\,{#4}$}
+\newcommand{\Rulea}[4]{{#1}\quad$\displaystyle\frac{#2}{#3}\,{#4}$}
+
+% Locality
+
+\newcommand{\loc}[4]{{#1}[ #2 ]^{#3}_{\{#4\}}}
+\newcommand{\locv}[4]{{#1}[ #2 ]^{#3}_{#4}}
+
+%% misc macros
+
+\newcommand{\seml}{[\hspace{-0.3ex}[}
+\newcommand{\semr}{]\hspace{-0.3ex}]}
+\newcommand{\sem}[4]{{}_{#2}\seml #1 \semr^{#3}_{#4}}
+
+\newcommand{\procin}[2]{on\ #1 \tntin{#2}}
+\newcommand{\procout}[2]{on\ #1 \tntout{#2}}
+\newcommand{\sprocin}[2]{\tntin{#1}\ {#2}}
+\newcommand{\sprocout}[2]{\tntout{#1}\ {#2}}
+\newcommand{\bin}{\overline{\varovee}}
+\newcommand{\bout}{\overline{\varowedge}}
+\newcommand{\bopen}{\overline{\varoast}}
+\newcommand{\tntin}[1]{\tin #1}
+\newcommand{\tntout}[1]{\tout #1}
+\newcommand{\tntopen}[1]{\topen #1}
+\newcommand{\tin}{\varovee}
+\newcommand{\tout}{\varowedge}
+\newcommand{\topen}{\varoast}
+\newcommand{\mobprim}{\text{$\{ \tin, \tout , \topen\}$}}
+\newcommand{\pc}{\mid}
+
 \begin{document}
 
 \conferenceinfo{Ja4Mo Workshop/PPPJ 2007,} {Sep. 5--7, 2007, Lisboa,
@@ -721,7 +809,69 @@ interprocess communication via web services.
 This work is supported by a doctoral training award from the Engineering
 and Physical Sciences Research Council ({EPSRC}).
 
-
 \bibliographystyle{abbrv}
-\bibliography{literature}
+\begin{thebibliography}{10}
+
+\bibitem{amb}
+L.~Cardelli and A.~D. Gordon.
+\newblock {Mobile Ambients}.
+\newblock In {\em Proc. of the 1st Intl. Conference on Foundations of Software
+  Science and Computation Structures ({FoSSaCS}~'98)}, volume 1378 of {\em
+  Lecture Notes in Computer Science}, pages 140--155. Springer, 1998.
+
+\bibitem{hughes:nt}
+A.~Hughes.
+\newblock {Nomadic Time (Extended Abstract)}.
+\newblock In R.~Schmidt and G.~Struth, editors, {\em Proc. of the PhD Programme
+  at Relational Methods in Computer Science/Applications of Kleene Algebra
+  ({RelMiCS/AKA}) 2006}, number CS-06-09 in University of Sheffield Technical
+  Reports, pages 60--64, 2006.
+
+\bibitem{tnt}
+A.~Hughes.
+\newblock {Timed Mobile Systems}.
+\newblock Technical Report CS-07-09, University of Sheffield, 2007.
+
+\bibitem{obliq}
+M.~Merro, J.~Kleist, and U.~Nestmann.
+\newblock {Mobile Objects as Mobile Processes}.
+\newblock {\em Information and Computation}, 177:195--241, 2002.
+
+\bibitem{milner:ccs}
+R.~Milner.
+\newblock {\em {Communication and Concurrency}}.
+\newblock Prentice-Hall, London, 1989.
+
+\bibitem{picalctutorial}
+R.~Milner, J.~Parrow, and D.~Walker.
+\newblock A calculus of mobile processes, parts {I} and {II}.
+\newblock Technical Report ECS-LFCS-89-86, University of Edinburgh, June 1989.
+
+\bibitem{case}
+B.~Norton, G.~L{\"u}ttgen, and M.~Mendler.
+\newblock {A Compositional Semantic Theory for Synchronous Component-Based
+  Design}.
+\newblock In {\em Proc. of the 14th Intl. Conference on Concurrency Theory
+  ({CONCUR}~'03)}, number 2761 in LNCS, pages 461--476. Springer, 2003.
+
+\bibitem{daveturner:phd}
+D.~N. Turner.
+\newblock {\em {The Polymorphic Pi-calculus: Theory and Implementation}}.
+\newblock PhD thesis, The University of Edinburgh, 1996.
+
+\bibitem{seal}
+J.~Vitek and G.~Castagna.
+\newblock {Seal: A Framework for Secure Mobile Computations}.
+\newblock In {\em Proc. of the {ICCL}~'98 Workshop on Internet Programming
+  Languages}, volume 1686 of {\em Lecture Notes in Computer Science}, pages
+  47--77. Springer, 1999.
+
+\bibitem{wojciechowski:phd}
+P.~T. Wojciechowski.
+\newblock {\em {Nomadic Pict: Language and Infrastructure Design for Mobile
+  Computation}}.
+\newblock PhD thesis, The University of Cambridge, Mar. 2000.
+
+\end{thebibliography}
+
 \end{document}

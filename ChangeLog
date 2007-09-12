@@ -1,3 +1,16 @@
+2007-09-12  Andrew John Hughes  <andrew@dcs.shef.ac.uk>
+
+	* docs/papers/ja4mo07/sig-alternate.cls:
+	New class for submitted version.
+	* docs/papers/ja4mo07/paper.abortive.tex:
+	An aborted attempt to reorder the paper.
+	* docs/papers/ja4mo07/paper.submitted.tex:
+	The submitted version.
+	* docs/papers/ja4mo07/paper.tex:
+	Updated for submission with copyright info.
+	* docs/papers/ja4mo07/Makefile:
+	Build in letter format.
+	
 2007-08-29  Andrew John Hughes  <andrew@dcs.shef.ac.uk>
 
 	* src/uk/ac/shef/dcs/dynamite/lts/Label.java:

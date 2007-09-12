@@ -8,8 +8,8 @@ all: $(TEX)
 	bibtex $*
 	latex $<
 	latex $<
-	dvips -Ppdf -G0 $*.dvi -o $*.ps
-	ps2pdf -dPDFsettings=/prepress -dAutoFilterColorImages=false -dColorImageFilter=/FlateEncode $*.ps $@
+	dvips -Ppdf -G0 -tletter $*.dvi -o $*.ps
+	ps2pdf -dPDFsettings=/prepress -dAutoFilterColorImages=false -dColorImageFilter=/FlateEncode -sPAPERSIZE=letter $*.ps $@
 	ps2ascii $*.ps| wc -w
 
 clean:

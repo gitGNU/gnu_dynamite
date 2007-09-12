@@ -4,14 +4,9 @@
 % based upon LaTeX2.09 Guidelines, 9 June 1996
 % Revisions:  17th June 2007
 
-\documentclass{sig-alternate}
+\documentclass{acm_proc_article-sp}
 \input{macros}
 \begin{document}
-
-\conferenceinfo{Ja4Mo Workshop/PPPJ 2007,} {Sep. 5--7, 2007, Lisboa,
-Portugal.}
-\CopyrightYear{2007}
-\crdata{978-1-59593-672-1/07/0009}
 
 \title{A Framework for Mobile Java Applications}
 \numberofauthors{1}
@@ -57,13 +52,12 @@ control.  DynamiTE provides a framework which abstracts away the
 implementation details of such concepts, allowing the programmer to
 concentrate instead on a set of simpler constructs grounded in the
 formal theory of the process calculus, TNT.  In this paper, we first
-present an overview of TNT (section \ref{backbone})\footnote{The reader
-is refered to the cited papers for the exact semantics and examples, as
-space is limited here}, before looking at how its concepts are
-implemented within DynamiTE (section \ref{dynamite}) and closing with a
-consideration of related and future work.
+present an overview of TNT\footnote{The reader is refered to the cited
+papers for the exact semantics and examples, as space is limited here},
+before looking at how its concepts are implemented within DynamiTE and
+closing with a consideration of related and future work.
  
-\section{The Theoretical Backbone}
+\section{From Theory to Practicality}
 \label{backbone}
 
 DynamiTE is based on the process calculus TNT (\emph{Typed Nomadic
@@ -78,52 +72,79 @@ synchronisation from Milner's CCS \cite{milner:ccs}, mobility from
 Cardelli and Gordon's Ambient Calculus \cite{amb} and global discrete
 time from Norton, L{\"u}ttgen and Mendler's CaSE \cite{case}.
 
-Take the following example process, $a.\tau.b.\nil$.  The $.$ operator
-is used to prefix a process with an action and is used repetitively to
-form a complete description of the behaviour of a process.  In a formal
-syntactic definition, this is written $a.P$ to denote an action $a$
-followed by another process, $P$, which may itself be of the form $a.P$.
-This example states that three actions should be performed, $a$, $\tau$
-and then $b$ before the process evolves into the predefined $\nil$
-process, which represents a process with no explicit
+Within DynamiTE, TNT forms the basis for a concurrent object-oriented
+framework.  Each syntactic construct is mapped to an appropriate Java
+class, which provides the required functionality and relates to the
+others via a common \texttt{Process} superclass.  Operation follows a
+top-down approach; the complete system is represented by a single
+instance of one of these classes which, in most cases, will be an
+operator that composes together further instances as appropriate.
+
+Take the following example TNT process, $a.\tau.b.\nil$.  The $.$
+operator is used to prefix a process with an action and is used
+repetitively to form a complete description of the behaviour of a
+process.  In a formal syntactic definition, this is written $a.P$ to
+denote an action $a$ followed by another process, $P$, which may itself
+be of the form $a.P$.  This example states that three actions should be
+performed, $a$, $\tau$ and $b$ before the process evolves into the
+predefined $\nil$ process, which represents a process with no explicit
 behaviour\footnote{It still exhibits some behaviour, as it can idle over
 time.}.
 
-We generally classify such actions by their observability.  The action
-with the name $\tau$ is special, as it denotes arbitrary internal
-behaviour.  Other actions ($a$ and $b$ in the above example) are
-observable; generally, when comparing two processes, it is usual only to
-match on such observable behaviour, and discount internal activity.
+In representing this model using DynamiTE, each occurrence of $.$
+corresponds to an instance of the \texttt{Prefix} class which itself
+composes an implementation of the \texttt{Action} class with another
+instance of a \texttt{Process} subclass.  In two of the three, this
+\texttt{Process} subclass is one of the other instances, while the third
+uses an instance of the class \texttt{Nil} to provide process
+termination.
 
-Such sequential behaviour can be made more interesting by introducing
-non-deterministic behaviour via three control flow operators, $+$,
-$\timeout{P}{\sigma}{Q}$ and $\stimeout{P}{\sigma}{Q}$.  The first of
-these, $+$, is a basic choice operator inherited from CCS.  When two
-processes, $P$ and $Q$, are connected by this operator, a
+We generally classify actions by their observability.  The action with
+the name $\tau$ is special, as it denotes arbitrary internal behaviour.
+Other actions ($a$ and $b$ in the above example) are observable;
+generally, when comparing two processes, it is usual only to match on
+such observable behaviour, and discount internal activity.
+
+Observable actions form part of the channel subsystem, described in
+\ref{channels}.  The internal action $\tau$ is realised as an abstract
+class \texttt{Tau}.  The user can implement arbitrary sequential
+behaviour as required, using individual subclasses of this.
+
+Simple processes like the above can be made more interesting by
+introducing non-deterministic behaviour via three control flow
+operators, $+$, $\timeout{P}{\sigma}{Q}$ and $\stimeout{P}{\sigma}{Q}$.
+The first of these, $+$, is a basic choice operator inherited from CCS.
+When two processes, $P$ and $Q$, are connected by this operator, a
 non-deterministic choice will be made which causes one to execute and
-the other to be lost.  From the process, $a.P + b.Q$ either an $a$ or
-$b$ action may be performed.  Where the action is $a$, we are left
-simply with the process $P$.  Likewise, if $b$ is executed, $Q$ remains.
+the other to be lost.  From the process, $a.P + b.Q$ either $P$ or $Q$
+may result, following the $a$ or $b$ action being performed
+respectively.  This is implemented as a class which contains a list of
+subprocesses from which one is chosen at random.
 
 The other two operators interact with TNT's notion of global discrete
-time, realised by \emph{clock signals}.  Such signals are emitted in
-situations where they can not be pre-empted by the presence of a
-high-priority action such as $\tau$.  All other action prefixes and the
-$\nil$ process can idle, while the clock ticks, representing the passage
-of time.  The two timeout operators allow processes to respond to the
-ticks of a specific clock, the left-hand process executing if the clock
-does not emit a signal and the right-hand executing if it does.  In
-$\timeout{a.P}{\sigma}{b.Q}$, we are left with $b.Q$ if the clock
-$\sigma$ ticks.  If it doesn't, then an $a$ action occurs instead and
-the resulting process is simply $P$.
+time, realised by \emph{clock signals}.  While there have been other
+attempts to produce frameworks or languages based on process calculi
+(see section \ref{relatedwork}), we believe that the rendering of
+discrete time into such a context is novel and forms the most
+interesting part of DynamiTE (see \ref{signalling})
+
+Such signals are emitted in situations where they can not be pre-empted
+by the presence of an internal action.  All other action prefixes and
+the $\nil$ process can idle, while the clock ticks, representing the
+passage of time.  The two timeout operators allow processes to respond
+to the ticks of a specific clock, the left-hand process executing if the
+clock does not emit a signal and the right-hand executing if it does.
+In $\timeout{a.P}{\sigma}{b.Q}$, we are left with $b.Q$ if the clock
+$\sigma$ ticks.  If it doesn't, then the $a$ action is performed and the
+resulting process is simply $P$.
 
 TNT provides two timeout operators, which have different behaviour with
 respect to processes idling.  The above example uses the fragile
 variant, where, if the left-hand side ($a.P$) can idle over another
-clock, the ticks of the other clock are treated like actions and cause
-the process to evolve to become $P$.  The alternate stable operator
-$\stimeout{P}{\sigma}{Q}$ lets the timeout stay in place; it is only
-removed when an explicit action from $P$ occurs or $\sigma$ ticks.
+clock, the process will evolve into just being that process.  The
+alternate stable operator $\stimeout{P}{\sigma}{Q}$ lets the timeout
+stay in place; it is only removed when an explicit action from $P$
+occurs or $\sigma$ ticks.
 
 A clock may be prevented from ticking by using the $\Delta_\sigma$
 operator.  More generally, $\Delta$ stops all clocks.  This transcends
@@ -159,13 +180,26 @@ $\mid$ is just like that of $+$, except that both sides remain in place,
 since this represents two concurrent processes rather than a control
 branch in a single process.
 
+The $mid$ operator is implemented by the \texttt{Par} class which must
+allow its subprocesses to operate concurrently.  The most obvious way to
+achieve this is by mapping individual processes onto Java threads.  This
+also means that data can be stored with the process by means of
+thread-local variables.  However, we are keen to offer flexibility in
+how the individual features of the framework are implemented.  Java
+thread mapping is only one way in which concurrent processing may be
+implemented and so we abstract away \texttt{Par} from the threading
+implementation as much as possible, thus allowing it to be replaced by
+other implementations at a later date.  For example, concurrent
+processing could also be provided by distinct processes spawned by the
+VM or a more complex distributed solution may become apparent.
+
 With this mechanism, we can represent two orthogonal processes running
 at the same time and the different permutations of action sequences
 possible from applying an interleaved semantics to concurrency.
-However, to represent truly interesting behaviour, we need to also
-allow the processes to interact.  Action naming again becomes
-significant here, as we assume that two processes interact if they emit
-a corresponding pair of actions simultaneously.
+However, to represent truly interesting behaviour, we need to also allow
+the processes to interact.  Action naming again becomes significant
+here, as we assume that two processes interact if they emit a
+corresponding pair of actions simultaneously.
 
 We've tended to use actions named $a$ and $b$ above.  One of the reasons
 for this is that these two actions don't pair up.  An action $a$ can
@@ -183,7 +217,9 @@ scope of the name $a$.  In the process, $(a.P \mid \overline{a}.Q)
 \hide{a}$, actions involving $a$ (both $a$ and $\overline{a}$) can only
 be observed within the brackets due to the presence of the restriction
 operator, $\hide{a}$.  As a result, the two are forced to synchronise
-with each other.
+with each other.  The \texttt{Res} class handles this by simply
+filtering out the appropriate actions, so they are no longer visible
+further up the hierarchy.
 
 \subsection{Process Synchronisation}
 \label{sync}
@@ -388,60 +424,18 @@ To summarise, the full syntax of TNT is presented below:
    \end{aligned}
 \end{equation*}
 
-\section{Mapping Theory to Practicality}
-\label{dynamite}
-
-DynamiTE uses the TNT process calculus described above as the basis for
-a concurrent object-oriented framework.  Within this framework,
-developers can create concurrent applications simply by implementing the
-specific behaviour they require in appropriate subclasses.  Each
-syntactic construct is mapped to an appropriate Java class, which
-provides the required functionality and relates to others via a common
-\texttt{Process} superclass.  Operation follows a top-down approach; the
-complete system is represented by a single instance of one of these
-classes which, in most cases, will be an operator that composes together
-further instances as appropriate.
-
-The simplest \texttt{Process} subclass is the representation of $\nil$,
-realised as a class \texttt{Nil} which provides process termination.
-The internal action $\tau$ is realised as an abstract class \texttt{Tau}
-and this is where the user can implement arbitrary sequential behaviour
-as required, by providing a subclass. The observable actions form part
-of the channel subsystem, described in \ref{channels}.
-
-The $+$ operator is implemented as a class which contains a list of
-subprocesses from which one is chosen at random.  The action to perform
-is computed by traversing the hierarchy, so restriction is simply a
-matter of providing appropriate filtering, thus preventing the
-restricted names from travelling further up the hierarchy.
-
-More interesting is the \texttt{Par} class which implements the $\mid$
-operator, as it must allow its subprocesses to operate concurrently.
-The most obvious way to achieve this is by mapping individual processes
-onto Java threads.  This also means that data can be stored with the
-process by means of thread-local variables.  However, we are keen to
-offer flexibility in how the individual features of the framework are
-implemented.  Java thread mapping is only one way in which concurrent
-processing may be implemented and so we abstract away \texttt{Par} from
-the threading implementation as much as possible, thus allowing it to be
-replaced by other implementations at a later date.  For example,
-concurrent processing could also be provided by distinct processes
-spawned by the VM or a more complex distributed solution may become
-apparent.
-
 \subsection{The Channel Abstraction}
 \label{channels}
 
-In the same vein, the implementation of synchronisation channels is
-abstracted in such as way as to allow for differing implementations.
-Here, the provision of multiple implementations is more prevalent and so
-a plugin mechanism is already present.  Fortunately, Java already has
-plenty of support for plugin based frameworks (imaging and sound already
-being implemented in this fashion) and the new
-\texttt{java.util.ServiceLoader} API provided in 1.6 makes this simpler
-still.  This allows the user to have freedom of choice with respect to
-their chosen channel implementation, which may even be further extended
-by their own or third-party plugins.
+The implementation of synchronisation channels is abstracted in such as
+way as to allow for differing implementations.  Here, the provision of
+multiple implementations is more prevalent and so a plugin mechanism is
+already present.  Fortunately, Java already has plenty of support for
+plugin based frameworks (imaging and sound already being implemented in
+this fashion) and the new \texttt{java.util.ServiceLoader} API provided
+in 1.6 makes this simpler still.  This allows the user to have freedom
+of choice with respect to their chosen channel implementation, which may
+even be further extended by their own or third-party plugins.
 
 At its simplest, DynamiTE provides a way of testing TNT processes and
 ensuring they perform as expected.  In this respect, the simplest
@@ -488,17 +482,11 @@ parallel composition operator.
 \subsection{Signalling}
 \label{signalling}
 
-One of the most interesting parts of the DynamiTE framework is the
-implementation of clock signals.  While there have been other attempts
-to produce frameworks or languages based on process calculi (see section
-\ref{relatedwork}), we believe that the rendering of discrete time into
-such a context is novel.
-
-The first question to answer when attempting to perform such a
-translation is where to actually locate the clocks.  Within TNT, the
-obvious answer is within each environ, as these are responsible for
-providing the division between processes which can observe clock ticks
-and those which can not.  For example, the following environ
+The first question to answer when attempting to model the signalling
+process is where to actually locate the clocks.  Within TNT, the obvious
+answer is within each environ, as these are responsible for providing
+the division between processes which can observe clock ticks and those
+which can not.  For example, the following environ
 \begin{displaymath}
 \loc{m}{P}{\Omega}{\sigma}
 \end{displaymath}
@@ -545,14 +533,10 @@ this instance is simply the result of combining the return value from
 probing each of the constituent processes.
 
 Both $a.\nil$ and $b.\nil$ are implemented using instances of the
-\texttt{Prefix} class, which composes a \texttt{Channel}\footnote{An
-abstract class, instances of which are provided by the channel
-architecture described in \ref{channels}} or \texttt{Tau} instance
-(unified by the \texttt{Action} class) with another instance of a
-\texttt{Process} subclass.  In determining whether a clock can tick, it
-first checks that the action is a channel rather than a \texttt{Tau}
-instance (which would pre-empt the clock), and then probes the
-\texttt{Process} instance.  In both these simple cases, this is an
+\texttt{Prefix} class.  In determining whether a clock can tick, it
+first checks that the action is a \texttt{Channel} rather than a
+\texttt{Tau} instance (which would pre-empt the clock), and then probes
+the \texttt{Process} instance.  In both these simple cases, this is an
 instance of \texttt{Nil}, which allows clock ticks.
 
 Having determined that the clock may tick, each nested call returns with
@@ -651,7 +635,7 @@ local data, and beginning execution at the destination.  However, this
 is one area in which we expect further study of the existing literature
 to enlighten us with more sophisticated ways of achieving such
 migration.
-
+%\balancecolumns
 \section{Related Work}
 \label{relatedwork}
 
@@ -661,23 +645,23 @@ However, we believe our work to be novel in approaching the
 implementation of both global discrete time, via clock signalling, and
 mobility.
 
-The $\pi$ calculus has been the subject of much of this work, primarily
-due to its status as the most prevalant mobile process calculus.  Obliq
-\cite{obliq} and Pict \cite{daveturner:phd} are both programming
-languages with semantics founded in the $\pi$ calculus, while Nomadic
-Pict \cite{wojciechowski:phd} takes this further, introducing
-distribution not usually present in the $\pi$ calculus.  Within research
-related to the ambient calculus, a machine framework (PAN
-cite{sangiorgi:safeambientsmachine}) has been developed and
-implemented.  Process calculi, such as the Seal calculus \cite{seal}
-have also been developed specifically to provide a formal framework for
-a distributed implementation.
 %The $\pi$ calculus has been the subject of much of this work, primarily
-%due to its status as the most prevalent mobile process calculus.  Obliq
+%due to its status as the most prevalant mobile process calculus.  Obliq
 %\cite{obliq} and Pict \cite{daveturner:phd} are both programming
-%languages with semantics founded in the $\pi$ calculus, while a machine
-%framework (PAN \cite{sangiorgi:safeambientsmachine}) has been developed
-%and implemented for the ambient calculus.
+%languages with semantics founded in the $\pi$ calculus, while Nomadic
+%Pict \cite{wojciechowski:phd} takes this further, introducing
+%distribution not usually present in the $\pi$ calculus.  Within research
+%related to the ambient calculus, a machine framework (PAN
+%\cite{sangiorgi:safeambientsmachine}) has been developed and
+%implemented.  Process calculi, such as the Seal calculus \cite{seal}
+%have also been developed specifically to provide a formal framework for
+%a distributed implementation.
+The $\pi$ calculus has been the subject of much of this work, primarily
+due to its status as the most prevalent mobile process calculus.  Obliq
+\cite{obliq} and Pict \cite{daveturner:phd} are both programming
+languages with semantics founded in the $\pi$ calculus, while a machine
+framework (PAN \cite{sangiorgi:safeambientsmachine}) has been developed
+and implemented for the ambient calculus.
 
 \section{Conclusions and Future Work}
 
@@ -709,8 +693,7 @@ migration also means that fairly complex concepts can be leveraged by
 the programmer in the simple manner provided by the framework.
 
 There are still areas we wish to explore in the future.  One such
-proposition is the addition of data to the clock signals,
-\balancecolumns \noindent allowing them
+proposition is the addition of data to the clock signals, allowing them
 not only to act as phasing signals but also as a mechanism for broadcast
 data.  It would also be interesting to further expand on the plugin
 frameworks mentioned, by providing more complex implementations such as
@@ -720,7 +703,6 @@ interprocess communication via web services.
 
 This work is supported by a doctoral training award from the Engineering
 and Physical Sciences Research Council ({EPSRC}).
-
 
 \bibliographystyle{abbrv}
 \bibliography{literature}
