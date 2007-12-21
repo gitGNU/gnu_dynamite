@@ -1,4 +1,4 @@
-/* Nil.java - A CCS nil process.
+/* Simulator.java - Simulates the behaviour of a process.
    Copyright (C) 2007 The University of Sheffield
 
 This file is part of DynamiTE.
@@ -24,53 +24,53 @@ conditions of the GNU General Public License cover the whole
 combination.
 */
 
-package uk.ac.shef.dcs.dynamite.ccs;
+package uk.ac.shef.dcs.dynamite.evolvers;
 
-import java.util.Collections;
-import java.util.Set;
-
+import uk.ac.shef.dcs.dynamite.Evolver;
 import uk.ac.shef.dcs.dynamite.Process;
+
+import uk.ac.shef.dcs.dynamite.lts.State;
 import uk.ac.shef.dcs.dynamite.lts.Transition;
 
 /**
- * Represents a CCS Nil process.
+ * Simulates process execution.  From the initial process,
+ * each possible transition is made and the transitions.
  *
  * @author Andrew John Hughes (gnu_andrew@member.fsf.org)
  */
-public class Nil
-    implements Process
+public class Simulator
+  implements Evolver
 {
-
+  
   /**
-   * The singleton instance of Nil.
+   * Simulate the process evolving by following all
+   * possible transitions from the current state.
+   *
+   * @param p the process to evolve.
    */
-  public static final Nil NIL = new Nil();
-
-  /**
-   * Private constructor as Nil is a singleton.
-   */
-  private Nil()
+  public void evolve(Process p)
   {
+    System.out.println("Evolving process: " + p);
+    for (Transition t : p.getPossibleTransitions())
+      {
+	State f = t.getFinish();
+	if (f instanceof Process)
+	  {
+	    System.out.println("Following transition " + t);
+	    evolve((Process) f);
+	  }
+      }
   }
 
-    /**
-     * There are no possible transitions for Nil.
-     *
-     * @return an empty set.
-     */
-    public Set<Transition> getPossibleTransitions()
-    {
-	return Collections.emptySet();
-    }
-
-    /**
-     * Returns a textual representation of the Nil process.
-     *
-     * @return {@code "0"}.
-     */
-    public String toString()
-    {
-	return "0";
-    }
+  /**
+   * A test harness to run the simulator.
+   *
+   * @param args the command-line arguments.
+   */
+  public static void main(String[] args)
+  {
+    new Simulator().evolve(uk.ac.shef.dcs.dynamite.ccs.Nil.NIL);
+  }
 
 }
+

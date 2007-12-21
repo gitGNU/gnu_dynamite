@@ -1,3 +1,19 @@
+2007-12-21  Andrew John Hughes  <andrew@dcs.shef.ac.uk>
+
+	* src/uk/ac/shef/dcs/dynamite/lts/Transition.java:
+	(getStart()): Implemented.
+	(getFinish()): Likewise.
+	(getLabel()): Likewise.
+	* src/uk/ac/shef/dcs/dynamite/Evolver.java:
+	Framework for evolving processes.
+	* src/uk/ac/shef/dcs/dynamite/evolvers/Simulator.java:
+	Initial evolver framework plugin for a simulator.
+	* src/uk/ac/shef/dcs/dynamite/ccs/Nil.java:
+	(NIL): Add singleton instance.
+	(Nil()): Prevent other instances.
+	(getPossibleTransitions()): Use typesafe Collections method
+	rather than the constant.
+	
 2007-09-12  Andrew John Hughes  <andrew@dcs.shef.ac.uk>
 
 	* docs/papers/ja4mo07/sig-alternate.cls:

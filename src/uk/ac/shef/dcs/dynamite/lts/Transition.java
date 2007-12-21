@@ -63,4 +63,34 @@ public class Transition
 	this.label = label;
     }
 
+    /**
+     * Returns the start state.
+     *
+     * @return the start state.
+     */
+    public State getStart()
+    {
+	return start;
+    }
+
+    /**
+     * Returns the finish state.
+     *
+     * @return the finish state.
+     */
+    public State getFinish()
+    {
+	return finish;
+    }
+
+  /**
+   * Returns the transition label.
+   *
+   * @return the transition label.
+   */
+  public Label getLabel()
+  {
+    return label;
+  }
+
 }

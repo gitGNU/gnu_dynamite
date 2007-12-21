@@ -1,4 +1,4 @@
-/* Nil.java - A CCS nil process.
+/* Evolver.java - Interface for something that evolves processes.
    Copyright (C) 2007 The University of Sheffield
 
 This file is part of DynamiTE.
@@ -24,53 +24,22 @@ conditions of the GNU General Public License cover the whole
 combination.
 */
 
-package uk.ac.shef.dcs.dynamite.ccs;
-
-import java.util.Collections;
-import java.util.Set;
-
-import uk.ac.shef.dcs.dynamite.Process;
-import uk.ac.shef.dcs.dynamite.lts.Transition;
+package uk.ac.shef.dcs.dynamite;
 
 /**
- * Represents a CCS Nil process.
+ * An evolver can take a process and cause it to evolve into
+ * a new process via one or more transitions.
  *
  * @author Andrew John Hughes (gnu_andrew@member.fsf.org)
  */
-public class Nil
-    implements Process
+public interface Evolver
 {
 
-  /**
-   * The singleton instance of Nil.
-   */
-  public static final Nil NIL = new Nil();
-
-  /**
-   * Private constructor as Nil is a singleton.
-   */
-  private Nil()
-  {
-  }
-
     /**
-     * There are no possible transitions for Nil.
+     * Takes the given process and evolves it one or more
+     * times.
      *
-     * @return an empty set.
+     * @param process the process to evolve.
      */
-    public Set<Transition> getPossibleTransitions()
-    {
-	return Collections.emptySet();
-    }
-
-    /**
-     * Returns a textual representation of the Nil process.
-     *
-     * @return {@code "0"}.
-     */
-    public String toString()
-    {
-	return "0";
-    }
-
+    void evolve(Process process);
 }
