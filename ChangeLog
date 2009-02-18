@@ -1,3 +1,23 @@
+2009-02-18  Andrew John Hughes  <a.j.hughes@sheffield.ac.uk>
+
+	* BUGS: Updated.
+	* COPYING: Changed to Affero GPLv3.
+	* LICENSE: Change to Affero GPLv3, remove
+	redundant material from Cashew-S project.
+	* README: Updated for DynamiTE.
+	* TODO: Add current work.
+	* src/uk/ac/shef/dcs/dynamite/Evolver.java,
+	* src/uk/ac/shef/dcs/dynamite/Process.java,
+	* src/uk/ac/shef/dcs/dynamite/ccs/Action.java,
+	* src/uk/ac/shef/dcs/dynamite/ccs/CCSLabel.java,
+	* src/uk/ac/shef/dcs/dynamite/ccs/Nil.java,
+	* src/uk/ac/shef/dcs/dynamite/ccs/Prefix.java,
+	* src/uk/ac/shef/dcs/dynamite/evolvers/Simulator.java,
+	* src/uk/ac/shef/dcs/dynamite/lts/Label.java,
+	* src/uk/ac/shef/dcs/dynamite/lts/State.java,
+	* src/uk/ac/shef/dcs/dynamite/lts/Transition.java:
+	Updated to Affero GPLv3.
+
 2007-12-21  Andrew John Hughes  <andrew@dcs.shef.ac.uk>
 
 	* src/uk/ac/shef/dcs/dynamite/lts/Transition.java:
