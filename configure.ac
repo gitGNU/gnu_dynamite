@@ -1,3 +1,30 @@
+dnl configure.ac -- Input for autoconf
+dnl Taken from GNU Classpath project
+dnl Originally GPLv2, upgraded to AGPLv3 via 'or later' clause.
+dnl
+dnl Copyright (C) 2003, 2004, 2005, 2006, 2007 Free Software Foundation, Inc.
+dnl Copyright (C) 2007 The University of Sheffield
+dnl
+dnl This file is part of DynamiTE.
+dnl
+dnl This program is free software: you can redistribute it and/or modify
+dnl it under the terms of the GNU Affero General Public License as published by
+dnl the Free Software Foundation, either version 3 of the License, or
+dnl (at your option) any later version.
+dnl
+dnl This program is distributed in the hope that it will be useful,
+dnl but WITHOUT ANY WARRANTY; without even the implied warranty of
+dnl MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+dnl GNU Affero General Public License for more details.
+dnl
+dnl You should have received a copy of the GNU Affero General Public License
+dnl along with this program.  If not, see <http://www.gnu.org/licenses/>.
+dnl
+dnl Linking this library statically or dynamically with other modules is
+dnl making a combined work based on this library.  Thus, the terms and
+dnl conditions of the GNU General Public License cover the whole
+dnl combination.
+
 dnl Process this file with autoconf to produce a configure script.
 
 dnl Initialise autoconf
