@@ -44,10 +44,12 @@ public abstract class Label
      */
     public Label(String label)
     {
-	if (isValid(label))
-	    this.label = label;
-	else
-	    throw new IllegalArgumentException("The label " + label + " is not a valid label for this transition system.");
+        if (isValid(label))
+          this.label = label;
+        else
+          throw new IllegalArgumentException("The label " + label +
+                                             " is not a valid label " +
+                                             "for this transition system.");
     }
 
     /**

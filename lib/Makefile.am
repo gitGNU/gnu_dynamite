@@ -54,10 +54,11 @@ JAVAH = $(USER_JAVAH) -jni -classpath .:$(USER_CLASSLIB)
 
 if INSTALL_ZIP
 
-install-data-local: genclasses compile-classes eclipse.jar
-	if [ ! -e $(INSTALLDIR) ]; then mkdir $(INSTALLDIR); fi
-	cp eclipse.jar $(INSTALLDIR)
-	cp $(top_srcdir)/resource/plugin.xml $(INSTALLDIR)
+#INSTALLDIR=$(DESTDIR)$(pkgdatadir)#
+#
+#install-data-local: genclasses compile-classes dynamite.jar
+#	if [ ! -e $(INSTALLDIR) ]; then mkdir $(INSTALLDIR); fi
+#	cp dynamite.jar $(INSTALLDIR)
 
 pkgdata_DATA = dynamite.jar
 
@@ -80,9 +81,12 @@ endif # INSTALL_CLASS_FILES
 .PHONY: genclasses
 
 dynamite.jar: classes compile-classes # resources
-	if test "$(JAR)" != ""; then rm dynamite.jar; $(JAR) cf dynamite.jar `find uk -name '*class'` > /dev/null; fi
+	if test "$(JAR)" != ""; then \
+	  rm -f dynamite.jar; \
+	  $(JAR) cf dynamite.jar `find uk -name '*class'` > /dev/null; \
+	fi
 if FOUND_GCJ
-	$(GCJ) -shared -fjni -findirect-dispatch -o dynamite.jar.so dynamite.jar
+	$(GCJ) -shared -fjni -findirect-dispatch -fPIC -o dynamite.jar.so dynamite.jar
 endif
 
 #resources:
@@ -99,8 +103,8 @@ endif
 
 classes: genclasses
 
-genclasses: gen-classlist.sh standard.omit 
-	top_builddir=$(top_builddir) $(SHELL) ./gen-classlist.sh standard
+genclasses: gen-classlist.sh
+	$(SHELL) ./gen-classlist.sh standard
 
 $(JAVA_DEPEND): genclasses
 
@@ -108,9 +112,8 @@ compile-classes: classes $(JAVA_SRCS) Makefile
 	$(JCOMPILER)
 	touch compile-classes
 
-EXTRA_DIST = standard.omit 
 CLEANFILES = compile-classes resources classes \
-	cashews.jar classes.1 \
+	dynamite.jar classes.1 \
 	$(JAVA_DEPEND)
 
 clean-local:

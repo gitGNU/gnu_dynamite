@@ -1,4 +1,4 @@
-#! @SH@
+#! @SHELL@
 # @configure_input@
 #
 # gen-classlist.sh.in -- generates the list of classes to compile
@@ -30,33 +30,41 @@
 
 echo "Adding java source files from srcdir '@top_srcdir@'."
 	@FIND@ @top_srcdir@/src/uk \
-       -follow -type f -print | grep '\.java$' > ${top_builddir}/lib/classes.1
+       -follow -type f -print | grep '\.java$' > @top_builddir@/lib/classes.1
 
 # Only include generated files once.
-if test ! "${top_builddir}" -ef "@top_srcdir@"; then
-  echo "Adding generated files in builddir '${top_builddir}'."
-  @FIND@ ${top_builddir}/src -follow -type f -print \
-  | grep '\.java$' >> ${top_builddir}/lib/classes.1
+if test ! "@top_builddir@" -ef "@top_srcdir@"; then
+  if test -d @top_builddir@/src; then
+    echo "Adding generated files in builddir '${top_builddir}'."
+    @FIND@ @top_builddir@/src -follow -type f -print \
+    | grep '\.java$' >> @top_builddir@/lib/classes.1
+  fi
 fi
 
-for filexp in `cat @top_srcdir@/lib/$1.omit` ; do { grep -v ${filexp} < ${top_builddir}/lib/classes.1 > ${top_builddir}/lib/classes.2 ; mv ${top_builddir}/lib/classes.2 ${top_builddir}/lib/classes.1 ; } ; done
+if test -e @top_srcdir@/lib/$1.omit ; then
+  for filexp in `cat @top_srcdir@/lib/$1.omit` ; 
+  do { 
+	grep -v ${filexp} < @top_builddir@/lib/classes.1 > @top_builddir@/lib/classes.2 ; 
+	mv @top_builddir@/lib/classes.2 @top_builddir@/lib/classes.1 ; 
+  } ; done
+fi
 
 new=
-if test -e ${top_builddir}/lib/classes; then
-  p=`diff ${top_builddir}/lib/classes ${top_builddir}/lib/classes.1`
+if test -e @top_builddir@/lib/classes; then
+  p=`diff @top_builddir@/lib/classes @top_builddir@/lib/classes.1`
   if test "$p" != ""; then
     new="true"
-    cp ${top_builddir}/lib/classes.1 ${top_builddir}/lib/classes
+    cp @top_builddir@/lib/classes.1 @top_builddir@/lib/classes
   fi
 else
   new="true"
-  cp ${top_builddir}/lib/classes.1 ${top_builddir}/lib/classes
+  cp @top_builddir@/lib/classes.1 @top_builddir@/lib/classes
 fi
 
 if test "$new" = "true"; then
-  echo "JAVA_SRCS = \\" > ${top_builddir}/lib/java.dep
-  for i in `cat ${top_builddir}/lib/classes` ; do
-    echo $i "\\" >> ${top_builddir}/lib/java.dep
+  echo "JAVA_SRCS = \\" > @top_builddir@/lib/java.dep
+  for i in `cat @top_builddir@/lib/classes` ; do
+    echo $i "\\" >> @top_builddir@/lib/java.dep
   done
 fi
 
