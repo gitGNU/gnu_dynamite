@@ -54,12 +54,6 @@ JAVAH = $(USER_JAVAH) -jni -classpath .:$(USER_CLASSLIB)
 
 if INSTALL_ZIP
 
-#INSTALLDIR=$(DESTDIR)$(pkgdatadir)#
-#
-#install-data-local: genclasses compile-classes dynamite.jar
-#	if [ ! -e $(INSTALLDIR) ]; then mkdir $(INSTALLDIR); fi
-#	cp dynamite.jar $(INSTALLDIR)
-
 pkgdata_DATA = dynamite.jar
 
 endif # INSTALL_ZIP
@@ -80,7 +74,7 @@ endif # INSTALL_CLASS_FILES
 
 .PHONY: genclasses
 
-dynamite.jar: classes compile-classes # resources
+dynamite.jar: classes compile-classes
 	if test "$(JAR)" != ""; then \
 	  rm -f dynamite.jar; \
 	  $(JAR) cf dynamite.jar `find uk -name '*class'` > /dev/null; \
@@ -88,18 +82,6 @@ dynamite.jar: classes compile-classes # resources
 if FOUND_GCJ
 	$(GCJ) -shared -fjni -findirect-dispatch -fPIC -o dynamite.jar.so dynamite.jar
 endif
-
-#resources:
-#	if ! [ -e gnu ]; then mkdir gnu; fi
-#	if ! [ -e gnu/java ]; then mkdir gnu/java; fi
-#	if ! [ -e gnu/java/locale ]; then mkdir gnu/java/locale; fi
-#	@list='$(propertydirs)'; for p in $$list; do \
-#	  if ! [ -e $$p ]; then mkdir $$p; fi; \
-#	done
-#	@list='$(propertyfiles)'; for p in $$list; do \
-#	  cp $(top_srcdir)/resource/$$p $$p; \
-#	done
-#	touch resources
 
 classes: genclasses
 
