@@ -48,12 +48,6 @@ public class Prefix
     private Process continuation;
 
     /**
-     * Cache of the output of the toString method
-     * as this class is immutable.
-     */
-    private String toStringCache;
-
-    /**
      * Constructs a new {@link Prefix}.
      *
      * @param action the action to perform.
@@ -61,8 +55,8 @@ public class Prefix
      */
     public Prefix(Action action, Process continuation)
     {
-	this.action = action;
-	this.continuation = continuation;
+        this.action = action;
+        this.continuation = continuation;
     }
 
     /**
@@ -73,9 +67,9 @@ public class Prefix
      */
     public Set<Transition> getPossibleTransitions()
     {
-	Set<Transition> trans = new HashSet<Transition>();
-	trans.add(new Transition(this, continuation, action.getLabel()));
-	return trans;
+        Set<Transition> trans = new HashSet<Transition>();
+        trans.add(new Transition(this, continuation, action.getLabel()));
+        return trans;
     }
 
     /**
@@ -85,9 +79,7 @@ public class Prefix
      */
     public String toString()
     {
-	if (toStringCache == null)
-	    toStringCache = action + "." + continuation;
-	return toStringCache;
+      return action + "." + continuation;
     }
 
 }

@@ -20,7 +20,9 @@
  * making a combined work based on this library.  Thus, the terms and
  * conditions of the GNU General Public License cover the whole
  * combination.
- */package uk.ac.shef.dcs.dynamite.ccs;
+ */
+
+package uk.ac.shef.dcs.dynamite.ccs;
 
 import java.util.Collections;
 import java.util.Set;
@@ -49,24 +51,24 @@ public class Nil
   {
   }
 
-    /**
-     * There are no possible transitions for Nil.
-     *
-     * @return an empty set.
-     */
-    public Set<Transition> getPossibleTransitions()
-    {
-	return Collections.emptySet();
-    }
+  /**
+   * There are no possible transitions for Nil.
+   *
+   * @return an empty set.
+   */
+  public Set<Transition> getPossibleTransitions()
+  {
+    return Collections.emptySet();
+  }
 
-    /**
-     * Returns a textual representation of the Nil process.
-     *
-     * @return {@code "0"}.
-     */
-    public String toString()
-    {
-	return "0";
-    }
+  /**
+   * Returns a textual representation of the Nil process.
+   *
+   * @return {@code "0"}.
+   */
+  public String toString()
+  {
+    return "0";
+  }
 
 }

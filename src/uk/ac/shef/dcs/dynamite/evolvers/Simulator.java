@@ -31,14 +31,15 @@ import uk.ac.shef.dcs.dynamite.lts.Transition;
 
 /**
  * Simulates process execution.  From the initial process,
- * each possible transition is made and the transitions.
+ * each possible transition is followed in a depth-first
+ * manner.
  *
  * @author Andrew John Hughes (gnu_andrew@member.fsf.org)
  */
 public class Simulator
   implements Evolver
 {
-  
+
   /**
    * Simulate the process evolving by following all
    * possible transitions from the current state.
@@ -50,12 +51,12 @@ public class Simulator
     System.out.println("Evolving process: " + p);
     for (Transition t : p.getPossibleTransitions())
       {
-	State f = t.getFinish();
-	if (f instanceof Process)
-	  {
-	    System.out.println("Following transition " + t);
-	    evolve((Process) f);
-	  }
+        State f = t.getFinish();
+        if (f instanceof Process)
+          {
+            System.out.println("Following transition " + t);
+            evolve((Process) f);
+          }
       }
   }
 
