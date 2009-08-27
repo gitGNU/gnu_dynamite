@@ -23,8 +23,10 @@
  */
 package uk.ac.shef.dcs.dynamite.evolvers;
 
+import uk.ac.shef.dcs.dynamite.ContextFactory;
 import uk.ac.shef.dcs.dynamite.Evolver;
 import uk.ac.shef.dcs.dynamite.Process;
+import uk.ac.shef.dcs.dynamite.UnsupportedContextException;
 
 import uk.ac.shef.dcs.dynamite.lts.State;
 import uk.ac.shef.dcs.dynamite.lts.Transition;
@@ -66,7 +68,9 @@ public class Simulator
    * @param args the command-line arguments.
    */
   public static void main(String[] args)
+    throws UnsupportedContextException
   {
+    ContextFactory.getInstance("CCS", "threaded", "dummy");
     new Simulator().evolve(uk.ac.shef.dcs.dynamite.ccs.Nil.NIL);
   }
 

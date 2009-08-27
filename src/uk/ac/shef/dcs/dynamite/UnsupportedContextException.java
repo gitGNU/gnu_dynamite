@@ -61,8 +61,8 @@ public class UnsupportedContextException
                                      String localityImpl, Throwable cause)
   {
     super("No ContextFactory implementations which support the " + calculus +
-          " calculus with " + channelImpl + " channels and " + localityImpl +
-          " localities are available.", cause);
+          " calculus with a " + channelImpl + " channel implementation and a " +
+          localityImpl + " locality implementation are available.", cause);
   }
 
 }

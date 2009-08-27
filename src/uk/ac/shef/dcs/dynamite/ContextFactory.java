@@ -70,13 +70,13 @@ public abstract class ContextFactory
         if (f.getCalculi().contains(calculus) &&
             f.getChannelImplementations().contains(channelImpl) &&
             f.getLocalityImplementations().contains(localityImpl))
-          return f;
+          return f.getInstance(calculus, channelImpl, localityImpl);
       }
     throw new UnsupportedContextException(calculus, channelImpl, localityImpl);
   }
 
   /**
-   * Returns the process calculi this {@code Context} supports.
+   * Returns the process calculi this {@code ContextFactory} supports.
    *
    * @return the process calculi supported.
    */

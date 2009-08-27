@@ -10,3 +10,5 @@ build.sh
 errors
 commits
 tmp
+recompile.sh
+*~
