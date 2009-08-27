@@ -29,6 +29,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.ServiceLoader;
 
+import uk.ac.shef.dcs.dynamite.Config;
+
 /**
  * Utility class providing methods for working with plugins.
  *
@@ -58,6 +60,9 @@ public final class Plugins
     Map<String,T> map = new HashMap<String,T>();
     for (T probeable : sl)
       {
+        Config.logger.config(String.format("Loaded plugin: %s %d.%d.%d%s", probeable.getName(),
+                                           probeable.getMajorVersion(), probeable.getMinorVersion(),
+                                           probeable.getMicroVersion(), probeable.getAdditionalInfo()));
         map.put(probeable.getName(), probeable);
       }
     return Collections.unmodifiableMap(map);

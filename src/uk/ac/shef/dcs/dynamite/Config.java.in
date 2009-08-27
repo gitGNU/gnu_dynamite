@@ -24,6 +24,10 @@
 
 package uk.ac.shef.dcs.dynamite;
 
+import java.util.logging.ConsoleHandler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -57,6 +61,11 @@ public class Config
   public static final String ADDITIONAL_INFO;
 
   /**
+   * The {@link Logger} instance for DynamiTE messages.
+   */
+  public static final Logger logger;
+
+  /**
    * Static initialiser to setup the version number.
    */
   static
@@ -75,6 +84,12 @@ public class Config
         throw new InternalError("Couldn't derive DynamiTE version number " +
                                 "from @PACKAGE_VERSION@");
       }
+    logger = Logger.getLogger("uk.ac.shef.dcs.dynamite");
+    logger.setUseParentHandlers(false);
+    logger.setLevel(Level.@DEBUG_LEVEL@);
+    ConsoleHandler handler = new ConsoleHandler();
+    handler.setLevel(Level.@DEBUG_LEVEL@);
+    logger.addHandler(handler);
   }
 
   /**

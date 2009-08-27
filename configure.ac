@@ -28,7 +28,7 @@ dnl combination.
 dnl Process this file with autoconf to produce a configure script.
 
 dnl Initialise autoconf
-AC_INIT([DynamiTE],[0.0.0+cvs],[dynamite-dev@nongnu.org],[dynamite])
+AC_INIT([DynamiTE],[0.0.0+git],[dynamite-dev@nongnu.org],[dynamite])
 AC_CONFIG_SRCDIR(src/uk/ac/shef/dcs/dynamite/Process.java)
 
 dnl Initialise automake
@@ -51,6 +51,9 @@ CLASSPATH_WITH_DYNAMITE
 
 dnl Enable API docs?
 CLASSPATH_WITH_GJDOC
+
+dnl Set debug level
+DYNAMITE_WITH_DEBUG_LEVEL
 
 dnl Generate classlist and other output
 AC_CONFIG_FILES([Makefile

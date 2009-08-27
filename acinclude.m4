@@ -346,3 +346,27 @@ AC_DEFUN([CLASSPATH_CHECK_JAVAC],
     AC_PATH_PROG(JAVAC, "javac")
   fi
 ])
+
+AC_DEFUN([DYNAMITE_WITH_DEBUG_LEVEL],
+[
+  AC_MSG_CHECKING(which debugging level to use)
+  AC_ARG_WITH([debug-level],
+	      [AS_HELP_STRING(--with-debug-level,output level for messages (SEVERE,WARNING,INFO,CONFIG) (default=WARNING))],
+  [
+    if test "x${withval}" != x && test "x${withval}" != xyes && test "x${withval}" != xno; then
+       if test "x${withval}" != "xSEVERE" && test "x${withval}" != "xWARNING" &&
+          test "x${withval}" != "xINFO" && test "x${withval}" != "xCONFIG"; then
+	       AC_MSG_ERROR([Invalid debug level: ${withval}]);
+       else
+	       DEBUG_LEVEL=${withval};
+       fi
+    else
+       DEBUG_LEVEL="WARNING";
+    fi
+  ],
+  [ 
+    DEBUG_LEVEL="WARNING";
+  ])
+  AC_MSG_RESULT([$DEBUG_LEVEL]);
+  AC_SUBST(DEBUG_LEVEL)
+])
