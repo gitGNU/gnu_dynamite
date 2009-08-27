@@ -1,0 +1,88 @@
+/* Config.java - Configuration information used by DynamiTE.
+ * Copyright (C) 2009 The University of Sheffield
+ *
+ * This file is part of DynamiTE.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * Linking this library statically or dynamically with other modules is
+ * making a combined work based on this library.  Thus, the terms and
+ * conditions of the GNU General Public License cover the whole
+ * combination.
+ */
+
+package uk.ac.shef.dcs.dynamite;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+/**
+ * This class provides configuration information
+ * relating to the current installation of DynamiTE.
+ *
+ * @author Andrew John Hughes (gnu_andrew@member.fsf.org)
+ */
+public class Config
+{
+
+  /**
+   * The major version number of DynamiTE
+   */
+  public static final int MAJOR_VERSION;
+
+  /**
+   * The minor version number of DynamiTE
+   */
+  public static final int MINOR_VERSION;
+
+  /**
+   * The micro version number of DynamiTE
+   */
+  public static final int MICRO_VERSION;
+
+  /**
+   * Any additional version information for DynamiTE
+   */
+  public static final String ADDITIONAL_INFO;
+
+  /**
+   * Static initialiser to setup the version number.
+   */
+  static
+  {
+    Pattern pattern = Pattern.compile("^(\\d)*\\.(\\d)*\\.(\\d)(.*)$");
+    Matcher matcher = pattern.matcher("@PACKAGE_VERSION@");
+    if (matcher.matches() && matcher.groupCount() == 4)
+      {
+        MAJOR_VERSION = Integer.parseInt(matcher.group(1));
+        MINOR_VERSION = Integer.parseInt(matcher.group(2));
+        MICRO_VERSION = Integer.parseInt(matcher.group(3));
+        ADDITIONAL_INFO = matcher.group(4);
+      }
+    else
+      {
+        throw new InternalError("Couldn't derive DynamiTE version number " +
+                                "from @PACKAGE_VERSION@");
+      }
+  }
+
+  /**
+   * Singleton class.
+   */
+  private Config()
+  {
+  }
+
+}
+

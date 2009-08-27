@@ -1,4 +1,4 @@
-/* Probeable.java - Classes that can be probed for information about themselves.
+/* DynamiTEProbeable.java - A base class for Probeable implementations.
  * Copyright (C) 2009 The University of Sheffield
  *
  * This file is part of DynamiTE.
@@ -24,45 +24,43 @@
 
 package uk.ac.shef.dcs.dynamite.plugins;
 
+import uk.ac.shef.dcs.dynamite.Config;
+
 /**
- * A {@link Probeable} class is one that is loaded
- * by the plugin mechanism.  It must implement methods
- * in this class in order to provide information about
- * itself, which is then used to determine whether or not
- * the plugin fits the requirements of the plugin user.
+ * An abstract base class for implementations of
+ * {@link Probeable} which are part of the DynamiTE
+ * framework.  This provides the versioning information
+ * using DynamiTE's version information from {@link Config}.
  *
  * @author Andrew John Hughes (gnu_andrew@member.fsf.org)
  */
-public interface Probeable
+public abstract class DynamiTEProbeable
+  implements Probeable
 {
 
   /**
-   * Returns the name of this plugin.
-   *
-   * @return the name of the plugin.
-   */
-  public String getName();
-
-  /**
    * Returns the major version of this plugin.
-   *
-   * @return the major version.
    */
-  public int getMajorVersion();
+  public int getMajorVersion()
+  {
+    return Config.MAJOR_VERSION;
+  }
 
   /**
    * Returns the minor version of this plugin.
-   *
-   * @return the minor version.
    */
-  public int getMinorVersion();
+  public int getMinorVersion()
+  {
+    return Config.MINOR_VERSION;
+  }
 
   /**
    * Returns the micro version of this plugin.
-   *
-   * @return the micro version.
    */
-  public int getMicroVersion();
+  public int getMicroVersion()
+  {
+    return Config.MICRO_VERSION;
+  }
 
   /**
    * Returns any additional information about the
@@ -70,6 +68,9 @@ public interface Probeable
    *
    * @return any additional information.
    */
-  public String getAdditionalInfo();
+  public String getAdditionalInfo()
+  {
+    return Config.ADDITIONAL_INFO;
+  }
 
 }
