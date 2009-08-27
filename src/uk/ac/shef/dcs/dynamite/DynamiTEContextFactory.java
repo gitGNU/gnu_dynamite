@@ -106,6 +106,17 @@ public class DynamiTEContextFactory
   private final String localityImpl;
 
   /**
+   * Default constructor so the factory can be instantiated by
+   * the {@link java.util.ServiceLoader} mechanism.
+   */
+  public DynamiTEContextFactory()
+  {
+    this.calculus = null;
+    this.channelImpl = null;
+    this.localityImpl = null;
+  }
+
+  /**
    * Constructs a new instance of {@code DynamiteContextFactory}
    * for a given process calculus, channel and locality implementation.
    *

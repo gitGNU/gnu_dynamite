@@ -60,24 +60,25 @@ endif # INSTALL_ZIP
 
 if INSTALL_CLASS_FILES
 
-noinst_DATA = genclasses compile-classes # resources
+noinst_DATA = genclasses compile-classes resources
 
 install-data-local: genclasses compile-classes
 	-$(top_srcdir)/mkinstalldirs $(DESTDIR)$(pkgdatadir)
-	cp -R uk $(DESTDIR)$(pkgdatadir)
+	cp -R uk META-INF $(DESTDIR)$(pkgdatadir)
 
 # FIXME - should mimic doc/api/Makefile.am instead...
 uninstall-local:
 	rm -rf $(DESTDIR)$(pkgdatadir)/uk
+	rm -rf $(DESTDIR)$(pkgdatadir)/META-INF
 
 endif # INSTALL_CLASS_FILES
 
 .PHONY: genclasses
 
-dynamite.jar: classes compile-classes
+dynamite.jar: classes compile-classes resources
 	if test "$(JAR)" != ""; then \
 	  rm -f dynamite.jar; \
-	  $(JAR) cf dynamite.jar `find uk -name '*class'` > /dev/null; \
+	  $(JAR) cf dynamite.jar uk META-INF > /dev/null; \
 	fi
 if FOUND_GCJ
 	$(GCJ) -shared -fjni -findirect-dispatch -fPIC -o dynamite.jar.so dynamite.jar
@@ -112,3 +113,11 @@ dist-hook:
 # Omit files listed in standard.omit.
 	( cd $(top_distdir)/lib ; cat $(top_builddir)/lib/standard.omit | sed -e 's/\$$//' | sed -e 's/\/\.\*//' | xargs rm -fr )
 
+resources:
+	@list=`cd $(top_srcdir)/resource && $(FIND) META-INF -name \*\.in -prune -o -type f -print`; \
+	for p in $$list; do \
+          dirname=`dirname $$p`; \
+          if ! test -d "$$dirname"; then @mkdir_p@ "$$dirname"; fi; \
+	  cp $(top_srcdir)/resource/$$p $$p; \
+	done
+	touch resources
