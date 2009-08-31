@@ -24,6 +24,11 @@
 
 package uk.ac.shef.dcs.dynamite;
 
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.ConcurrentHashMap;
+
+import uk.ac.shef.dcs.dynamite.lts.Label;
+
 /**
  * Represents the context in which a process calculus operates.
  * This includes the set of names and co-names for calculi based
@@ -43,17 +48,27 @@ public abstract class Context
   /**
    * The calculus supported by this context.
    */
-  private final String calculus;
+  private final Calculus calculus;
 
   /**
    * The channel implementation used by this context.
    */
-  private final String channelImpl;
+  private final ChannelFactory channelImpl;
 
   /**
    * The locality implementation used by this context.
    */
-  private final String localityImpl;
+  private final LocalityFactory localityImpl;
+
+  /**
+   * The map of names to transition labels.
+   */
+  private ConcurrentMap<String,Label> names;
+
+  /**
+   * The map of co-names to transition labels.
+   */
+  private ConcurrentMap<String,Label> conames;
 
   /**
    * Provides a {@link Context} for the specified calculus,
@@ -64,7 +79,8 @@ public abstract class Context
    * @param localityImpl the locality implementation to use.
    * @throws NullPointerException if any arguments are null.
    */
-  public Context(String calculus, String channelImpl, String localityImpl)
+  public Context(Calculus calculus, ChannelFactory channelImpl,
+                 LocalityFactory localityImpl)
   {
     if (calculus == null || channelImpl == null || localityImpl == null)
       throw new NullPointerException("Null argument(s) found: calculus=" + calculus +
@@ -73,6 +89,8 @@ public abstract class Context
     this.calculus = calculus;
     this.channelImpl = channelImpl;
     this.localityImpl = localityImpl;
+    names = new ConcurrentHashMap<String,Label>();
+    conames = new ConcurrentHashMap<String,Label>();
   }
 
   /**
@@ -95,4 +113,146 @@ public abstract class Context
     return currentContext;
   }
 
+  /**
+   * Registers a new name for use in calculus
+   * constructions.  The name is checked for validity.
+   * If valid, a transition label for the name is returned.
+   *
+   * @param name the new name to register.
+   * @return a transition label for this name.
+   * @throws NullPointerException if the name is null.
+   * @throws IllegalArgumentException if the name is invalid.
+   * @throws NameNotFreeException if the name is already in use.
+   * @throws UnsupportedOperationException if the calculus does
+   *                                       not support names.
+   */
+  public Label registerName(String name)
+    throws NameNotFreeException
+  {
+    return register(names, name, name);
+  }
+
+  /**
+   * Registers a new co-name for use in calculus
+   * constructions.  The name is checked for validity.
+   * If valid, a transition label for the name is returned.
+   *
+   * @param name the new co-name to register.
+   * @return a transition label for this name.
+   * @throws NullPointerException if the name is null.
+   * @throws IllegalArgumentException if the name is invalid.
+   * @throws NameNotFreeException if the name is already in use.
+   * @throws UnsupportedOperationException if the calculus does
+   *                                       not support names.
+   */
+  public Label registerConame(String name)
+    throws NameNotFreeException
+  {
+    return register(conames, name, '\u035e' + name);
+  }
+
+  /**
+   * Registers a name in the supplied map, after first
+   * checking that the name is not null, valid and free.
+   *
+   * @param names the map to register the name in.
+   * @param name the new name to register.
+   * @param labelText the text to use for the label.
+   * @return a transition label for this name.
+   * @throws NullPointerException if the name is null.
+   * @throws IllegalArgumentException if the name is invalid.
+   * @throws NameNotFreeException if the name is already in use.
+   * @throws UnsupportedOperationException if the calculus does
+   *                                       not support names.
+   */
+  private Label register(ConcurrentMap<String,Label> names,
+                         String name, String labelText)
+    throws NameNotFreeException
+  {
+    if (name == null)
+      throw new NullPointerException("Null names are not allowed.");
+    Label l = calculus.getLabel(labelText);
+    Label mapLabel = names.putIfAbsent(name, l);
+    if (mapLabel != null)
+      throw new NameNotFreeException(name);
+    return l;
+  }
+
+  /**
+   * Returns the {@link InputChannel} for the specified name.
+   *
+   * @param name the name of the input channel.
+   * @return the input channel for the given name.
+   * @throws NullPointerException if the name is null.
+   * @throws IllegalArgumentException if the name is not registered.
+   */
+  public InputChannel getInputChannel(String name)
+  {
+    if (names.get(name) == null)
+      throw new IllegalArgumentException("The name, " + name +
+                                         ", is not registered.");
+    return channelImpl.getInputChannel(name);
+  }
+
+  /**
+   * Returns the {@link OutputChannel} for the specified name.
+   *
+   * @param name the name of the output channel.
+   * @return the output channel for the given name.
+   * @throws NullPointerException if the name is null.
+   * @throws IllegalArgumentException if the name is not registered.
+   */
+  public OutputChannel getOutputChannel(String name)
+  {
+    if (names.get(name) == null)
+      throw new IllegalArgumentException("The name, " + name +
+                                         ", is not registered.");
+    return channelImpl.getOutputChannel(name);
+  }
+
+  /**
+   * Stores the supplied data in the specified channel's
+   * repository.  Data read by a channel is stored in a specific
+   * place maintained by the {@link ChannelFactory} so that it
+   * can later be retrieved by user code.  Any previous data
+   * stored is lost.
+   *
+   * @param name the name of the channel.
+   * @param data the data to store.
+   * @throw NullPointerException if the channel name is null.
+   */
+  public void store(String name, Object data)
+  {
+    channelImpl.store(name, data);
+  }
+
+  /**
+   * Retrieves any data stored in the specified channel's
+   * repository.  Data read by a channel is stored in a specific
+   * place maintained by the {@link ChannelFactory} so that it
+   * can be retrieved using this method from user code.
+   *
+   * @param name the name of the channel.
+   * @return the data stored or null if there is no data stored.
+   * @throw NullPointerException if the channel name is null.
+   */
+  public Object retrieve(String name)
+  {
+    return channelImpl.retrieve(name);
+  }
+
+  /**
+   * Returns a textual representation of this context.
+   *
+   * @return a textual representation.
+   */
+  public String toString()
+  {
+    return getClass().getName() + "[calculus=" + calculus +
+      ",channelImpl=" + channelImpl +
+      ",localityImpl=" + localityImpl +
+      ",names=" + names.keySet() +
+      ",conames=" + conames.keySet() +
+      "]";
+  }
 }

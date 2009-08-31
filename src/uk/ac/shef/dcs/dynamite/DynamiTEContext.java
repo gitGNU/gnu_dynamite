@@ -43,8 +43,8 @@ public class DynamiTEContext
    * @param channelImpl the channel implementation to use.
    * @param localityImpl the locality implementation to use.
    */
-  public DynamiTEContext(String calculus, String channelImpl,
-                         String localityImpl)
+  public DynamiTEContext(Calculus calculus, ChannelFactory channelImpl,
+                         LocalityFactory localityImpl)
   {
     super(calculus, channelImpl, localityImpl);
   }

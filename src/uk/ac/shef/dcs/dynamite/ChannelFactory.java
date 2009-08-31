@@ -54,4 +54,24 @@ public interface ChannelFactory
    */
   public OutputChannel getOutputChannel(String name);
 
+  /**
+   * Stores the supplied data in the repository of the specified
+   * channel.
+   *
+   * @param name the name of the channel.
+   * @param data the data to store.
+   * @throw NullPointerException if the channel name is null.
+   */
+  public void store(String name, Object data);
+
+  /**
+   * Retrieves the data stored in the repository of the specified
+   * channel.
+   *
+   * @param name the name of the channel.
+   * @return the stored data, or null if nothing is stored.
+   * @throw NullPointerException if the channel name is null.
+   */
+  public Object retrieve(String name);
+
 }

@@ -1,5 +1,5 @@
-/* CCSLabel.java - A label on a CCS transition.
- * Copyright (C) 2007 The University of Sheffield
+/* NameNotFreeException.java - Thrown if a name is already in use.
+ * Copyright (C) 2009 The University of Sheffield
  *
  * This file is part of DynamiTE.
  *
@@ -21,38 +21,41 @@
  * conditions of the GNU General Public License cover the whole
  * combination.
  */
-package uk.ac.shef.dcs.dynamite.ccs;
 
-import uk.ac.shef.dcs.dynamite.lts.Label;
+package uk.ac.shef.dcs.dynamite;
 
 /**
- * Represents a CCS transition label.
+ * Thrown if a user attempts to register a
+ * name which is already in use.
  *
  * @author Andrew John Hughes (gnu_andrew@member.fsf.org)
  */
-public class CCSLabel
-    extends Label
+public class NameNotFreeException
+  extends Exception
 {
 
   /**
-   * Constructs a new CCS label using the given string.
+   * Constructs a new {@link NameNotFreeException}
+   * for the given name with an unknown cause.
    *
-   * @param label the label to use.
-   * @throws IllegalArgumentException if the label is invalid.
+   * @param name the name already in use.
    */
-  public CCSLabel(String label)
+  public NameNotFreeException(String name)
   {
-    super(label);
+    this(name, null);
   }
 
   /**
-   * CCS allows any label, so this method always returns true.
+   * Constructs a new {@link NameNotFreeException}
+   * for the given name with the specified cause.
    *
-   * @param label the label to check.
-   * @return true.
+   * @param name the name already in use.
+   * @param cause the cause of this exception.
    */
-  public boolean isValid(String label)
+  public NameNotFreeException(String name, Throwable cause)
   {
-    return true;
+    super("The name, " + name + ", is already in use.", cause);
   }
+
 }
+

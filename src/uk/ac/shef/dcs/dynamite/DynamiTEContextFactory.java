@@ -207,7 +207,9 @@ public class DynamiTEContextFactory
    */
   public Context getContext()
   {
-    return new DynamiTEContext(calculus, channelImpl, localityImpl);
+    return new DynamiTEContext(calculi.get(calculus),
+                               channelImpls.get(channelImpl),
+                               localityImpls.get(localityImpl));
   }
 
 }

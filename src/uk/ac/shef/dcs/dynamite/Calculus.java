@@ -26,6 +26,8 @@ package uk.ac.shef.dcs.dynamite;
 
 import java.util.Collection;
 
+import uk.ac.shef.dcs.dynamite.lts.Label;
+
 import uk.ac.shef.dcs.dynamite.plugins.Probeable;
 
 /**
@@ -45,5 +47,15 @@ public interface Calculus
    * @return the syntax of the calculus.
    */
   public Collection<Class<? extends Process>> getSyntax();
+
+  /**
+   * Returns a transition label using the given
+   * text, if the text is valid for this particular
+   * calculus.
+   *
+   * @param label the label for the transition.
+   * @throws IllegalArgumentException if the name is invalid.
+   */
+  public Label getLabel(String label);
 
 }

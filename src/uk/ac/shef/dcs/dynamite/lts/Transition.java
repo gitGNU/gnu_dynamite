@@ -90,4 +90,14 @@ public class Transition
     return label;
   }
 
+  /**
+   * Returns a textual representation of this transition.
+   *
+   * @return a textual representation.
+   */
+  public String toString()
+  {
+    return start + " --" + label + "--> " + finish;
+  }
+
 }

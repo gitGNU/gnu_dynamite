@@ -60,4 +60,14 @@ public abstract class Label
      */
     public abstract boolean isValid(String label);
 
+  /**
+   * Returns a textual representation of this label.
+   *
+   * @return a textual representation.
+   */
+  public String toString()
+  {
+    return label;
+  }
+
 }

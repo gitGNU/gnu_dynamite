@@ -1,5 +1,5 @@
 /* Action.java - A general CCS action used to unify channels and tau.
- * Copyright (C) 2007 The University of Sheffield
+ * Copyright (C) 2007, 2009 The University of Sheffield
  *
  * This file is part of DynamiTE.
  *
@@ -23,10 +23,7 @@
  */
 package uk.ac.shef.dcs.dynamite.ccs;
 
-import java.util.Set;
-
-import uk.ac.shef.dcs.dynamite.Process;
-import uk.ac.shef.dcs.dynamite.lts.Transition;
+import uk.ac.shef.dcs.dynamite.lts.Label;
 
 /**
  * Represents a CCS action, unifying the silent action
@@ -37,26 +34,25 @@ import uk.ac.shef.dcs.dynamite.lts.Transition;
 public abstract class Action
 {
 
-    /**
-     * The label used to represent this action.
-     */
-    private CCSLabel label;
+  /**
+   * Returns the label of this action.
+   */
+  public abstract Label getLabel();
 
-    /**
-     * Constructs a new {@link Action}.
-     *
-     * @param label the label to use.
-     */
-    public Action(String label)
-    {
-	this.label = new CCSLabel(label);
-    }
+  /**
+   * Returns a textual representation of this action.
+   */
+  public String toString()
+  {
+    return getLabel().toString();
+  }
 
-    /**
-     * Returns the label of this action.
-     */
-    public CCSLabel getLabel()
-    {
-	return label;
-    }
+  /**
+   * Perform this action.
+   *
+   * @throws Exception if a problem occurs.
+   */
+  public abstract void perform()
+    throws Exception;
+
 }

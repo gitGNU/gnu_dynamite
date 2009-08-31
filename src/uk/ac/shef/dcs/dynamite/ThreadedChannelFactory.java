@@ -46,11 +46,18 @@ public class ThreadedChannelFactory
   private ConcurrentMap<String,ThreadedChannel> channels;
 
   /**
+   * The map of channel names to storage repositories
+   * in the form of a {@link ThreadLocal}.
+   */
+  private ConcurrentMap<String,ThreadLocal<Object>> repositories;
+
+  /**
    * Constructs a new {@link ThreadedChannelFactory}.
    */
   public ThreadedChannelFactory()
   {
     channels = new ConcurrentHashMap<String,ThreadedChannel>();
+    repositories = new ConcurrentHashMap<String,ThreadLocal<Object>>();
   }
 
   /**
@@ -65,8 +72,6 @@ public class ThreadedChannelFactory
    */
   public ThreadedChannel createOrReturnChannel(String name)
   {
-    if (name == null)
-      throw new NullPointerException("Channel name was null");
     ThreadedChannel channel = channels.get(name);
     if (channel == null)
       {
@@ -110,6 +115,41 @@ public class ThreadedChannelFactory
   public String getName()
   {
     return "threaded";
+  }
+
+  /**
+   * Stores the supplied data in the repository of the specified
+   * channel.
+   *
+   * @param name the name of the channel.
+   * @param data the data to store.
+   */
+  public void store(String name, Object data)
+  {
+    ThreadLocal<Object> store = repositories.get(name);
+    if (store == null)
+      {
+        ThreadLocal<Object> newStore = new ThreadLocal<Object>();
+        store = repositories.putIfAbsent(name, newStore);
+        if (store == null)
+          store = newStore;
+      }
+    store.set(data);
+  }
+
+  /**
+   * Retrieves the data stored in the repository of the specified
+   * channel.
+   *
+   * @param name the name of the channel.
+   * @return the stored data, or null if nothing is stored.
+   */
+  public Object retrieve(String name)
+  {
+    ThreadLocal<Object> store = repositories.get(name);
+    if (store == null)
+      return null;
+    return store.get();
   }
 
 }

@@ -26,10 +26,13 @@ package uk.ac.shef.dcs.dynamite.evolvers;
 import uk.ac.shef.dcs.dynamite.Context;
 import uk.ac.shef.dcs.dynamite.ContextFactory;
 import uk.ac.shef.dcs.dynamite.Evolver;
+import uk.ac.shef.dcs.dynamite.NameNotFreeException;
 import uk.ac.shef.dcs.dynamite.Process;
 import uk.ac.shef.dcs.dynamite.UnsupportedContextException;
 
+import uk.ac.shef.dcs.dynamite.ccs.Name;
 import uk.ac.shef.dcs.dynamite.ccs.Nil;
+import uk.ac.shef.dcs.dynamite.ccs.Prefix;
 import uk.ac.shef.dcs.dynamite.ccs.Sum;
 
 import uk.ac.shef.dcs.dynamite.lts.State;
@@ -72,12 +75,15 @@ public class Simulator
    * @param args the command-line arguments.
    */
   public static void main(String[] args)
-    throws UnsupportedContextException
+    throws UnsupportedContextException, NameNotFreeException
   {
     Context.setContext(ContextFactory.getInstance("CCS", "threaded", "dummy").getContext());
+    Process a = new Prefix(new Name("a"), Nil.NIL);
     Simulator s = new Simulator();
     s.evolve(Nil.NIL);
-    s.evolve(new Sum(Nil.NIL, Nil.NIL));
+    s.evolve(a);
+    s.evolve(new Sum(a, Nil.NIL));
+    System.out.println("Context: " + Context.getContext());
   }
 
 }

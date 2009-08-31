@@ -32,6 +32,8 @@ import uk.ac.shef.dcs.dynamite.Calculus;
 import uk.ac.shef.dcs.dynamite.DynamiTEProbeable;
 import uk.ac.shef.dcs.dynamite.Process;
 
+import uk.ac.shef.dcs.dynamite.lts.Label;
+
 /**
  * <p>
  * This class provides an implementation of {@link Calculus}
@@ -61,6 +63,7 @@ public class CCS
     Set<Class<? extends Process>> syntax = new HashSet<Class<? extends Process>>();
     syntax.add(Nil.class);
     syntax.add(Prefix.class);
+    syntax.add(Sum.class);
     return syntax;
   }
 
@@ -72,7 +75,18 @@ public class CCS
     return "CCS";
   }
 
+  /**
+   * Returns a transition label with the given text,
+   * provided it is not using the reserved &tau; label
+   * and is registered.
+   *
+   * @param label the label for the transition.
+   * @throws IllegalArgumentException if the name is equal to &tau;
+   *                                  or has not been registered.
+   */
+  public Label getLabel(String name)
+  {
+    return new CCSLabel(name);
+  }
 
 }
-
-
