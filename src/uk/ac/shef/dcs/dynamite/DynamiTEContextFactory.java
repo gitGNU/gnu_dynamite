@@ -136,7 +136,7 @@ public class DynamiTEContextFactory
   }
 
   /**
-   * Returns an instance of {@code DynamiteContextFactory} for the
+   * Creates an instance of {@code DynamiteContextFactory} for the
    * given process calculus, {@code calculus}.  The channels
    * provided by the calculus should use the channel implementation,
    * {@code channelImpl}, and localities (if applicable) should
@@ -154,17 +154,15 @@ public class DynamiTEContextFactory
    *                     the calculus.
    * @return an instance of {@code ContextFactory} which meets the specified
    *         requirements.
-   * @throws UnsupportedContextException if an appropriate factory can not
-   *                                     be returned.
    *
    * @see ContextFactory#getInstance(String, String, String)
    * @see ContextFactory#getCalculi
    * @see ContextFactory#getChannelImplementations
    * @see ContextFactory#getLocalityImplementations
    */
-  public static ContextFactory getInstance(String calculus,
-                                           String channelImpl,
-                                           String localityImpl)
+  public ContextFactory createInstance(String calculus,
+                                       String channelImpl,
+                                       String localityImpl)
   {
     return new DynamiTEContextFactory(calculus, channelImpl, localityImpl);
   }

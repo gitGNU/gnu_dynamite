@@ -70,7 +70,7 @@ public abstract class ContextFactory
         if (f.getCalculi().contains(calculus) &&
             f.getChannelImplementations().contains(channelImpl) &&
             f.getLocalityImplementations().contains(localityImpl))
-          return f.getInstance(calculus, channelImpl, localityImpl);
+          return f.createInstance(calculus, channelImpl, localityImpl);
       }
     throw new UnsupportedContextException(calculus, channelImpl, localityImpl);
   }
@@ -95,5 +95,34 @@ public abstract class ContextFactory
    * @return the locality implementations supported.
    */
   public abstract Collection<String> getLocalityImplementations();
+
+  /**
+   * Creates an instance of {@code DynamiteContextFactory} for the
+   * given process calculus, {@code calculus}.  The channels
+   * provided by the calculus should use the channel implementation,
+   * {@code channelImpl}, and localities (if applicable) should
+   * use the locality implementation, {@code localityImpl}.  By the
+   * time this method is called, the implementations are guaranteed
+   * to be available as {@code ContextFactory} has checked by calling
+   * the {@code getCalculi()}, {@code getChannelImplementations()} and
+   * {@code getLocalityImplementations()} methods.
+   *
+   * @param calculus the process calculus which this {@code ContextFactory}
+   *                 should provide a {@code Context} for.
+   * @param channelImpl the type of channel implementation to be used by
+   *                    the calculus.
+   * @param localityImpl the type of locality implementation to be used by
+   *                     the calculus.
+   * @return an instance of {@code ContextFactory} which meets the specified
+   *         requirements.
+   *
+   * @see #getInstance(String, String, String)
+   * @see #getCalculi
+   * @see #getChannelImplementations
+   * @see #getLocalityImplementations
+   */
+  public abstract ContextFactory createInstance(String calculus,
+                                                String channelImpl,
+                                                String localityImpl);
 
 }
