@@ -1,4 +1,4 @@
-/* ChannelFactory.java - A factory that provides channels for a process calculus.
+/* OutputChannel.java - A channel on which output may be written.
  * Copyright (C) 2009 The University of Sheffield
  *
  * This file is part of DynamiTE.
@@ -24,34 +24,26 @@
 
 package uk.ac.shef.dcs.dynamite;
 
-import uk.ac.shef.dcs.dynamite.plugins.Probeable;
+import java.io.IOException;
 
 /**
- * Provides {@link InputChannel}s and {@link OutputChannel}s
- * for use by a process calculus.
+ * Output channels provide a mechanism for sending data
+ * out over a named channel, from which it may be received
+ * by an {@link InputChannel}.
  *
  * @author Andrew John Hughes (gnu_andrew@member.fsf.org)
  */
-public interface ChannelFactory
-  extends Probeable
+public interface OutputChannel
 {
 
   /**
-   * Creates or returns an {@link InputChannel} with the given name.
+   * Transmit data over the channel.
    *
-   * @param name the name of the input channel.
-   * @return an input channel with the given name.
-   * @throw NullPointerException if the channel name is null.
+   * @param data the item to transmit.
+   * @throws IOException if something occurs that prevents the
+   *                     write from taking place.
    */
-  public InputChannel getInputChannel(String name);
-
-  /**
-   * Creates or returns an {@link OutputChannel} with the given name.
-   *
-   * @param name the name of the output channel.
-   * @return an output channel with the given name.
-   * @throw NullPointerException if the channel name is null.
-   */
-  public OutputChannel getOutputChannel(String name);
+  public void write(Object data)
+    throws IOException;
 
 }

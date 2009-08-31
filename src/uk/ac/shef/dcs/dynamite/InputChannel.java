@@ -1,4 +1,4 @@
-/* ChannelFactory.java - A factory that provides channels for a process calculus.
+/* InputChannel.java - A channel from which input may be read.
  * Copyright (C) 2009 The University of Sheffield
  *
  * This file is part of DynamiTE.
@@ -24,34 +24,27 @@
 
 package uk.ac.shef.dcs.dynamite;
 
-import uk.ac.shef.dcs.dynamite.plugins.Probeable;
+import java.io.IOException;
 
 /**
- * Provides {@link InputChannel}s and {@link OutputChannel}s
- * for use by a process calculus.
+ * Input channels provide a method of reading in
+ * data from a named source, which is assumed to be
+ * connected to an output channel with the corresponding
+ * name.  The input channel blocks until data is read.
  *
  * @author Andrew John Hughes (gnu_andrew@member.fsf.org)
  */
-public interface ChannelFactory
-  extends Probeable
+public interface InputChannel
 {
 
   /**
-   * Creates or returns an {@link InputChannel} with the given name.
+   * Returns data from the channel.
    *
-   * @param name the name of the input channel.
-   * @return an input channel with the given name.
-   * @throw NullPointerException if the channel name is null.
+   * @return a data item.
+   * @throws IOException if something occurs that prevents the
+   *                     read from taking place.
    */
-  public InputChannel getInputChannel(String name);
-
-  /**
-   * Creates or returns an {@link OutputChannel} with the given name.
-   *
-   * @param name the name of the output channel.
-   * @return an output channel with the given name.
-   * @throw NullPointerException if the channel name is null.
-   */
-  public OutputChannel getOutputChannel(String name);
+  public Object read()
+    throws IOException;
 
 }
