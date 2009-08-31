@@ -125,4 +125,14 @@ public abstract class ContextFactory
                                                 String channelImpl,
                                                 String localityImpl);
 
+  /**
+   * Returns a new {@link Context} instance which supports
+   * the calculus specified in the creation of this factory,
+   * and uses the channel and locality implementations given
+   * at that same point.
+   *
+   * @return a new {@link Context} instance.
+   */
+  public abstract Context getContext();
+
 }
