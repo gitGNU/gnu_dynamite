@@ -22,9 +22,9 @@
  * combination.
  */
 
-package uk.ac.shef.dcs.dynamite.plugins;
+package uk.ac.shef.dcs.dynamite;
 
-import uk.ac.shef.dcs.dynamite.Config;
+import uk.ac.shef.dcs.dynamite.plugins.Probeable;
 
 /**
  * An abstract base class for implementations of

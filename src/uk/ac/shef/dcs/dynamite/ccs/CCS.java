@@ -29,8 +29,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 import uk.ac.shef.dcs.dynamite.Calculus;
+import uk.ac.shef.dcs.dynamite.DynamiTEProbeable;
 import uk.ac.shef.dcs.dynamite.Process;
-import uk.ac.shef.dcs.dynamite.plugins.DynamiTEProbeable;
 
 /**
  * <p>

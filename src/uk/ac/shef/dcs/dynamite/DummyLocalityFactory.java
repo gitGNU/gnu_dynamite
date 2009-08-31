@@ -24,8 +24,6 @@
 
 package uk.ac.shef.dcs.dynamite;
 
-import uk.ac.shef.dcs.dynamite.plugins.DynamiTEProbeable;
-
 /**
  * A {@link LocalityFactory} implementation that
  * does nothing.

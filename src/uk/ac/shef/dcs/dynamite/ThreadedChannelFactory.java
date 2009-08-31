@@ -27,8 +27,6 @@ package uk.ac.shef.dcs.dynamite;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ConcurrentHashMap;
 
-import uk.ac.shef.dcs.dynamite.plugins.DynamiTEProbeable;
-
 /**
  * This class provides an implementation of
  * {@link ChannelFactory} for the channel implementation
