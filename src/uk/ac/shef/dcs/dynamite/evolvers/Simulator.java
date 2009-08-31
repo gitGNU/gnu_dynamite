@@ -28,6 +28,9 @@ import uk.ac.shef.dcs.dynamite.Evolver;
 import uk.ac.shef.dcs.dynamite.Process;
 import uk.ac.shef.dcs.dynamite.UnsupportedContextException;
 
+import uk.ac.shef.dcs.dynamite.ccs.Nil;
+import uk.ac.shef.dcs.dynamite.ccs.Sum;
+
 import uk.ac.shef.dcs.dynamite.lts.State;
 import uk.ac.shef.dcs.dynamite.lts.Transition;
 
@@ -71,7 +74,9 @@ public class Simulator
     throws UnsupportedContextException
   {
     ContextFactory.getInstance("CCS", "threaded", "dummy");
-    new Simulator().evolve(uk.ac.shef.dcs.dynamite.ccs.Nil.NIL);
+    Simulator s = new Simulator();
+    s.evolve(Nil.NIL);
+    s.evolve(new Sum(Nil.NIL, Nil.NIL));
   }
 
 }

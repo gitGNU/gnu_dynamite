@@ -37,49 +37,49 @@ import uk.ac.shef.dcs.dynamite.lts.Transition;
 public class Prefix
     implements Process
 {
-    /**
-     * The action.
-     */
-    private Action action;
+  /**
+   * The action.
+   */
+  private Action action;
 
-    /**
-     * The continuation.
-     */
-    private Process continuation;
+  /**
+   * The continuation.
+   */
+  private Process continuation;
 
-    /**
-     * Constructs a new {@link Prefix}.
-     *
-     * @param action the action to perform.
-     * @param continuation the continuing process.
-     */
-    public Prefix(Action action, Process continuation)
-    {
-        this.action = action;
-        this.continuation = continuation;
-    }
+  /**
+   * Constructs a new {@link Prefix}.
+   *
+   * @param action the action to perform.
+   * @param continuation the continuing process.
+   */
+  public Prefix(Action action, Process continuation)
+  {
+    this.action = action;
+    this.continuation = continuation;
+  }
 
-    /**
-     * There is one possible transition from this process
-     * to the continuation via performing the action.
-     *
-     * @return a singleton set containing the transition.
-     */
-    public Set<Transition> getPossibleTransitions()
-    {
-        Set<Transition> trans = new HashSet<Transition>();
-        trans.add(new Transition(this, continuation, action.getLabel()));
-        return trans;
-    }
+  /**
+   * There is one possible transition from this process
+   * to the continuation via performing the action.
+   *
+   * @return a singleton set containing the transition.
+   */
+  public Set<Transition> getPossibleTransitions()
+  {
+    Set<Transition> trans = new HashSet<Transition>();
+    trans.add(new Transition(this, continuation, action.getLabel()));
+    return trans;
+  }
 
-    /**
-     * Returns a textual representation of the prefix.
-     *
-     * @return a textual representation of the prefix.
-     */
-    public String toString()
-    {
-      return action + "." + continuation;
-    }
+  /**
+   * Returns a textual representation of the prefix.
+   *
+   * @return a textual representation of the prefix.
+   */
+  public String toString()
+  {
+    return action + "." + continuation;
+  }
 
 }

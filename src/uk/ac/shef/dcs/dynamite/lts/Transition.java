@@ -31,54 +31,54 @@ package uk.ac.shef.dcs.dynamite.lts;
 public class Transition
 {
 
-    /**
-     * The start state.
-     */
-    private State start;
-    
-    /**
-     * The finish state.
-     */
-    private State finish;
+  /**
+   * The start state.
+   */
+  private State start;
 
-    /**
-     * The label.
-     */
-    private Label label;
+  /**
+   * The finish state.
+   */
+  private State finish;
 
-    /**
-     * Constructs a new {@link Transition}.
-     *
-     * @param start the start state.
-     * @param finish the finish state.
-     * @param label the label on the transition.
-     */
-    public Transition(State start, State finish, Label label)
-    {
-	this.start = start;
-	this.finish = finish;
-	this.label = label;
-    }
+  /**
+   * The label.
+   */
+  private Label label;
 
-    /**
-     * Returns the start state.
-     *
-     * @return the start state.
-     */
-    public State getStart()
-    {
-	return start;
-    }
+  /**
+   * Constructs a new {@link Transition}.
+   *
+   * @param start the start state.
+   * @param finish the finish state.
+   * @param label the label on the transition.
+   */
+  public Transition(State start, State finish, Label label)
+  {
+    this.start = start;
+    this.finish = finish;
+    this.label = label;
+  }
 
-    /**
-     * Returns the finish state.
-     *
-     * @return the finish state.
-     */
-    public State getFinish()
-    {
-	return finish;
-    }
+  /**
+   * Returns the start state.
+   *
+   * @return the start state.
+   */
+  public State getStart()
+  {
+    return start;
+  }
+
+  /**
+   * Returns the finish state.
+   *
+   * @return the finish state.
+   */
+  public State getFinish()
+  {
+    return finish;
+  }
 
   /**
    * Returns the transition label.

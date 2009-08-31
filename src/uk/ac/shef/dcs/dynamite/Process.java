@@ -23,7 +23,7 @@
  */package uk.ac.shef.dcs.dynamite;
 
 import java.util.Set;
- 
+
 import uk.ac.shef.dcs.dynamite.lts.State;
 import uk.ac.shef.dcs.dynamite.lts.Transition;
 
@@ -36,18 +36,18 @@ public interface Process
     extends State
 {
 
-    /**
-     * Returns the set of possible transitions from this process.
-     *
-     * @return the set of possible transitions.
-     */
-    Set<Transition> getPossibleTransitions();
+  /**
+   * Returns the set of possible transitions from this process.
+   *
+   * @return the set of possible transitions.
+   */
+  Set<Transition> getPossibleTransitions();
 
-    /**
-     * Return a string representation of the process.
-     *
-     * @return a string representation.
-     */
-    String toString();
+  /**
+   * Return a string representation of the process.
+   *
+   * @return a string representation.
+   */
+  String toString();
 
 }
