@@ -63,6 +63,7 @@ public class CCS
     Set<Class<? extends Process>> syntax = new HashSet<Class<? extends Process>>();
     syntax.add(Nil.class);
     syntax.add(Prefix.class);
+    syntax.add(Res.class);
     syntax.add(Sum.class);
     return syntax;
   }

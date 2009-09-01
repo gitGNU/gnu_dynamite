@@ -41,6 +41,11 @@ public abstract class Context
 {
 
   /**
+   * The combining macron used to mark co-names.
+   */
+  public static final char COMBINING_MACRON = '\u0304';
+
+  /**
    * The current context in use.
    */
   private static Context currentContext;
@@ -149,13 +154,7 @@ public abstract class Context
   public Label registerConame(String name)
     throws NameNotFreeException
   {
-    StringBuilder b = new StringBuilder(name.length() * 2);
-    for (int a = 0; a < name.length(); ++a)
-      {
-        b.append(name.charAt(a));
-        b.append('\u0304');
-      }
-    return register(conames, name, b.toString());
+    return register(conames, name, Context.convertConameToLabel(name));
   }
 
   /**
@@ -276,6 +275,9 @@ public abstract class Context
 
   /**
    * Returns true if the given name is registered.
+   *
+   * @return true if the name is registered as a name.
+   * @throws NullPointerException if the name is null.
    */
   public boolean isRegisteredName(String name)
   {
@@ -284,10 +286,68 @@ public abstract class Context
 
   /**
    * Returns true if the given co-name is registered.
+   *
+   * @return true if the name is registered as a co-name.
+   * @throws NullPointerException if the name is null.
    */
   public boolean isRegisteredConame(String name)
   {
     return conames.get(name) != null;
+  }
+
+  /**
+   * Returns true if the given name is registered as
+   * either a name or co-name.
+   *
+   * @return true if the name is registered as a name or co-name.
+   * @throws NullPointerException if the name is null.
+   */
+  public boolean isRegistered(String name)
+  {
+    return isRegisteredName(name) || isRegisteredConame(name);
+  }
+
+  /**
+   * Converts a transition label to a name.  This
+   * is necessary for comparing co-names, where
+   * the transition label includes combining macrons.
+   * For the label of a transition arising from a name,
+   * {@code convertLabelToName(label) == label}.
+   *
+   * @param label the label to convert.
+   * @return the name.
+   */
+  public static String convertLabelToName(String label)
+  {
+    if (label.indexOf(COMBINING_MACRON) == -1)
+      return label;
+    StringBuilder b = new StringBuilder(label.length() / 2);
+    for (int a = 0; a < label.length(); ++a)
+      {
+        char next = label.charAt(a);
+        if (next != COMBINING_MACRON)
+          b.append(next);
+      }
+    return b.toString();
+  }
+
+  /**
+   * Converts a name into a transition label for
+   * a co-name.  A co-name has a combining macron
+   * attached to each letter.
+   *
+   * @param name the name to convert.
+   * @return the transition label.
+   */
+  public static String convertConameToLabel(String name)
+  {
+    StringBuilder b = new StringBuilder(name.length() * 2);
+    for (int a = 0; a < name.length(); ++a)
+      {
+        b.append(name.charAt(a));
+        b.append(COMBINING_MACRON);
+      }
+    return b.toString();
   }
 
 }

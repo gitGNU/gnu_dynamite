@@ -101,4 +101,14 @@ public abstract class Label
     return label.hashCode();
   }
 
+  /**
+   * Returns the text of the label.
+   *
+   * @return the text of the label.
+   */
+  public String getText()
+  {
+    return label;
+  }
+
 }

@@ -75,9 +75,8 @@ public class CCSLabel
   public static boolean isValid(String label)
   {
     Context ctx = Context.getContext();
-    return ctx.isRegisteredName(label) ||
-      ctx.isRegisteredConame(label) ||
-      label.equals(TAU);
+    String name = Context.convertLabelToName(label);
+    return ctx.isRegistered(name) || label.equals(TAU);
   }
 
 }

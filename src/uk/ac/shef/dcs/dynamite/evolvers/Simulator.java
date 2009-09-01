@@ -34,6 +34,7 @@ import uk.ac.shef.dcs.dynamite.ccs.Coname;
 import uk.ac.shef.dcs.dynamite.ccs.Name;
 import uk.ac.shef.dcs.dynamite.ccs.Nil;
 import uk.ac.shef.dcs.dynamite.ccs.Prefix;
+import uk.ac.shef.dcs.dynamite.ccs.Res;
 import uk.ac.shef.dcs.dynamite.ccs.Sum;
 
 import uk.ac.shef.dcs.dynamite.lts.State;
@@ -81,11 +82,13 @@ public class Simulator
     Context.setContext(ContextFactory.getInstance("CCS", "threaded", "dummy").getContext());
     Process a = new Prefix(new Name("a"), Nil.NIL);
     Process aBar = new Prefix(new Coname("a"), Nil.NIL);
+    Process sum = new Sum(a, aBar);
     Simulator s = new Simulator();
     s.evolve(Nil.NIL);
     s.evolve(a);
     s.evolve(aBar);
-    s.evolve(new Sum(a, aBar));
+    s.evolve(sum);
+    s.evolve(new Res(sum, "a"));
     System.out.println("Context: " + Context.getContext());
   }
 

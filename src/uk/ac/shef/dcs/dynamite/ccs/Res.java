@@ -1,4 +1,4 @@
-/* Sum.java - A CCS summation of the form E + F.
+/* Res.java - Represents a CCS restriction E \ a.
  * Copyright (C) 2009 The University of Sheffield
  *
  * This file is part of DynamiTE.
@@ -26,80 +26,78 @@ package uk.ac.shef.dcs.dynamite.ccs;
 import java.util.HashSet;
 import java.util.Set;
 
+import uk.ac.shef.dcs.dynamite.Context;
 import uk.ac.shef.dcs.dynamite.Process;
 import uk.ac.shef.dcs.dynamite.lts.Transition;
 
 /**
- * Represents a CCS summation, {@code E + F}.
+ * Represents a CCS restriction, {@code E \ a}.
  *
  * @author Andrew John Hughes (gnu_andrew@member.fsf.org)
  */
-public class Sum
+public class Res
   implements Process
 {
 
   /**
-   * The left-hand operand.
+   * The process to which to apply restriction.
    */
-  private final Process left;
+  private final Process process;
 
   /**
-   * The right-hand operand.
+   * The channel name to restrict.
    */
-  private final Process right;
+  private final String name;
 
   /**
-   * Constructs a new summation, composing the
-   * left and right processes.
+   * Constructs a new restriction, which prevents
+   * the specified process performing transitions
+   * which include the supplied name.
    *
-   * @param left the left-hand operand.
-   * @param right the right-hand operand.
+   * @param process the process to which to apply
+   *                restriction.
+   * @param name the name to restrict.
+   * @throws NullPointerException if the name is null.
+   * @throws IllegalArgumentException if the name is not
+   *                                  registered.
    */
-  public Sum(Process left, Process right)
+  public Res(Process process, String name)
   {
-    this.left = left;
-    this.right = right;
+    if (!Context.getContext().isRegistered(name))
+      throw new IllegalArgumentException("The name is not registered.");
+    this.process = process;
+    this.name = name;
   }
 
   /**
-   * <p>
-   * Returns the set of possible transitions from this process.
-   * For a summation, either the left-hand or right-hand operand
-   * evolves, leaving only the next state of that process i.e.
-   * </p>
-   * <ol>
-   * <li>If <code>E</code> can perform <code>&alpha;</code> to
-   * become <code>E'</code>, then <code>E + F</code> can perform
-   * <code>&alpha;</code> to become <code>E'</code>.</li>
-   * <li>If <code>F</code> can perform <code>&alpha;</code> to
-   * become <code>F'</code>, then <code>E + F</code> can perform
-   * <code>&alpha;</code> to become <code>F'</code>.</li>
-   * </ol>
+   * Returns the set of possible transitions from
+   * this process.  This is the set of transitions
+   * from the process being restricted, minus those
+   * that involve the given name.
    *
    * @return the set of possible transitions.
    */
   public Set<Transition> getPossibleTransitions()
   {
     Set<Transition> trans = new HashSet<Transition>();
-    for (Transition t : left.getPossibleTransitions())
+    for (Transition t : process.getPossibleTransitions())
       {
-        trans.add(new Transition(this, t.getFinish(), t.getLabel()));
-      }
-    for (Transition t : right.getPossibleTransitions())
-      {
-        trans.add(new Transition(this, t.getFinish(), t.getLabel()));
+        String tName =
+          Context.convertLabelToName(t.getLabel().getText());
+        if (!tName.equals(name))
+          trans.add(t);
       }
     return trans;
   }
 
   /**
-   * Returns a textual representation of the summation.
+   * Returns a textual representation of the restriction.
    *
    * @return a textual representation.
    */
   public String toString()
   {
-    return left + " + " + right;
+    return "(" + process + ")\\" + name;
   }
 
 }
