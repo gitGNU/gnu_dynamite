@@ -31,34 +31,28 @@ package uk.ac.shef.dcs.dynamite.lts;
 public abstract class Label
 {
 
-    /**
-     * The label.
-     */
-    private String label;
+  /**
+   * The label.
+   */
+  private String label;
 
-    /**
-     * Constructs a new label using the given string.
-     *
-     * @param label the label to use.
-     * @throws IllegalArgumentException if the label is invalid.
-     */
-    public Label(String label)
-    {
-        if (isValid(label))
-          this.label = label;
-        else
-          throw new IllegalArgumentException("The label " + label +
-                                             " is not a valid label " +
-                                             "for this transition system.");
-    }
+  /**
+   * Constructor for subclasses to create specialised labels.
+   */
+  protected Label()
+  {
+  }
 
-    /**
-     * Returns true if the given string represents a valid label.
-     *
-     * @param label the label to check.
-     * @return true if the label is valid.
-     */
-    public abstract boolean isValid(String label);
+  /**
+   * Constructs a new label using the given string.
+   *
+   * @param label the label to use.
+   * @throws IllegalArgumentException if the label is invalid.
+   */
+  public Label(String label)
+  {
+    this.label = label;
+  }
 
   /**
    * Returns a textual representation of this label.
@@ -68,6 +62,43 @@ public abstract class Label
   public String toString()
   {
     return label;
+  }
+
+  /**
+   * Returns true if the object is either another {@link Label}
+   * with the same value or a {@link String} which is equal
+   * to the value of this label.
+   *
+   * @param obj the object to compare.
+   * @return true if the object is equivalent to this.
+   */
+  public boolean equals(Object obj)
+  {
+    if (obj == this)
+      return true;
+    if (obj == null)
+      return false;
+    if (obj instanceof Label)
+      {
+        Label l = (Label) obj;
+        return l.label.equals(label);
+      }
+    if (obj instanceof String)
+      {
+        String s = (String) obj;
+        return s.equals(label);
+      }
+    return false;
+  }
+
+  /**
+   * Returns a hash code based on the value of this label.
+   *
+   * @return a hashcode for this label.
+   */
+  public int hashCode()
+  {
+    return label.hashCode();
   }
 
 }

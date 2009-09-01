@@ -77,12 +77,10 @@ public class CCS
 
   /**
    * Returns a transition label with the given text,
-   * provided it is not using the reserved &tau; label
-   * and is registered.
+   * provided it is not using the reserved &tau; label.
    *
    * @param label the label for the transition.
-   * @throws IllegalArgumentException if the name is equal to &tau;
-   *                                  or has not been registered.
+   * @throws IllegalArgumentException if the name is equal to &tau;.
    */
   public Label getLabel(String name)
   {

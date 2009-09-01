@@ -23,6 +23,8 @@
  */
 package uk.ac.shef.dcs.dynamite.ccs;
 
+import uk.ac.shef.dcs.dynamite.Context;
+
 import uk.ac.shef.dcs.dynamite.lts.Label;
 
 /**
@@ -35,6 +37,21 @@ public class CCSLabel
 {
 
   /**
+   * Unique instance to represent the silent action.
+   */
+  public static final CCSLabel TAU = new CCSLabel()
+    {
+      public String toString() { return "\u03C4"; /* tau */ }
+    };
+
+  /**
+   * Private constructor for &tau; instance.
+   */
+  private CCSLabel()
+  {
+  }
+
+  /**
    * Constructs a new CCS label using the given string.
    *
    * @param label the label to use.
@@ -43,16 +60,24 @@ public class CCSLabel
   public CCSLabel(String label)
   {
     super(label);
+    if (label.equals(TAU))
+      throw new IllegalArgumentException(TAU + " is a reserved label.");
   }
 
   /**
-   * CCS allows any label, so this method always returns true.
+   * CCS labels are either names, co-names or &tau; (the
+   * set of actions).
    *
    * @param label the label to check.
-   * @return true.
+   * @return true if the label is either a registered name,
+   *         a registered co-name or &tau;.
    */
-  public boolean isValid(String label)
+  public static boolean isValid(String label)
   {
-    return true;
+    Context ctx = Context.getContext();
+    return ctx.isRegisteredName(label) ||
+      ctx.isRegisteredConame(label) ||
+      label.equals(TAU);
   }
+
 }

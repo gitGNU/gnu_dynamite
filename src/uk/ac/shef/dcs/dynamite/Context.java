@@ -188,7 +188,7 @@ public abstract class Context
    */
   public InputChannel getInputChannel(String name)
   {
-    if (names.get(name) == null)
+    if (!isRegisteredName(name))
       throw new IllegalArgumentException("The name, " + name +
                                          ", is not registered.");
     return channelImpl.getInputChannel(name);
@@ -204,7 +204,7 @@ public abstract class Context
    */
   public OutputChannel getOutputChannel(String name)
   {
-    if (names.get(name) == null)
+    if (!isRegisteredConame(name))
       throw new IllegalArgumentException("The name, " + name +
                                          ", is not registered.");
     return channelImpl.getOutputChannel(name);
@@ -220,9 +220,13 @@ public abstract class Context
    * @param name the name of the channel.
    * @param data the data to store.
    * @throw NullPointerException if the channel name is null.
+   * @throws IllegalArgumentException if the name is not registered.
    */
   public void store(String name, Object data)
   {
+    if (!isRegisteredName(name))
+      throw new IllegalArgumentException("The name, " + name +
+                                         ", is not registered.");
     channelImpl.store(name, data);
   }
 
@@ -235,9 +239,13 @@ public abstract class Context
    * @param name the name of the channel.
    * @return the data stored or null if there is no data stored.
    * @throw NullPointerException if the channel name is null.
+   * @throws IllegalArgumentException if the name is not registered.
    */
   public Object retrieve(String name)
   {
+    if (!isRegisteredName(name))
+      throw new IllegalArgumentException("The name, " + name +
+                                         ", is not registered.");
     return channelImpl.retrieve(name);
   }
 
@@ -255,4 +263,21 @@ public abstract class Context
       ",conames=" + conames.keySet() +
       "]";
   }
+
+  /**
+   * Returns true if the given name is registered.
+   */
+  public boolean isRegisteredName(String name)
+  {
+    return names.get(name) != null;
+  }
+
+  /**
+   * Returns true if the given co-name is registered.
+   */
+  public boolean isRegisteredConame(String name)
+  {
+    return conames.get(name) != null;
+  }
+
 }
