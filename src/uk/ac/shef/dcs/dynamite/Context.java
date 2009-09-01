@@ -133,9 +133,10 @@ public abstract class Context
   }
 
   /**
-   * Registers a new co-name for use in calculus
-   * constructions.  The name is checked for validity.
-   * If valid, a transition label for the name is returned.
+   * Registers a new co-name for use in calculus constructions.  The
+   * name is automatically extended with combining macrons (Unicode
+   * character 772) for the transition label.  The name is checked for
+   * validity.  If valid, a transition label for the name is returned.
    *
    * @param name the new co-name to register.
    * @return a transition label for this name.
@@ -148,7 +149,13 @@ public abstract class Context
   public Label registerConame(String name)
     throws NameNotFreeException
   {
-    return register(conames, name, '\u035e' + name);
+    StringBuilder b = new StringBuilder(name.length() * 2);
+    for (int a = 0; a < name.length(); ++a)
+      {
+        b.append(name.charAt(a));
+        b.append('\u0304');
+      }
+    return register(conames, name, b.toString());
   }
 
   /**
@@ -214,8 +221,9 @@ public abstract class Context
    * Stores the supplied data in the specified channel's
    * repository.  Data read by a channel is stored in a specific
    * place maintained by the {@link ChannelFactory} so that it
-   * can later be retrieved by user code.  Any previous data
-   * stored is lost.
+   * can later be retrieved by user code.  Users should store
+   * data they wish to transmit in the appropriate channel.
+   * Any previous data stored is lost.
    *
    * @param name the name of the channel.
    * @param data the data to store.
@@ -224,7 +232,7 @@ public abstract class Context
    */
   public void store(String name, Object data)
   {
-    if (!isRegisteredName(name))
+    if (!isRegisteredName(name) && !isRegisteredConame(name))
       throw new IllegalArgumentException("The name, " + name +
                                          ", is not registered.");
     channelImpl.store(name, data);
@@ -234,7 +242,9 @@ public abstract class Context
    * Retrieves any data stored in the specified channel's
    * repository.  Data read by a channel is stored in a specific
    * place maintained by the {@link ChannelFactory} so that it
-   * can be retrieved using this method from user code.
+   * can be retrieved using this method from user code.  The data
+   * to write to a channel is expected to be stored in the
+   * corresponding repository.
    *
    * @param name the name of the channel.
    * @return the data stored or null if there is no data stored.
@@ -243,7 +253,7 @@ public abstract class Context
    */
   public Object retrieve(String name)
   {
-    if (!isRegisteredName(name))
+    if (!isRegisteredName(name) && !isRegisteredConame(name))
       throw new IllegalArgumentException("The name, " + name +
                                          ", is not registered.");
     return channelImpl.retrieve(name);

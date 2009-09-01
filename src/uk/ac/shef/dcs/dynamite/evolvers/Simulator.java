@@ -30,6 +30,7 @@ import uk.ac.shef.dcs.dynamite.NameNotFreeException;
 import uk.ac.shef.dcs.dynamite.Process;
 import uk.ac.shef.dcs.dynamite.UnsupportedContextException;
 
+import uk.ac.shef.dcs.dynamite.ccs.Coname;
 import uk.ac.shef.dcs.dynamite.ccs.Name;
 import uk.ac.shef.dcs.dynamite.ccs.Nil;
 import uk.ac.shef.dcs.dynamite.ccs.Prefix;
@@ -79,10 +80,12 @@ public class Simulator
   {
     Context.setContext(ContextFactory.getInstance("CCS", "threaded", "dummy").getContext());
     Process a = new Prefix(new Name("a"), Nil.NIL);
+    Process aBar = new Prefix(new Coname("a"), Nil.NIL);
     Simulator s = new Simulator();
     s.evolve(Nil.NIL);
     s.evolve(a);
-    s.evolve(new Sum(a, Nil.NIL));
+    s.evolve(aBar);
+    s.evolve(new Sum(a, aBar));
     System.out.println("Context: " + Context.getContext());
   }
 

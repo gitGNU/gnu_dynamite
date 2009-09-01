@@ -26,20 +26,20 @@ package uk.ac.shef.dcs.dynamite.ccs;
 import java.io.IOException;
 
 import uk.ac.shef.dcs.dynamite.Context;
-import uk.ac.shef.dcs.dynamite.InputChannel;
+import uk.ac.shef.dcs.dynamite.OutputChannel;
 import uk.ac.shef.dcs.dynamite.NameNotFreeException;
 
 import uk.ac.shef.dcs.dynamite.lts.Label;
 
 /**
- * Represents a CCS name, which are used within
- * DynamiTE as input channels.
+ * Represents a CCS coname, which are used within
+ * DynamiTE as output channels.
  *
- * @see InputChannel
+ * @see OutputChannel
  * @author Andrew John Hughes (gnu_andrew@member.fsf.org)
  */
 
-public class Name
+public class Coname
   extends AbstractName
 {
 
@@ -50,25 +50,25 @@ public class Name
   private final Label label;
 
   /**
-   * The input channel used by this name.
+   * The output channel used by this name.
    */
-  private final InputChannel channel;
+  private final OutputChannel channel;
 
   /**
    * Creates a new name.
    *
    * @param name the name.
-   * @throws IllegalArgumentException if the name is either
-   *                                  null or reserved.
+   * @throws NullPointerException if the name is null.
+   * @throws IllegalArgumentException if the name is reserved.
    * @throws NameNotFreeException if the name is already in use.
    */
-  public Name(String name)
+  public Coname(String name)
     throws NameNotFreeException
   {
     super(name);
     Context ctx = Context.getContext();
-    label = ctx.registerName(name);
-    channel = ctx.getInputChannel(name);
+    label = ctx.registerConame(name);
+    channel = ctx.getOutputChannel(name);
   }
 
   /**
@@ -82,18 +82,18 @@ public class Name
   }
 
   /**
-   * Perform this name by reading from the
-   * input channel.  The input is stored using
-   * the {@link Context}.
+   * Perform this name by retrieving the data
+   * for the channel from the context's storage
+   * repository and writing it to the output channel.
    *
-   * @throws IOException if the read fails.
+   * @throws IOException if the write fails.
    * @see Context
    */
   public void perform()
     throws IOException
   {
-    Object data = channel.read();
-    Context.getContext().store(getName(), data);
+    Object data = Context.getContext().retrieve(getName());
+    channel.write(data);
   }
 
 }

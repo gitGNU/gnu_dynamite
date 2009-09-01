@@ -1,4 +1,4 @@
-/* Name.java - Representation of a CCS name.
+/* AbstractName.java - Representation of a CCS name or co-name.
  * Copyright (C) 2009 The University of Sheffield
  *
  * This file is part of DynamiTE.
@@ -23,77 +23,75 @@
  */
 package uk.ac.shef.dcs.dynamite.ccs;
 
-import java.io.IOException;
-
-import uk.ac.shef.dcs.dynamite.Context;
-import uk.ac.shef.dcs.dynamite.InputChannel;
-import uk.ac.shef.dcs.dynamite.NameNotFreeException;
-
 import uk.ac.shef.dcs.dynamite.lts.Label;
 
 /**
- * Represents a CCS name, which are used within
- * DynamiTE as input channels.
+ * An abstraction layer that provides common functionality
+ * for both CCS names and conames.
  *
- * @see InputChannel
  * @author Andrew John Hughes (gnu_andrew@member.fsf.org)
  */
-
-public class Name
-  extends AbstractName
+public abstract class AbstractName
+  extends Action
 {
 
   /**
-   * The label used for this name when it appears
-   * on transitions.
+   * The name of this name.
    */
-  private final Label label;
-
-  /**
-   * The input channel used by this name.
-   */
-  private final InputChannel channel;
+  private final String name;
 
   /**
    * Creates a new name.
    *
    * @param name the name.
-   * @throws IllegalArgumentException if the name is either
-   *                                  null or reserved.
+   * @throws NullPointerException if the name is null.
+   * @throws IllegalArgumentException if the name is reserved.
    * @throws NameNotFreeException if the name is already in use.
    */
-  public Name(String name)
-    throws NameNotFreeException
+  public AbstractName(String name)
   {
-    super(name);
-    Context ctx = Context.getContext();
-    label = ctx.registerName(name);
-    channel = ctx.getInputChannel(name);
+    this.name = name;
   }
 
   /**
-   * Returns the label for this name.
+   * Returns true if the object is also an {@link AbstractName}
+   * with the same value.
    *
-   * @return a transition label.
+   * @param obj the object to compare.
+   * @return true if the object is equal to this one.
    */
-  public Label getLabel()
+  public boolean equals(Object obj)
   {
-    return label;
+    if (obj == this)
+      return true;
+    if (obj == null)
+      return false;
+    if (obj instanceof Name)
+      {
+        AbstractName n = (AbstractName) obj;
+        return n.name.equals(name);
+      }
+    return false;
   }
 
   /**
-   * Perform this name by reading from the
-   * input channel.  The input is stored using
-   * the {@link Context}.
+   * Returns a hashcode based on the name.
    *
-   * @throws IOException if the read fails.
-   * @see Context
+   * @return the hashcode for this {@link Name}.
    */
-  public void perform()
-    throws IOException
+  public int hashCode()
   {
-    Object data = channel.read();
-    Context.getContext().store(getName(), data);
+    return name.hashCode();
+  }
+
+  /**
+   * Returns the name of this name.
+   *
+   * @return the name of this name.
+   */
+  public String getName()
+  {
+    return name;
   }
 
 }
