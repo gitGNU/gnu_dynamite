@@ -63,7 +63,6 @@ public class Rec
   }
 
   /**
-   * <p>
    * Returns the set of possible transitions from this process.
    * For recursion, this is all the possible transitions of
    * the bound process, with substitution performed on the

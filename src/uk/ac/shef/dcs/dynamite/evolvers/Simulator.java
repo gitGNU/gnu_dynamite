@@ -38,6 +38,7 @@ import uk.ac.shef.dcs.dynamite.ccs.Nil;
 import uk.ac.shef.dcs.dynamite.ccs.Par;
 import uk.ac.shef.dcs.dynamite.ccs.Prefix;
 import uk.ac.shef.dcs.dynamite.ccs.Rec;
+import uk.ac.shef.dcs.dynamite.ccs.Ren;
 import uk.ac.shef.dcs.dynamite.ccs.Res;
 import uk.ac.shef.dcs.dynamite.ccs.Sum;
 import uk.ac.shef.dcs.dynamite.ccs.Var;
@@ -105,6 +106,16 @@ public class Simulator
     s.evolve(par);
     s.evolve(new Res(par, "a"));
     s.evolve(new Rec("X", new Prefix(new Name("b"), new Var("X"))));
+    s.evolve(new Ren(new Prefix(new Name("c"), Nil.NIL), new Ren.Function()
+      {
+        public String apply(String name)
+        {
+          if (name.equals("c"))
+            return "d";
+          return name;
+        }
+        public String toString() { return "c-->d"; }
+      }));
     Context ctx = Context.getContext();
     System.out.println("Context: " + ctx);
     System.out.println("Calculus syntax: " + ctx.getSyntax());
