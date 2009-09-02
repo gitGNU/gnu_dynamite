@@ -65,6 +65,9 @@ public class CCS
     syntax.add(Prefix.class);
     syntax.add(Res.class);
     syntax.add(Sum.class);
+    syntax.add(Par.class);
+    syntax.add(Var.class);
+    syntax.add(Rec.class);
     return syntax;
   }
 

@@ -37,8 +37,10 @@ import uk.ac.shef.dcs.dynamite.ccs.Name;
 import uk.ac.shef.dcs.dynamite.ccs.Nil;
 import uk.ac.shef.dcs.dynamite.ccs.Par;
 import uk.ac.shef.dcs.dynamite.ccs.Prefix;
+import uk.ac.shef.dcs.dynamite.ccs.Rec;
 import uk.ac.shef.dcs.dynamite.ccs.Res;
 import uk.ac.shef.dcs.dynamite.ccs.Sum;
+import uk.ac.shef.dcs.dynamite.ccs.Var;
 
 import uk.ac.shef.dcs.dynamite.lts.State;
 import uk.ac.shef.dcs.dynamite.lts.Transition;
@@ -70,8 +72,13 @@ public class Simulator
         State f = t.getFinish();
         if (f instanceof Process)
           {
-            System.out.println("Following transition " + t);
-            evolve((Process) f);
+            if (f instanceof Rec && f.equals(p))
+              System.out.println("Not following recursive process");
+            else
+              {
+                System.out.println("Following transition " + t);
+                evolve((Process) f);
+              }
           }
       }
   }
@@ -97,7 +104,10 @@ public class Simulator
     s.evolve(new Res(sum, "a"));
     s.evolve(par);
     s.evolve(new Res(par, "a"));
-    System.out.println("Context: " + Context.getContext());
+    s.evolve(new Rec("X", new Prefix(new Name("b"), new Var("X"))));
+    Context ctx = Context.getContext();
+    System.out.println("Context: " + ctx);
+    System.out.println("Calculus syntax: " + ctx.getSyntax());
   }
 
 }

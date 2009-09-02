@@ -1,5 +1,5 @@
-/* Nil.java - A CCS nil process.
- * Copyright (C) 2007 The University of Sheffield
+/* Rec.java - CCS recursion &mu;X.E.
+ * Copyright (C) 2009 The University of Sheffield
  *
  * This file is part of DynamiTE.
  *
@@ -21,59 +21,83 @@
  * conditions of the GNU General Public License cover the whole
  * combination.
  */
-
 package uk.ac.shef.dcs.dynamite.ccs;
 
-import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 
 import uk.ac.shef.dcs.dynamite.Process;
 import uk.ac.shef.dcs.dynamite.lts.Transition;
 
 /**
- * Represents a CCS Nil process.
+ * Represents CCS recursion, &mu;X.E.
  *
  * @author Andrew John Hughes (gnu_andrew@member.fsf.org)
  */
-public class Nil
-    implements Process
+public class Rec
+  implements Process
 {
 
   /**
-   * The singleton instance of Nil.
+   * The bound variable.
    */
-  public static final Nil NIL = new Nil();
+  private final String var;
 
   /**
-   * Private constructor as Nil is a singleton.
+   * The process in which {@link #var} is bound.
    */
-  private Nil()
+  private final Process proc;
+
+  /**
+   * Constructs a new recursive process, binding
+   * the variable {@code var} in {@code proc}.
+   *
+   * @param var the bound variable.
+   * @param proc the process in which {@code var}
+   *             is bound.
+   */
+  public Rec(String var, Process proc)
   {
+    this.var = var;
+    this.proc = proc;
   }
 
   /**
-   * There are no possible transitions for Nil.
+   * <p>
+   * Returns the set of possible transitions from this process.
+   * For recursion, this is all the possible transitions of
+   * the bound process, with substitution performed on the
+   * end state of the transitions.
    *
-   * @return an empty set.
+   * @return the set of possible transitions.
    */
   public Set<Transition> getPossibleTransitions()
   {
-    return Collections.emptySet();
+    Set<Transition> trans = new HashSet<Transition>();
+    for (Transition t : proc.getPossibleTransitions())
+      {
+        Process end = (Process) t.getFinish();
+        trans.add(new Transition(this,
+                                 end.substitute(var, this),
+                                 t.getLabel()));
+      }
+    return trans;
   }
 
   /**
-   * Returns a textual representation of the Nil process.
+   * Returns a textual representation of the recursion.
    *
-   * @return {@code "0"}.
+   * @return a textual representation.
    */
   public String toString()
   {
-    return "0";
+    return "\u03BC" + var + "." + proc;
   }
 
   /**
    * Returns a version of this process after substitution
-   * has been applied.  For Nil, we just return this.
+   * has been applied.  For Rec, we return the result of
+   * applying substitution to {@code proc}.
    *
    * @param var the variable to replace.
    * @param vProc the process to replace it with.
@@ -81,7 +105,7 @@ public class Nil
    */
   public Process substitute(String var, Process vProc)
   {
-    return this;
+    return new Rec(var, proc.substitute(var, vProc));
   }
 
 }

@@ -1,4 +1,4 @@
-/* Nil.java - A CCS nil process.
+/* Var.java - A CCS variable, X.
  * Copyright (C) 2007 The University of Sheffield
  *
  * This file is part of DynamiTE.
@@ -31,28 +31,32 @@ import uk.ac.shef.dcs.dynamite.Process;
 import uk.ac.shef.dcs.dynamite.lts.Transition;
 
 /**
- * Represents a CCS Nil process.
+ * Represents a CCS Var (X).
  *
  * @author Andrew John Hughes (gnu_andrew@member.fsf.org)
  */
-public class Nil
-    implements Process
+public class Var
+  implements Process
 {
 
   /**
-   * The singleton instance of Nil.
+   * The name of this variable.
    */
-  public static final Nil NIL = new Nil();
+  private String name;
 
   /**
-   * Private constructor as Nil is a singleton.
+   * Constructs a new {@link Var} with the specified
+   * name.
+   *
+   * @param name the name of the variable.
    */
-  private Nil()
+  public Var(String name)
   {
+    this.name = name;
   }
 
   /**
-   * There are no possible transitions for Nil.
+   * There are no possible transitions for Var.
    *
    * @return an empty set.
    */
@@ -62,18 +66,19 @@ public class Nil
   }
 
   /**
-   * Returns a textual representation of the Nil process.
+   * Returns a textual representation of the Var process.
    *
-   * @return {@code "0"}.
+   * @return the name of the variable.
    */
   public String toString()
   {
-    return "0";
+    return name;
   }
 
   /**
    * Returns a version of this process after substitution
-   * has been applied.  For Nil, we just return this.
+   * has been applied.  For Var, we return {@code vProc}
+   * if {@code var.equals(name)}.
    *
    * @param var the variable to replace.
    * @param vProc the process to replace it with.
@@ -81,7 +86,10 @@ public class Nil
    */
   public Process substitute(String var, Process vProc)
   {
-    return this;
+    if (var.equals(name))
+      return vProc;
+    else
+      return this;
   }
 
 }

@@ -144,4 +144,19 @@ public class Par
     return left + " | " + right;
   }
 
+  /**
+   * Returns a version of this process after substitution
+   * has been applied.  For Par, we return the result of
+   * applying substitution to the left and right operands.
+   *
+   * @param var the variable to replace.
+   * @param vProc the process to replace it with.
+   * @return the process with substitution applied.
+   */
+  public Process substitute(String var, Process vProc)
+  {
+    return new Par(left.substitute(var, vProc),
+                   right.substitute(var, vProc));
+  }
+
 }

@@ -50,4 +50,15 @@ public interface Process
    */
   String toString();
 
+  /**
+   * Perform substitution on this process, replacing
+   * occurrences of the named variable with the supplied
+   * process.
+   *
+   * @param var the variable to replace.
+   * @param proc the process to replace it with.
+   * @return the process with substitution applied.
+   */
+  Process substitute(String var, Process proc);
+
 }

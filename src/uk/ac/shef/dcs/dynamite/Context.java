@@ -24,6 +24,8 @@
 
 package uk.ac.shef.dcs.dynamite;
 
+import java.util.Collection;
+
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -359,6 +361,16 @@ public abstract class Context
   public static boolean isConame(String label)
   {
     return label.indexOf(COMBINING_MACRON) != -1;
+  }
+
+  /**
+   * Returns the syntax of the calculus in use.
+   *
+   * @return the syntax of the calculus being used.
+   */
+  public Collection<Class<? extends Process>> getSyntax()
+  {
+    return calculus.getSyntax();
   }
 
 }

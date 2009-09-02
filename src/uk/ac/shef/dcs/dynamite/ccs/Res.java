@@ -100,4 +100,18 @@ public class Res
     return "(" + process + ")\\" + name;
   }
 
+  /**
+   * Returns a version of this process after substitution
+   * has been applied.  For Res, we return the result of
+   * applying substitution to {@code process}.
+   *
+   * @param var the variable to replace.
+   * @param vProc the process to replace it with.
+   * @return the process with substitution applied.
+   */
+  public Process substitute(String var, Process vProc)
+  {
+    return new Res(process.substitute(var, vProc), name);
+  }
+
 }
