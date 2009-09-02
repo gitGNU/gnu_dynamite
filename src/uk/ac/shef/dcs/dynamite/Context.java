@@ -319,7 +319,7 @@ public abstract class Context
    */
   public static String convertLabelToName(String label)
   {
-    if (label.indexOf(COMBINING_MACRON) == -1)
+    if (!isConame(label))
       return label;
     StringBuilder b = new StringBuilder(label.length() / 2);
     for (int a = 0; a < label.length(); ++a)
@@ -348,6 +348,17 @@ public abstract class Context
         b.append(COMBINING_MACRON);
       }
     return b.toString();
+  }
+
+  /**
+   * Returns true if the label is a co-name.
+   *
+   * @param label the label to examine.
+   * @return true if the label is a co-name.
+   */
+  public static boolean isConame(String label)
+  {
+    return label.indexOf(COMBINING_MACRON) != -1;
   }
 
 }

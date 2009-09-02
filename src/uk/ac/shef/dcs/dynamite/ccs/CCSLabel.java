@@ -41,7 +41,8 @@ public class CCSLabel
    */
   public static final CCSLabel TAU = new CCSLabel()
     {
-      public String toString() { return "\u03C4"; /* tau */ }
+      public String getText() { return "\u03C4"; /* tau */ }
+      public String toString() { return getText(); }
     };
 
   /**
@@ -76,7 +77,7 @@ public class CCSLabel
   {
     Context ctx = Context.getContext();
     String name = Context.convertLabelToName(label);
-    return ctx.isRegistered(name) || label.equals(TAU);
+    return ctx.isRegistered(name) || TAU.equals(label);
   }
 
 }

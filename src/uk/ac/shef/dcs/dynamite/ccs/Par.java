@@ -1,0 +1,147 @@
+/* Par.java - A CCS parallel composition of the form E | F.
+ * Copyright (C) 2009 The University of Sheffield
+ *
+ * This file is part of DynamiTE.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * Linking this library statically or dynamically with other modules is
+ * making a combined work based on this library.  Thus, the terms and
+ * conditions of the GNU General Public License cover the whole
+ * combination.
+ */
+package uk.ac.shef.dcs.dynamite.ccs;
+
+import java.util.HashSet;
+import java.util.Set;
+
+import uk.ac.shef.dcs.dynamite.Context;
+import uk.ac.shef.dcs.dynamite.Process;
+import uk.ac.shef.dcs.dynamite.lts.Transition;
+
+/**
+ * Represents a CCS parallel composition, {@code E | F}.
+ *
+ * @author Andrew John Hughes (gnu_andrew@member.fsf.org)
+ */
+public class Par
+  implements Process
+{
+
+  /**
+   * The left-hand operand.
+   */
+  private final Process left;
+
+  /**
+   * The right-hand operand.
+   */
+  private final Process right;
+
+  /**
+   * Constructs a new parallel composition, composing the
+   * left and right processes.
+   *
+   * @param left the left-hand operand.
+   * @param right the right-hand operand.
+   */
+  public Par(Process left, Process right)
+  {
+    this.left = left;
+    this.right = right;
+  }
+
+  /**
+   * <p>
+   * Returns the set of possible transitions from this process.
+   * For parallel composition, either the left-hand or right-hand
+   * operand evolves, leaving the next state of that process
+   * still composed with the other process.  Additionally, if
+   * it is possible to pair up a name transition with its
+   * corresponding co-name transition, a &tau; transition
+   * involving both processes occurs.  Formally,
+   * </p>
+   * <ol>
+   * <li>If <code>E</code> can perform <code>&alpha;</code> to
+   * become <code>E'</code>, then <code>E | F</code> can perform
+   * <code>&alpha;</code> to become <code>E' | F</code>.</li>
+   * <li>If <code>F</code> can perform <code>&alpha;</code> to
+   * become <code>F'</code>, then <code>E | F</code> can perform
+   * <code>&alpha;</code> to become <code>E | F'</code>.</li>
+   * <li>If <code>E</code> can perform <code>a</code> and
+   * <code>F</code> can perform <code>a'</code>, then <code>E | F</code>
+   * can perform <code>&tau;</code> to become <code>E' | F'</code>.</li>
+   * </ol>
+   *
+   * @return the set of possible transitions.
+   */
+  public Set<Transition> getPossibleTransitions()
+  {
+    Set<Transition> trans = new HashSet<Transition>();
+    // Par1
+    for (Transition t : left.getPossibleTransitions())
+      {
+        Process nextLeft = (Process) t.getFinish();
+        trans.add(new Transition(this, new Par(nextLeft, right), t.getLabel()));
+      }
+    // Par2
+    for (Transition t : right.getPossibleTransitions())
+      {
+        Process nextRight = (Process) t.getFinish();
+        trans.add(new Transition(this, new Par(left, nextRight), t.getLabel()));
+      }
+    // Now find pairs for synchronisation (Par3)
+    Set<Transition> syncTrans = new HashSet<Transition>();
+    for (Transition t : trans)
+      {
+        String label = t.getLabel().getText();
+        if (!(Context.isConame(label) || CCSLabel.TAU.equals(label)))
+          {
+            for (Transition t2 : trans)
+              {
+                String label2 = t2.getLabel().getText();
+                if (Context.isConame(label2) &&
+                    label.equals(Context.convertLabelToName(label2)))
+                  {
+                    Par finish1 = (Par) t.getFinish();
+                    Par finish2 = (Par) t2.getFinish();
+                    if (!finish1.left.equals(left) &&
+                        !finish2.right.equals(right))
+                      syncTrans.add(new Transition(this,
+                                                   new Par(finish1.left, finish2.right),
+                                                   CCSLabel.TAU));
+                    else if (!finish1.right.equals(right) &&
+                             !finish2.left.equals(left))
+                      syncTrans.add(new Transition(this,
+                                                   new Par(finish2.left, finish1.right),
+                                                   CCSLabel.TAU));
+                  }
+              }
+          }
+      }
+    trans.addAll(syncTrans);
+    return trans;
+  }
+
+  /**
+   * Returns a textual representation of the summation.
+   *
+   * @return a textual representation.
+   */
+  public String toString()
+  {
+    return left + " | " + right;
+  }
+
+}

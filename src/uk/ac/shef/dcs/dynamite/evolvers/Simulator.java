@@ -23,6 +23,8 @@
  */
 package uk.ac.shef.dcs.dynamite.evolvers;
 
+import java.util.Set;
+
 import uk.ac.shef.dcs.dynamite.Context;
 import uk.ac.shef.dcs.dynamite.ContextFactory;
 import uk.ac.shef.dcs.dynamite.Evolver;
@@ -33,6 +35,7 @@ import uk.ac.shef.dcs.dynamite.UnsupportedContextException;
 import uk.ac.shef.dcs.dynamite.ccs.Coname;
 import uk.ac.shef.dcs.dynamite.ccs.Name;
 import uk.ac.shef.dcs.dynamite.ccs.Nil;
+import uk.ac.shef.dcs.dynamite.ccs.Par;
 import uk.ac.shef.dcs.dynamite.ccs.Prefix;
 import uk.ac.shef.dcs.dynamite.ccs.Res;
 import uk.ac.shef.dcs.dynamite.ccs.Sum;
@@ -60,7 +63,9 @@ public class Simulator
   public void evolve(Process p)
   {
     System.out.println("Evolving process: " + p);
-    for (Transition t : p.getPossibleTransitions())
+    Set<Transition> trans = p.getPossibleTransitions();
+    System.out.println("Possible transitions: " + trans);
+    for (Transition t : trans)
       {
         State f = t.getFinish();
         if (f instanceof Process)
@@ -83,12 +88,15 @@ public class Simulator
     Process a = new Prefix(new Name("a"), Nil.NIL);
     Process aBar = new Prefix(new Coname("a"), Nil.NIL);
     Process sum = new Sum(a, aBar);
+    Process par = new Par(a, aBar);
     Simulator s = new Simulator();
     s.evolve(Nil.NIL);
     s.evolve(a);
     s.evolve(aBar);
     s.evolve(sum);
     s.evolve(new Res(sum, "a"));
+    s.evolve(par);
+    s.evolve(new Res(par, "a"));
     System.out.println("Context: " + Context.getContext());
   }
 
