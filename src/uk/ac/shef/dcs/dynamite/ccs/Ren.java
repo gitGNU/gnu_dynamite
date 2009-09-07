@@ -30,7 +30,7 @@ import uk.ac.shef.dcs.dynamite.Context;
 import uk.ac.shef.dcs.dynamite.NameNotFreeException;
 import uk.ac.shef.dcs.dynamite.Process;
 
-import uk.ac.shef.dcs.dynamite.lts.Label;
+import uk.ac.shef.dcs.dynamite.lts.Action;
 import uk.ac.shef.dcs.dynamite.lts.Transition;
 
 /**
@@ -96,24 +96,23 @@ public class Ren
     Set<Transition> trans = new HashSet<Transition>();
     for (Transition t : proc.getPossibleTransitions())
       {
-        String label = t.getLabel().getText();
+        String label = t.getAction().getLabel().getText();
         if (CCSLabel.TAU.equals(label))
           trans.add(t);
         else
           {
             String name = Context.convertLabelToName(label);
             String result = func.apply(name);
-            Label newLabel;
-            Context ctx = Context.getContext();
+            Action newAct;
             try
               {
                 if (name == label) // name
                   {
-                    newLabel = ctx.registerName(result);
+                    newAct = new Name(result);
                   }
                 else
                   {
-                    newLabel = ctx.registerConame(result);
+                    newAct = new Coname(result);
                   }
               }
             catch (NameNotFreeException e)
@@ -124,7 +123,7 @@ public class Ren
             trans.add(new Transition(this,
                                      new Ren((Process) t.getFinish(),
                                              func),
-                                     newLabel));
+                                     newAct));
           }
       }
     return trans;

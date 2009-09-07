@@ -28,6 +28,7 @@ import java.util.Set;
 
 import uk.ac.shef.dcs.dynamite.Context;
 import uk.ac.shef.dcs.dynamite.Process;
+import uk.ac.shef.dcs.dynamite.lts.Action;
 import uk.ac.shef.dcs.dynamite.lts.Transition;
 
 /**
@@ -93,39 +94,43 @@ public class Par
     for (Transition t : left.getPossibleTransitions())
       {
         Process nextLeft = (Process) t.getFinish();
-        trans.add(new Transition(this, new Par(nextLeft, right), t.getLabel()));
+        trans.add(new Transition(this, new Par(nextLeft, right),
+                                 t.getAction()));
       }
     // Par2
     for (Transition t : right.getPossibleTransitions())
       {
         Process nextRight = (Process) t.getFinish();
-        trans.add(new Transition(this, new Par(left, nextRight), t.getLabel()));
+        trans.add(new Transition(this, new Par(left, nextRight),
+                                 t.getAction()));
       }
     // Now find pairs for synchronisation (Par3)
     Set<Transition> syncTrans = new HashSet<Transition>();
     for (Transition t : trans)
       {
-        String label = t.getLabel().getText();
-        if (!(Context.isConame(label) || CCSLabel.TAU.equals(label)))
+        String label = t.getAction().getLabel().getText();
+        if (Context.getContext().isRegisteredName(label))
           {
             for (Transition t2 : trans)
               {
-                String label2 = t2.getLabel().getText();
+                String label2 = t2.getAction().getLabel().getText();
                 if (Context.isConame(label2) &&
                     label.equals(Context.convertLabelToName(label2)))
                   {
                     Par finish1 = (Par) t.getFinish();
                     Par finish2 = (Par) t2.getFinish();
+                    Action sync = new Sync(t.getAction(), t2.getAction());
+                    Transition[] derivs = new Transition[] { t, t2 };
                     if (!finish1.left.equals(left) &&
                         !finish2.right.equals(right))
                       syncTrans.add(new Transition(this,
                                                    new Par(finish1.left, finish2.right),
-                                                   CCSLabel.TAU));
+                                                   sync, derivs));
                     else if (!finish1.right.equals(right) &&
                              !finish2.left.equals(left))
                       syncTrans.add(new Transition(this,
                                                    new Par(finish2.left, finish1.right),
-                                                   CCSLabel.TAU));
+                                                   sync, derivs));
                   }
               }
           }

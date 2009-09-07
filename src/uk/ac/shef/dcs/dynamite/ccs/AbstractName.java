@@ -23,7 +23,7 @@
  */
 package uk.ac.shef.dcs.dynamite.ccs;
 
-import uk.ac.shef.dcs.dynamite.lts.Label;
+import uk.ac.shef.dcs.dynamite.lts.Action;
 
 /**
  * An abstraction layer that provides common functionality

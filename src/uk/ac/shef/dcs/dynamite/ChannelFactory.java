@@ -24,6 +24,7 @@
 
 package uk.ac.shef.dcs.dynamite;
 
+import uk.ac.shef.dcs.dynamite.lts.Action;
 import uk.ac.shef.dcs.dynamite.plugins.Probeable;
 
 /**
@@ -73,5 +74,15 @@ public interface ChannelFactory
    * @throw NullPointerException if the channel name is null.
    */
   public Object retrieve(String name);
+
+  /**
+   * Perform the given action, creating an appropriate
+   * environment for its operation as necessary.
+   *
+   * @param action the action to perform.
+   * @throws Exception if the action throws an exception.
+   */
+  public void perform(Action action)
+    throws Exception;
 
 }

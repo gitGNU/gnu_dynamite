@@ -78,7 +78,7 @@ public class Rec
         Process end = (Process) t.getFinish();
         trans.add(new Transition(this,
                                  end.substitute(var, this),
-                                 t.getLabel()));
+                                 t.getAction()));
       }
     return trans;
   }

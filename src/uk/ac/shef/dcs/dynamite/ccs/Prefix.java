@@ -27,6 +27,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import uk.ac.shef.dcs.dynamite.Process;
+import uk.ac.shef.dcs.dynamite.lts.Action;
 import uk.ac.shef.dcs.dynamite.lts.Transition;
 
 /**
@@ -68,7 +69,7 @@ public class Prefix
   public Set<Transition> getPossibleTransitions()
   {
     Set<Transition> trans = new HashSet<Transition>();
-    trans.add(new Transition(this, continuation, action.getLabel()));
+    trans.add(new Transition(this, continuation, action));
     return trans;
   }
 

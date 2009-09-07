@@ -1,4 +1,4 @@
-/* Action.java - A general CCS action used to unify channels and tau.
+/* Action.java - A action which occurs as the resulting of transitioning between states.
  * Copyright (C) 2007, 2009 The University of Sheffield
  *
  * This file is part of DynamiTE.
@@ -21,13 +21,11 @@
  * conditions of the GNU General Public License cover the whole
  * combination.
  */
-package uk.ac.shef.dcs.dynamite.ccs;
-
-import uk.ac.shef.dcs.dynamite.lts.Label;
+package uk.ac.shef.dcs.dynamite.lts;
 
 /**
- * Represents a CCS action, unifying the silent action
- * with channel names.
+ * Represents an action, which occurs through transitioning
+ * from one state to another.
  *
  * @author Andrew John Hughes (gnu_andrew@member.fsf.org)
  */

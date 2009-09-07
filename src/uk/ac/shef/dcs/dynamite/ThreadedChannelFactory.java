@@ -24,8 +24,13 @@
 
 package uk.ac.shef.dcs.dynamite;
 
+import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ExecutorService;
+
+import uk.ac.shef.dcs.dynamite.lts.Action;
 
 /**
  * This class provides an implementation of
@@ -40,6 +45,13 @@ public class ThreadedChannelFactory
 {
 
   /**
+   * The number of threads this factory should use
+   * for performing tasks.
+   */
+  private static final int NUMBER_OF_THREADS =
+    Runtime.getRuntime().availableProcessors() * 2 + 1;
+
+  /**
    * The map of channel names to
    * {@link ThreadedChannel}s.
    */
@@ -52,12 +64,18 @@ public class ThreadedChannelFactory
   private ConcurrentMap<String,ThreadLocal<Object>> repositories;
 
   /**
+   * The {@link ExecutorService} for performing actions.
+   */
+  private ExecutorService executor;
+
+  /**
    * Constructs a new {@link ThreadedChannelFactory}.
    */
   public ThreadedChannelFactory()
   {
     channels = new ConcurrentHashMap<String,ThreadedChannel>();
     repositories = new ConcurrentHashMap<String,ThreadLocal<Object>>();
+    executor = Executors.newFixedThreadPool(NUMBER_OF_THREADS);
   }
 
   /**
@@ -150,6 +168,27 @@ public class ThreadedChannelFactory
     if (store == null)
       return null;
     return store.get();
+  }
+
+  /**
+   * Perform the given action by passing it to the
+   * {@link ExecutorService} to run in a different thread.
+   *
+   * @param action the action to perform.
+   * @throws Exception if the action throws an exception.
+   */
+  public void perform(final Action action)
+    throws Exception
+  {
+    executor.submit(new Callable<Void>()
+      {
+        public Void call()
+          throws Exception
+        {
+          action.perform();
+          return null;
+        }
+      });
   }
 
 }

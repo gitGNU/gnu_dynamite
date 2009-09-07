@@ -83,11 +83,11 @@ public class Sum
     Set<Transition> trans = new HashSet<Transition>();
     for (Transition t : left.getPossibleTransitions())
       {
-        trans.add(new Transition(this, t.getFinish(), t.getLabel()));
+        trans.add(new Transition(this, t.getFinish(), t.getAction()));
       }
     for (Transition t : right.getPossibleTransitions())
       {
-        trans.add(new Transition(this, t.getFinish(), t.getLabel()));
+        trans.add(new Transition(this, t.getFinish(), t.getAction()));
       }
     return trans;
   }

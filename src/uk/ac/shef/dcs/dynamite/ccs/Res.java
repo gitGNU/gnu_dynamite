@@ -83,7 +83,7 @@ public class Res
     for (Transition t : process.getPossibleTransitions())
       {
         String tName =
-          Context.convertLabelToName(t.getLabel().getText());
+          Context.convertLabelToName(t.getAction().getLabel().getText());
         if (!tName.equals(name))
           trans.add(t);
       }

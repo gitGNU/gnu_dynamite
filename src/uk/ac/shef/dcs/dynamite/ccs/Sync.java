@@ -1,4 +1,4 @@
-/* Tau.java - Represents a silent action.
+/* Sync.java - Represents a silent action occurring from synchronisation.
  * Copyright (C) 2009 The University of Sheffield
  *
  * This file is part of DynamiTE.
@@ -23,23 +23,60 @@
  */
 package uk.ac.shef.dcs.dynamite.ccs;
 
+import uk.ac.shef.dcs.dynamite.Context;
+
 import uk.ac.shef.dcs.dynamite.lts.Action;
 import uk.ac.shef.dcs.dynamite.lts.Label;
 
 /**
- * Represents the silent action.  Users should implement
- * the {@link #perform()} method with their own internal
- * behaviour.
+ * Represents the silent action occurring through synchronisation.
+ * It retains a reference to each of the actions that lead to
+ * synchronisation and performs them both when performed itself.
  *
  * @author Andrew John Hughes (gnu_andrew@member.fsf.org)
  */
-public abstract class Tau
-  extends Action
+public class Sync
+  extends Tau
 {
 
-  public Label getLabel()
+  /**
+   * The first action.
+   */
+  private Action action1;
+
+  /**
+   * The second action.
+   */
+  private Action action2;
+
+  /**
+   * Constructs a new synchronisation, resulting from the
+   * two supplied actions.
+   *
+   * @param action1 the first synchronising action.
+   * @param action2 the second synchronising action.
+   */
+  public Sync(Action action1, Action action2)
   {
-    return CCSLabel.TAU;
+    this.action1 = action1;
+    this.action2 = action2;
+  }
+
+  /**
+   * Perform the synchronisation by performing
+   * both actions.  The context is used to call
+   * the actual {@code perform()} method of each
+   * action.
+   *
+   * @throws Exception if a performance fails.
+   * @see Context
+   */
+  public void perform()
+    throws Exception
+  {
+    Context ctx = Context.getContext();
+    ctx.perform(action1);
+    ctx.perform(action2);
   }
 
 }

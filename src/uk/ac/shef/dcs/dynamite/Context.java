@@ -29,6 +29,7 @@ import java.util.Collection;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ConcurrentHashMap;
 
+import uk.ac.shef.dcs.dynamite.lts.Action;
 import uk.ac.shef.dcs.dynamite.lts.Label;
 
 /**
@@ -371,6 +372,20 @@ public abstract class Context
   public Collection<Class<? extends Process>> getSyntax()
   {
     return calculus.getSyntax();
+  }
+
+  /**
+   * Performs the given {@link Action}.  Actions need to be
+   * run by the {@link ChannelFactory} to ensure this
+   * happens in the correct environment.
+   *
+   * @param action the action to run.
+   * @throws Exception if the action throws an exception.
+   */
+  public void perform(Action action)
+    throws Exception
+  {
+    channelImpl.perform(action);
   }
 
 }

@@ -42,22 +42,45 @@ public class Transition
   private State finish;
 
   /**
-   * The label.
+   * The action.
    */
-  private Label label;
+  private Action action;
 
   /**
-   * Constructs a new {@link Transition}.
+   * The derivative transitions, if any.
+   */
+  private Transition[] derivatives;
+
+  /**
+   * Constructs a new {@link Transition} with the given
+   * start state, final state, action and no derivatives.
    *
    * @param start the start state.
    * @param finish the finish state.
-   * @param label the label on the transition.
+   * @param action the action on the transition.
    */
-  public Transition(State start, State finish, Label label)
+  public Transition(State start, State finish, Action action)
+  {
+    this(start, finish, action, null);
+  }
+
+  /**
+   * Constructs a new {@link Transition} with the supplied
+   * start state, final state, action and derivatives.
+   *
+   * @param start the start state.
+   * @param finish the finish state.
+   * @param action the action on the transition.
+   * @param derivatives the transitions which allowed this
+   *                    transition to be created.
+   */
+  public Transition(State start, State finish, Action action,
+                    Transition[] derivatives)
   {
     this.start = start;
     this.finish = finish;
-    this.label = label;
+    this.action = action;
+    this.derivatives = derivatives;
   }
 
   /**
@@ -85,9 +108,20 @@ public class Transition
    *
    * @return the transition label.
    */
-  public Label getLabel()
+  public Action getAction()
   {
-    return label;
+    return action;
+  }
+
+  /**
+   * Returns the derivatives of this transition,
+   * or {@code null} if there are none.
+   *
+   * @return the derivatives, or {@code null}.
+   */
+  public Transition[] getDerivatives()
+  {
+    return (Transition[]) derivatives.clone();
   }
 
   /**
@@ -97,7 +131,7 @@ public class Transition
    */
   public String toString()
   {
-    return start + " --" + label + "--> " + finish;
+    return start + " --" + action + "--> " + finish;
   }
 
 }
