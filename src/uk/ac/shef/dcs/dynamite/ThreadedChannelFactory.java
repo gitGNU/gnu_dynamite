@@ -1,5 +1,6 @@
 /* ThreadedChannelFactory.java - A ChannelFactory implementation for ThreadedChannel.
  * Copyright (C) 2009 The University of Sheffield
+ * Copyright (C) 2009 Andrew John Hughes
  *
  * This file is part of DynamiTE.
  *
@@ -45,13 +46,6 @@ public class ThreadedChannelFactory
 {
 
   /**
-   * The number of threads this factory should use
-   * for performing tasks.
-   */
-  private static final int NUMBER_OF_THREADS =
-    Runtime.getRuntime().availableProcessors() * 2 + 1;
-
-  /**
    * The map of channel names to
    * {@link ThreadedChannel}s.
    */
@@ -64,9 +58,14 @@ public class ThreadedChannelFactory
   private ConcurrentMap<String,ThreadLocal<Object>> repositories;
 
   /**
-   * The {@link ExecutorService} for performing actions.
+   * The map of processes to runnable actions.
    */
-  private ExecutorService executor;
+  private ConcurrentMap<Process,RunnableAction> actions;
+
+  /**
+   * The pool of runnable actions.
+   */
+  private Pool pool;
 
   /**
    * Constructs a new {@link ThreadedChannelFactory}.
@@ -75,7 +74,8 @@ public class ThreadedChannelFactory
   {
     channels = new ConcurrentHashMap<String,ThreadedChannel>();
     repositories = new ConcurrentHashMap<String,ThreadLocal<Object>>();
-    executor = Executors.newFixedThreadPool(NUMBER_OF_THREADS);
+    actions = new ConcurrentHashMap<Process,RunnableAction>();
+    pool = new Pool();
   }
 
   /**
@@ -177,18 +177,37 @@ public class ThreadedChannelFactory
    * @param action the action to perform.
    * @throws Exception if the action throws an exception.
    */
-  public void perform(final Transition t)
+  public void perform(Transition t)
     throws Exception
   {
-    executor.submit(new Callable<Void>()
+    Transition[] derivs = t.getDerivatives();
+    while (derivs != null && derivs.length == 1)
       {
-        public Void call()
-          throws Exception
-        {
-          t.getAction().perform();
-          return null;
-        }
-      });
+        t = derivs[0];
+        derivs = t.getDerivatives();
+      }
+    Process start = (Process) t.getStart();
+    synchronized (actions)
+      {
+        RunnableAction runnable = actions.get(start);
+        if (runnable == null)
+          {
+            runnable = pool.obtain();
+            actions.put(start, runnable);
+          }
+        runnable.setAction(t.getAction());
+        runnable.execute();
+        actions.remove(start);
+        Process finish = (Process) t.getFinish();
+        if (finish instanceof TerminalProcess)
+          {
+            pool.relinquish(runnable);
+          }
+        else
+          {
+            actions.put(finish, runnable);
+          }
+      }
   }
 
 }

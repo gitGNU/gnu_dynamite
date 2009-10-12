@@ -1,5 +1,5 @@
-/* Process.java - General interface for a process.
- * Copyright (C) 2007, 2009 The University of Sheffield
+/* TerminalProcess.java - a process with no transitions.
+ * Copyright (C) 2009 Andrew John Hughes
  *
  * This file is part of DynamiTE.
  *
@@ -24,43 +24,44 @@
 
 package uk.ac.shef.dcs.dynamite;
 
+import java.util.Collections;
 import java.util.Set;
 
-import uk.ac.shef.dcs.dynamite.lts.State;
 import uk.ac.shef.dcs.dynamite.lts.Transition;
 
 /**
- * Represents a general evolving process.
+ * Denotes a process with no transitions.
  *
  * @author Andrew John Hughes (gnu_andrew@member.fsf.org)
  */
-public interface Process
-    extends State
+public abstract class TerminalProcess
+    implements Process
 {
 
   /**
-   * Returns the set of possible transitions from this process.
+   * There are no possible transitions for a terminal process.
    *
-   * @return the set of possible transitions.
+   * @return an empty set.
    */
-  Set<Transition> getPossibleTransitions();
-
-  /**
-   * Return a string representation of the process.
-   *
-   * @return a string representation.
-   */
-  String toString();
+  public Set<Transition> getPossibleTransitions()
+  {
+    return Collections.emptySet();
+  }
 
   /**
    * Perform substitution on this process, replacing
    * occurrences of the named variable with the supplied
-   * process.
+   * process.  Always returns the original process
+   * ({@code this}) for a terminal process.
    *
    * @param var the variable to replace.
    * @param proc the process to replace it with.
    * @return the process with substitution applied.
    */
-  Process substitute(String var, Process proc);
+  public Process substitute(String var, Process proc)
+  {
+    return this;
+  }
+
 
 }

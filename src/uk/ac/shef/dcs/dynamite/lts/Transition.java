@@ -122,7 +122,10 @@ public class Transition
    */
   public Transition[] getDerivatives()
   {
-    return (Transition[]) derivatives.clone();
+    if (derivatives != null)
+      return (Transition[]) derivatives.clone();
+    else
+      return null;
   }
 
   /**

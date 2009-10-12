@@ -1,5 +1,6 @@
 /* Nil.java - A CCS nil process.
- * Copyright (C) 2007 The University of Sheffield
+ * Copyright (C) 2007, 2009 The University of Sheffield
+ * Copyright (C) 2009 Andrew John Hughes
  *
  * This file is part of DynamiTE.
  *
@@ -24,11 +25,7 @@
 
 package uk.ac.shef.dcs.dynamite.ccs;
 
-import java.util.Collections;
-import java.util.Set;
-
-import uk.ac.shef.dcs.dynamite.Process;
-import uk.ac.shef.dcs.dynamite.lts.Transition;
+import uk.ac.shef.dcs.dynamite.TerminalProcess;
 
 /**
  * Represents a CCS Nil process.
@@ -36,7 +33,7 @@ import uk.ac.shef.dcs.dynamite.lts.Transition;
  * @author Andrew John Hughes (gnu_andrew@member.fsf.org)
  */
 public class Nil
-    implements Process
+    extends TerminalProcess
 {
 
   /**
@@ -52,16 +49,6 @@ public class Nil
   }
 
   /**
-   * There are no possible transitions for Nil.
-   *
-   * @return an empty set.
-   */
-  public Set<Transition> getPossibleTransitions()
-  {
-    return Collections.emptySet();
-  }
-
-  /**
    * Returns a textual representation of the Nil process.
    *
    * @return {@code "0"}.
@@ -69,19 +56,6 @@ public class Nil
   public String toString()
   {
     return "0";
-  }
-
-  /**
-   * Returns a version of this process after substitution
-   * has been applied.  For Nil, we just return this.
-   *
-   * @param var the variable to replace.
-   * @param vProc the process to replace it with.
-   * @return the process with substitution applied.
-   */
-  public Process substitute(String var, Process vProc)
-  {
-    return this;
   }
 
 }

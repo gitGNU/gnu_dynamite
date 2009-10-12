@@ -382,7 +382,7 @@ public abstract class Context
    * @param t the transition being performed.
    * @throws Exception if the action throws an exception.
    */
-  public void perform(Transition t)
+  public void perform(final Transition t)
     throws Exception
   {
     channelImpl.perform(t);
