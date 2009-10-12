@@ -30,7 +30,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ExecutorService;
 
-import uk.ac.shef.dcs.dynamite.lts.Action;
+import uk.ac.shef.dcs.dynamite.lts.Transition;
 
 /**
  * This class provides an implementation of
@@ -177,7 +177,7 @@ public class ThreadedChannelFactory
    * @param action the action to perform.
    * @throws Exception if the action throws an exception.
    */
-  public void perform(final Action action)
+  public void perform(final Transition t)
     throws Exception
   {
     executor.submit(new Callable<Void>()
@@ -185,7 +185,7 @@ public class ThreadedChannelFactory
         public Void call()
           throws Exception
         {
-          action.perform();
+          t.getAction().perform();
           return null;
         }
       });

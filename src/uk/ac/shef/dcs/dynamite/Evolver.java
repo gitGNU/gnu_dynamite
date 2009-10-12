@@ -34,9 +34,11 @@ public interface Evolver
 
     /**
      * Takes the given process and evolves it one or more
-     * times.
+     * times, optionally performing any side effects.
      *
      * @param process the process to evolve.
+     * @throws Exception if caused by a side effect.
      */
-    void evolve(Process process);
+    void evolve(Process process)
+      throws Exception;
 }

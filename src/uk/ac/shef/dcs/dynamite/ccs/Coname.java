@@ -84,7 +84,8 @@ public class Coname
   /**
    * Perform this name by retrieving the data
    * for the channel from the context's storage
-   * repository and writing it to the output channel.
+   * repository and writing it to the output channel
+   * if the value is non-{@code null}.
    *
    * @throws IOException if the write fails.
    * @see Context
@@ -93,7 +94,8 @@ public class Coname
     throws IOException
   {
     Object data = Context.getContext().retrieve(getName());
-    channel.write(data);
+    if (data != null)
+      channel.write(data);
   }
 
 }

@@ -29,8 +29,8 @@ import java.util.Collection;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ConcurrentHashMap;
 
-import uk.ac.shef.dcs.dynamite.lts.Action;
 import uk.ac.shef.dcs.dynamite.lts.Label;
+import uk.ac.shef.dcs.dynamite.lts.Transition;
 
 /**
  * Represents the context in which a process calculus operates.
@@ -375,17 +375,17 @@ public abstract class Context
   }
 
   /**
-   * Performs the given {@link Action}.  Actions need to be
+   * Performs the given {@link Transition}.  Actions need to be
    * run by the {@link ChannelFactory} to ensure this
    * happens in the correct environment.
    *
-   * @param action the action to run.
+   * @param t the transition being performed.
    * @throws Exception if the action throws an exception.
    */
-  public void perform(Action action)
+  public void perform(Transition t)
     throws Exception
   {
-    channelImpl.perform(action);
+    channelImpl.perform(t);
   }
 
 }

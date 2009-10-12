@@ -24,7 +24,7 @@
 
 package uk.ac.shef.dcs.dynamite;
 
-import uk.ac.shef.dcs.dynamite.lts.Action;
+import uk.ac.shef.dcs.dynamite.lts.Transition;
 import uk.ac.shef.dcs.dynamite.plugins.Probeable;
 
 /**
@@ -76,13 +76,13 @@ public interface ChannelFactory
   public Object retrieve(String name);
 
   /**
-   * Perform the given action, creating an appropriate
+   * Perform the given transition, creating an appropriate
    * environment for its operation as necessary.
    *
-   * @param action the action to perform.
-   * @throws Exception if the action throws an exception.
+   * @param t the transition to perform.
+   * @throws Exception if the transition throws an exception.
    */
-  public void perform(Action action)
+  public void perform(Transition t)
     throws Exception;
 
 }

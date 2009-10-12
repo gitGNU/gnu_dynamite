@@ -25,8 +25,8 @@ package uk.ac.shef.dcs.dynamite.ccs;
 
 import uk.ac.shef.dcs.dynamite.Context;
 
-import uk.ac.shef.dcs.dynamite.lts.Action;
 import uk.ac.shef.dcs.dynamite.lts.Label;
+import uk.ac.shef.dcs.dynamite.lts.Transition;
 
 /**
  * Represents the silent action occurring through synchronisation.
@@ -40,33 +40,33 @@ public class Sync
 {
 
   /**
-   * The first action.
+   * The first transition.
    */
-  private Action action1;
+  private Transition transition1;
 
   /**
-   * The second action.
+   * The second transition.
    */
-  private Action action2;
+  private Transition transition2;
 
   /**
    * Constructs a new synchronisation, resulting from the
-   * two supplied actions.
+   * two supplied transitions.
    *
-   * @param action1 the first synchronising action.
-   * @param action2 the second synchronising action.
+   * @param transition1 the first synchronising transition.
+   * @param transition2 the second synchronising transition.
    */
-  public Sync(Action action1, Action action2)
+  public Sync(Transition transition1, Transition transition2)
   {
-    this.action1 = action1;
-    this.action2 = action2;
+    this.transition1 = transition1;
+    this.transition2 = transition2;
   }
 
   /**
    * Perform the synchronisation by performing
-   * both actions.  The context is used to call
+   * both transitions.  The context is used to call
    * the actual {@code perform()} method of each
-   * action.
+   * transition's action.
    *
    * @throws Exception if a performance fails.
    * @see Context
@@ -75,8 +75,8 @@ public class Sync
     throws Exception
   {
     Context ctx = Context.getContext();
-    ctx.perform(action1);
-    ctx.perform(action2);
+    ctx.perform(transition1);
+    ctx.perform(transition2);
   }
 
 }

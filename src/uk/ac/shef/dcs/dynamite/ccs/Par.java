@@ -119,7 +119,7 @@ public class Par
                   {
                     Par finish1 = (Par) t.getFinish();
                     Par finish2 = (Par) t2.getFinish();
-                    Action sync = new Sync(t.getAction(), t2.getAction());
+                    Action sync = new Sync(t, t2);
                     Transition[] derivs = new Transition[] { t, t2 };
                     if (!finish1.left.equals(left) &&
                         !finish2.right.equals(right))
