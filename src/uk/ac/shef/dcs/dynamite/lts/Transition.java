@@ -67,22 +67,6 @@ public class Transition
 
   /**
    * Constructs a new {@link Transition} with the supplied
-   * start state, final state, action and derivative.
-   *
-   * @param start the start state.
-   * @param finish the finish state.
-   * @param action the action on the transition.
-   * @param derivative the transition which allowed this
-   *                    transition to be created.
-   */
-  public Transition(State start, State finish, Action action,
-                    Transition derivative)
-  {
-    this(start, finish, action, new Transition[] { derivative });
-  }
-
-  /**
-   * Constructs a new {@link Transition} with the supplied
    * start state, final state, action and derivatives.
    *
    * @param start the start state.
@@ -92,7 +76,7 @@ public class Transition
    *                    transition to be created.
    */
   public Transition(State start, State finish, Action action,
-                    Transition[] derivatives)
+                    Transition... derivatives)
   {
     this.start = start;
     this.finish = finish;
