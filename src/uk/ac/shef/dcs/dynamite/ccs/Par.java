@@ -1,5 +1,6 @@
 /* Par.java - A CCS parallel composition of the form E | F.
  * Copyright (C) 2009 The University of Sheffield
+ * Copyright (C) 2009 Andrew John Hughes
  *
  * This file is part of DynamiTE.
  *
@@ -95,14 +96,14 @@ public class Par
       {
         Process nextLeft = (Process) t.getFinish();
         trans.add(new Transition(this, new Par(nextLeft, right),
-                                 t.getAction()));
+                                 t.getAction(), t));
       }
     // Par2
     for (Transition t : right.getPossibleTransitions())
       {
         Process nextRight = (Process) t.getFinish();
         trans.add(new Transition(this, new Par(left, nextRight),
-                                 t.getAction()));
+                                 t.getAction(), t));
       }
     // Now find pairs for synchronisation (Par3)
     Set<Transition> syncTrans = new HashSet<Transition>();

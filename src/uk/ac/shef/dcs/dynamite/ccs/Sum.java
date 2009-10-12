@@ -1,5 +1,6 @@
 /* Sum.java - A CCS summation of the form E + F.
  * Copyright (C) 2009 The University of Sheffield
+ * Copyright (C) 2009 Andrew John Hughes
  *
  * This file is part of DynamiTE.
  *
@@ -83,11 +84,11 @@ public class Sum
     Set<Transition> trans = new HashSet<Transition>();
     for (Transition t : left.getPossibleTransitions())
       {
-        trans.add(new Transition(this, t.getFinish(), t.getAction()));
+        trans.add(new Transition(this, t.getFinish(), t.getAction(), t));
       }
     for (Transition t : right.getPossibleTransitions())
       {
-        trans.add(new Transition(this, t.getFinish(), t.getAction()));
+        trans.add(new Transition(this, t.getFinish(), t.getAction(), t));
       }
     return trans;
   }

@@ -1,5 +1,6 @@
 /* ReN.java - CCS renaming E[f].
  * Copyright (C) 2009 The University of Sheffield
+ * Copyright (C) 2009 Andrew John Hughes
  *
  * This file is part of DynamiTE.
  *
@@ -123,7 +124,7 @@ public class Ren
             trans.add(new Transition(this,
                                      new Ren((Process) t.getFinish(),
                                              func),
-                                     newAct));
+                                     newAct, t));
           }
       }
     return trans;

@@ -1,5 +1,6 @@
 /* Rec.java - CCS recursion &mu;X.E.
  * Copyright (C) 2009 The University of Sheffield
+ * Copyright (C) 2009 Andrew John Hughes
  *
  * This file is part of DynamiTE.
  *
@@ -78,7 +79,7 @@ public class Rec
         Process end = (Process) t.getFinish();
         trans.add(new Transition(this,
                                  end.substitute(var, this),
-                                 t.getAction()));
+                                 t.getAction(), t));
       }
     return trans;
   }

@@ -1,5 +1,6 @@
 /* Process.java - Represents a transition from one process to another.
- * Copyright (C) 2007 The University of Sheffield
+ * Copyright (C) 2007, 2009 The University of Sheffield
+ * Copyright (C) 2009 Andrew John Hughes
  *
  * This file is part of DynamiTE.
  *
@@ -61,7 +62,23 @@ public class Transition
    */
   public Transition(State start, State finish, Action action)
   {
-    this(start, finish, action, null);
+    this(start, finish, action, (Transition[]) null);
+  }
+
+  /**
+   * Constructs a new {@link Transition} with the supplied
+   * start state, final state, action and derivative.
+   *
+   * @param start the start state.
+   * @param finish the finish state.
+   * @param action the action on the transition.
+   * @param derivative the transition which allowed this
+   *                    transition to be created.
+   */
+  public Transition(State start, State finish, Action action,
+                    Transition derivative)
+  {
+    this(start, finish, action, new Transition[] { derivative });
   }
 
   /**
