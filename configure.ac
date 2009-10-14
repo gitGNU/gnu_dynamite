@@ -37,6 +37,15 @@ AM_INIT_AUTOMAKE(dynamite, 0.0.0)
 dnl Require at least version 2.59
 AC_PREREQ(2.59)
 
+dnl Older automake doesn't generate these correctly
+abs_top_builddir=`pwd -P`
+AC_SUBST(abs_top_builddir)
+abs_top_srcdir=`dirname $0`
+cd $abs_top_srcdir
+abs_top_srcdir=`pwd`
+cd $abs_top_builddir
+AC_SUBST(abs_top_srcdir)
+
 dnl Search out javac and class libraries
 CLASSPATH_FIND_JAVAC
 
@@ -55,10 +64,14 @@ CLASSPATH_WITH_GJDOC
 dnl Set debug level
 DYNAMITE_WITH_DEBUG_LEVEL
 
+dnl Choose whether or not to build examples
+DYNAMITE_ENABLE_EXAMPLES
+
 dnl Generate classlist and other output
 AC_CONFIG_FILES([Makefile
 	lib/Makefile
 	lib/gen-classlist.sh
-	src/uk/ac/shef/dcs/dynamite/Config.java])
+	src/uk/ac/shef/dcs/dynamite/Config.java
+	examples/Makefile])
 AC_CONFIG_COMMANDS([gen-classlist],[chmod 755 lib/gen-classlist.sh])
 AC_OUTPUT

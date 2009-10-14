@@ -28,8 +28,8 @@
 ## Input file for automake to generate the Makefile.in used by configure
 
 # lib first, to compile .class files before native code, last examples
-SUBDIRS = lib 
-DIST_SUBDIRS = lib 
+SUBDIRS = lib $(EXAMPLES)
+DIST_SUBDIRS = lib examples
 
 native: lib
 

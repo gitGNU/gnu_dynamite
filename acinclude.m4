@@ -372,3 +372,28 @@ AC_DEFUN([DYNAMITE_WITH_DEBUG_LEVEL],
   AC_MSG_RESULT([$DEBUG_LEVEL]);
   AC_SUBST(DEBUG_LEVEL)
 ])
+
+AC_DEFUN([DYNAMITE_ENABLE_EXAMPLES],
+[
+  AC_MSG_CHECKING([whether to disable the examples])
+  AC_ARG_ENABLE([examples],
+                [AS_HELP_STRING(--disable-examples,don't build the examples [[default=no]])],
+  [
+    case "${enableval}" in
+      no)
+        disable_examples=yes
+        ;;
+      *)
+        disable_examples=no
+        ;;
+    esac
+  ],
+  [
+    disable_examples=no
+  ])
+  AC_MSG_RESULT([$disable_examples])
+  if test "x${disable_examples}" = "xno";  then
+    EXAMPLES="examples";
+  fi
+  AC_SUBST(EXAMPLES)
+])
