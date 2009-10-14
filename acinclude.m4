@@ -355,7 +355,9 @@ AC_DEFUN([DYNAMITE_WITH_DEBUG_LEVEL],
   [
     if test "x${withval}" != x && test "x${withval}" != xyes && test "x${withval}" != xno; then
        if test "x${withval}" != "xSEVERE" && test "x${withval}" != "xWARNING" &&
-          test "x${withval}" != "xINFO" && test "x${withval}" != "xCONFIG"; then
+          test "x${withval}" != "xINFO" && test "x${withval}" != "xCONFIG" &&
+	  test "x${withval}" != "xFINE" && test "x${withval}" != "xFINER" &&
+	  test "x${withval}" != "xFINEST"; then
 	       AC_MSG_ERROR([Invalid debug level: ${withval}]);
        else
 	       DEBUG_LEVEL=${withval};

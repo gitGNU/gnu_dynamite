@@ -85,7 +85,9 @@ public class Res
         String tName =
           Context.convertLabelToName(t.getAction().getLabel().getText());
         if (!tName.equals(name))
-          trans.add(t);
+          trans.add(new Transition(new Res((Process) t.getStart(), name),
+                                   new Res((Process) t.getFinish(), name),
+                                   t.getAction(), t));
       }
     return trans;
   }
