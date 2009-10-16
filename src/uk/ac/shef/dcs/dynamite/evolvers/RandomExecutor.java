@@ -54,12 +54,15 @@ public class RandomExecutor
     throws Exception
   {
     Set<Transition> trans = p.getPossibleTransitions();
-    Transition[] ts = new Transition[trans.size()];
-    ts = trans.toArray(ts);
-    Transition t = ts[new Random().nextInt(ts.length)];
-    Config.logger.fine("Selected transition: " + t);
-    Context.getContext().perform(t);
-    evolve((Process) t.getFinish());
+    if (trans.size() > 0)
+      {
+        Transition[] ts = new Transition[trans.size()];
+        ts = trans.toArray(ts);
+        Transition t = ts[new Random().nextInt(ts.length)];
+        Config.logger.fine("Selected transition: " + t);
+        Context.getContext().perform(t);
+        evolve((Process) t.getFinish());
+      }
   }
 
 }

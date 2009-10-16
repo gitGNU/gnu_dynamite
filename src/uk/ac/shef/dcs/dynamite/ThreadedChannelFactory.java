@@ -195,8 +195,7 @@ public class ThreadedChannelFactory
             runnable = pool.obtain();
             actions.put(start, runnable);
           }
-        runnable.setAction(t.getAction());
-        runnable.execute();
+        runnable.addAction(t.getAction());
         actions.remove(start);
         Process finish = (Process) t.getFinish();
         if (finish instanceof TerminalProcess)

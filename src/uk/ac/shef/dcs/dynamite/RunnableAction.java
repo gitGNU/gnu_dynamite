@@ -1,4 +1,4 @@
-/* RunnableAction.java - An action that can be run.
+/* Worker.java - A worker thread that performs Actions.
  * Copyright (C) 2009 Andrew John Hughes
  *
  * This file is part of DynamiTE.
@@ -23,7 +23,8 @@
  */
 package uk.ac.shef.dcs.dynamite;
 
-import java.util.concurrent.Callable;
+import java.util.LinkedList;
+import java.util.Queue;
 
 import uk.ac.shef.dcs.dynamite.lts.Action;
 
@@ -34,37 +35,34 @@ import uk.ac.shef.dcs.dynamite.lts.Action;
  * @author Andrew John Hughes (gnu_andrew@member.fsf.org)
  */
 public class RunnableAction
-  implements Runnable, Callable<Void>
+  implements Runnable
 {
 
   /**
    * The action to execute.
    */
-  private Action action;
+  private Queue<Action> actions;
 
   /**
-   * The thread associated with this {@link RunnableAction}.
+   * Constructs a new {@link RunnableAction}.
    */
-  private Thread thread;
-
-  /**
-   * Sets the action to execute.
-   *
-   * @param action the action to execute.
-   */
-  public void setAction(Action action)
+  public RunnableAction()
   {
-    this.action = action;
+    actions = new LinkedList<Action>();
   }
 
   /**
-   * Sets the thread used to run this action.
+   * Adds a new action to execute.
    *
-   * @param thread the thread used to run this action.
+   * @param action the action to execute.
    */
-  public void setThread(Thread thread)
+  public void addAction(Action action)
   {
-    this.thread = thread;
+    synchronized (actions)
+      {
+        actions.add(action);
+        actions.notifyAll();
+      }
   }
 
   /**
@@ -72,32 +70,35 @@ public class RunnableAction
    */
   public void run()
   {
+    Action next;
     try
       {
-        call();
+        while (!Thread.interrupted())
+          {
+            synchronized (actions)
+              {
+                next = actions.poll();
+                while (next == null)
+                  {
+                    actions.wait();
+                    next = actions.poll();
+                  }
+              }
+            try
+              {
+                System.out.println("Performing " + next + " on " + Thread.currentThread());
+                next.perform();
+              }
+            catch (Exception e)
+              {
+                throw new Error(e);
+              }
+          }
       }
-    catch (Exception e)
+    catch (InterruptedException e)
       {
-        throw new Error(e);
+        /* Shutdown */
       }
-  }
-
-  /**
-   * Perform the action.
-   */
-  public Void call()
-    throws Exception
-  {
-    action.perform();
-    return null;
-  }
-
-  /**
-   * Execute the action in the appropriate thread.
-   */
-  public void execute()
-  {
-    thread.run();
   }
 
   /**
@@ -107,9 +108,13 @@ public class RunnableAction
    */
   public String toString()
   {
+    String actionsString = null;
+    synchronized (actions)
+      {
+        actionsString = actions.toString();
+      }
     return getClass().getName() +
-      "[action=" + action +
-      ",thread=" + thread +
+      "[actions=" + actionsString +
       "]";
   }
 

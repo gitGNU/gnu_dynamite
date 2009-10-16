@@ -34,7 +34,7 @@ import uk.ac.shef.dcs.dynamite.ccs.Par;
 import uk.ac.shef.dcs.dynamite.ccs.Prefix;
 import uk.ac.shef.dcs.dynamite.ccs.Res;
 
-import uk.ac.shef.dcs.dynamite.evolvers.Simulator;
+import uk.ac.shef.dcs.dynamite.evolvers.RandomExecutor;
 
 /**
  * A DynamiTE 'Hello World' application which sends
@@ -54,7 +54,7 @@ public class App
     Process receiver = new Prefix(new Name("sally"),
                                   new Prefix(new Bob(), Nil.NIL)); // sally.tau.0
     Process app = new Par(sender, receiver); // tau.sally'.0 | sally.tau.0
-    new Simulator().evolve(new Res(app, "sally")); // (taul.sally'.0 | sally.tau.0) / sally
+    new RandomExecutor().evolve(new Res(app, "sally")); // (taul.sally'.0 | sally.tau.0) / sally
   }
 
 }

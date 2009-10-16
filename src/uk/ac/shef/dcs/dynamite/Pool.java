@@ -81,7 +81,7 @@ public class Pool
     RunnableAction act = new RunnableAction();
     Thread t = new Thread(group, act, "PoolThread-" +
                           nextThread.getAndIncrement());
-    act.setThread(t);
+    t.start();
     return act;
   }
 
