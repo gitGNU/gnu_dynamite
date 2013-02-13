@@ -5,6 +5,8 @@ dnl Originally GPLv2, upgraded to AGPLv3 via 'or later' clause.
 dnl
 dnl Copyright (C) 2003, 2004, 2005, 2006, 2007 Free Software Foundation, Inc.
 dnl Copyright (C) 2007 The University of Sheffield
+dnl Copyright (C) 2009, 2010, 2011 Red Hat, Inc.
+dnl Copyright (C) 2013 Andrew John Hughes
 dnl
 dnl This file is part of DynamiTE.
 dnl
@@ -252,35 +254,6 @@ AC_DEFUN([CLASSPATH_WITH_DYNAMITE],
 ])
 
 dnl -----------------------------------------------------------
-dnl Enable generation of API documentation, with gjdoc if it
-dnl has been compiled to an executable (or a suitable script
-dnl is in your PATH) or using the argument as gjdoc executable.
-dnl -----------------------------------------------------------
-AC_DEFUN([CLASSPATH_WITH_GJDOC],
-[
-  AC_ARG_WITH([gjdoc],
-              AS_HELP_STRING([--with-gjdoc],
-			     [generate documentation using gjdoc (default is NO)]),
-              [if test "x${withval}" = xno; then
-	         WITH_GJDOC=no;
-	       elif test "x${withval}" = xyes -o "x{withval}" = x; then
-	         WITH_GJDOC=yes;
-	         AC_PATH_PROG(GJDOC, gjdoc, "no")
-		 if test "x${GJDOC}" = xno; then
-		   AC_MSG_ERROR("gjdoc executable not found");
-		 fi
-	       else
-	         WITH_GJDOC=yes
-		 GJDOC="${withval}"
-		 AC_CHECK_FILE(${GJDOC}, AC_SUBST(GJDOC),
-		               AC_MSG_ERROR("Cannot use ${withval} as gjdoc executable since it doesn't exist"))
-	       fi],
-              [WITH_GJDOC=no])
-
-  AM_CONDITIONAL(CREATE_API_DOCS, test "x${WITH_GJDOC}" = xyes)
-])
-
-dnl -----------------------------------------------------------
 AC_DEFUN([CLASSPATH_WITH_ECJ],
 [
   AC_ARG_WITH([ecj],
@@ -396,4 +369,135 @@ AC_DEFUN([DYNAMITE_ENABLE_EXAMPLES],
     EXAMPLES="examples";
   fi
   AC_SUBST(EXAMPLES)
+])
+
+dnl Taken & modified from IcedTea7 2.4.0.
+AC_DEFUN([IT_CHECK_FOR_JDK],
+[
+  AC_MSG_CHECKING([for a JDK home directory])
+  AC_ARG_WITH([jdk-home],
+	      [AS_HELP_STRING([--with-jdk-home[[=PATH]]],
+                              [jdk home directory (default is first predefined JDK found)])],
+              [
+                if test "x${withval}" = xyes
+                then
+                  SYSTEM_JDK_DIR=
+                elif test "x${withval}" = xno
+                then
+	          SYSTEM_JDK_DIR=
+	        else
+                  SYSTEM_JDK_DIR=${withval}
+                fi
+              ],
+              [
+	        SYSTEM_JDK_DIR=
+              ])
+  if test -z "${SYSTEM_JDK_DIR}"; then
+    BOOTSTRAP_VMS="/usr/lib/jvm/java-gcj /usr/lib/jvm/gcj-jdk /usr/lib/jvm/cacao";
+    ICEDTEA6_VMS="/usr/lib/jvm/icedtea6 /usr/lib/jvm/java-6-openjdk"
+    ICEDTEA7_VMS="/usr/lib/jvm/icedtea7 /usr/lib/jvm/java-1.7.0-openjdk"
+    FALLBACK_VMS="/usr/lib/jvm/java-openjdk /usr/lib/jvm/openjdk /usr/lib/jvm/java-icedtea"
+    for dir in ${BOOTSTRAP_VMS} ${ICEDTEA7_VMS} ${ICEDTEA6_VMS} ${FALLBACK_VMS} ; do
+       if test -d $dir; then
+         SYSTEM_JDK_DIR=$dir
+	 break
+       fi
+    done
+  fi
+  AC_MSG_RESULT(${SYSTEM_JDK_DIR})
+  if ! test -d "${SYSTEM_JDK_DIR}"; then
+    AC_MSG_ERROR("A JDK JDK home directory could not be found.")
+  fi
+  AC_SUBST(SYSTEM_JDK_DIR)
+])
+
+dnl Taken from IcedTea-Web
+AC_DEFUN([IT_FIND_JAVADOC],
+[
+  AC_REQUIRE([IT_CHECK_FOR_JDK])
+  JAVADOC_DEFAULT=${SYSTEM_JDK_DIR}/bin/javadoc
+  AC_MSG_CHECKING([if a javadoc executable is specified])
+  AC_ARG_WITH([javadoc],
+              [AS_HELP_STRING(--with-javadoc[[=PATH]],specify location of Java documentation tool (javadoc))],
+  [
+    if test "x${withval}" = "xyes"; then
+      JAVADOC=no
+    else
+      JAVADOC="${withval}"
+     fi
+  ],
+  [
+    JAVADOC=no
+  ])
+  AC_MSG_RESULT([${JAVADOC}])
+  if test "x${JAVADOC}" == "xno"; then
+    JAVADOC=${JAVADOC_DEFAULT}
+  fi
+  AC_MSG_CHECKING([if $JAVADOC is a valid executable file])
+  if test -x "${JAVADOC}" && test -f "${JAVADOC}"; then
+    AC_MSG_RESULT([yes])
+  else
+    AC_MSG_RESULT([no])
+    JAVADOC=""
+    AC_PATH_PROG(JAVADOC, "javadoc")
+    if test -z "${JAVADOC}"; then
+      AC_PATH_PROG(JAVADOC, "gjdoc")
+    fi
+    if test -z "${JAVADOC}" && test "x$ENABLE_DOCS" = "xyes"; then
+      AC_MSG_ERROR("No Java documentation tool was found.")
+    fi
+  fi
+  AC_MSG_CHECKING([whether javadoc supports -J options])
+  CLASS=pkg/Test.java
+  mkdir tmp.$$
+  cd tmp.$$
+  mkdir pkg
+  cat << \EOF > $CLASS
+[/* [#]line __oline__ "configure" */
+package pkg;
+
+public class Test
+{
+  /**
+   * Does stuff.
+   *
+   *
+   * @param args arguments from cli.
+   */
+  public static void main(String[] args)
+  {
+    System.out.println("Hello World!");
+  }
+}
+]
+EOF
+  if $JAVADOC -J-Xmx896m pkg >&AS_MESSAGE_LOG_FD 2>&1; then
+    JAVADOC_KNOWS_J_OPTIONS=yes
+  else
+    JAVADOC_KNOWS_J_OPTIONS=no
+  fi
+  AC_MSG_RESULT([${JAVADOC_KNOWS_J_OPTIONS}])
+  AC_MSG_CHECKING([whether javadoc supports -licensetext])
+  if $JAVADOC -licensetext pkg >&AS_MESSAGE_LOG_FD 2>&1; then
+    JAVADOC_KNOWS_LICENSETEXT=yes
+  else
+    JAVADOC_KNOWS_LICENSETEXT=no
+  fi
+  AC_MSG_RESULT([${JAVADOC_KNOWS_LICENSETEXT}])
+  AC_MSG_CHECKING([whether javadoc supports -validhtml])
+  if $JAVADOC -validhtml pkg >&AS_MESSAGE_LOG_FD 2>&1; then
+    JAVADOC_KNOWS_VALIDHTML=yes
+  else
+    JAVADOC_KNOWS_VALIDHTML=no
+  fi
+  AC_MSG_RESULT([${JAVADOC_KNOWS_VALIDHTML}])
+  cd ..
+  rm -rf tmp.$$
+  AC_SUBST(JAVADOC)
+  AC_SUBST(JAVADOC_KNOWS_J_OPTIONS)
+  AC_SUBST(JAVADOC_KNOWS_LICENSETEXT)
+  AC_SUBST(JAVADOC_KNOWS_VALIDHTML)
+  AM_CONDITIONAL([JAVADOC_SUPPORTS_J_OPTIONS], test x"${JAVADOC_KNOWS_J_OPTIONS}" = "xyes")
+  AM_CONDITIONAL([JAVADOC_SUPPORTS_LICENSETEXT], test x"${JAVADOC_KNOWS_LICENSETEXT}" = "xyes")
+  AM_CONDITIONAL([JAVADOC_SUPPORTS_VALIDHTML], test x"${JAVADOC_KNOWS_VALIDHTML}" = "xyes")
 ])

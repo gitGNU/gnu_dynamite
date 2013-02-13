@@ -1,3 +1,24 @@
+2013-02-13  Andrew John Hughes  <gnu_andrew@member.fsf.org>
+
+	* Makefile.am:
+	(SUBDIRS): Add docs conditionally.
+	(DIST_SUBDIRS): Add docs unconditionally.
+	* acinclude.m4:
+	(CLASSPATH_WITH_GJDOC): Removed.
+	(IT_CHECK_FOR_JDK): Imported from IcedTea7 2.4.0.
+	(IT_FIND_JAVADOC): Imported from IcedTea-Web
+	and extended to check for -licensetext and
+	-validhtml.
+	* configure.ac:
+	Replace call to CLASSPATH_WITH_GJDOC with
+	--enable-docs option and invocation of
+	IT_FIND_JAVADOC if enabled.  Generate
+	docs/Makefile and docs/api/Makefile.
+	* docs/Makefile.am: New Makefile just
+	used to invoke api subdir for now.
+	* docs/api/Makefile.am: Build & install Javadoc
+	documentation.
+
 2009-02-18  Andrew John Hughes  <a.j.hughes@sheffield.ac.uk>
 
 	* AUTHORS,
@@ -52,7 +73,7 @@
 	(Nil()): Prevent other instances.
 	(getPossibleTransitions()): Use typesafe Collections method
 	rather than the constant.
-	
+
 2007-09-12  Andrew John Hughes  <andrew@dcs.shef.ac.uk>
 
 	* docs/papers/ja4mo07/sig-alternate.cls:
@@ -65,7 +86,7 @@
 	Updated for submission with copyright info.
 	* docs/papers/ja4mo07/Makefile:
 	Build in letter format.
-	
+
 2007-08-29  Andrew John Hughes  <andrew@dcs.shef.ac.uk>
 
 	* src/uk/ac/shef/dcs/dynamite/lts/Label.java:
@@ -81,7 +102,7 @@
 	Add CCS constructs for nil and prefix.
 	* src/uk/ac/shef/dcs/dynamite/Process.java:
 	Extend State and mandate toString (informally).
-	
+
 2007-08-28  Andrew John Hughes  <andrew@dcs.shef.ac.uk>
 
 	* src/uk/ac/shef/dcs/dynamite/lts/Label.java,
@@ -91,17 +112,17 @@
 	* src/uk/ac/shef/dcs/dynamite/Process.java:
 	Add support for returning possible transitions.
 	* autogen.sh: Fix project title.
-	
+
 2007-08-20  Andrew John Hughes  <andrew@dcs.shef.ac.uk>
 
 	* configure.ac, autogen.sh:
 	Fix path to Process.java
-	
+
 2007-08-20  Andrew John Hughes  <andrew@dcs.shef.ac.uk>
 
 	* src/uk/ac/shef/dcs/dynamite/Process.java:
 	Renamed from tnt-dynamite subdirectory.
-	
+
 2007-08-20  Andrew John Hughes  <andrew@dcs.shef.ac.uk>
 
 	* src/uk/ac/shef/dcs/tnt-dynamite/Process.java:
@@ -112,7 +133,7 @@
 	* acinclude.m4,
 	* Makefile.am:
 	Support javac and build DynamiTE.
-	
+
 2007-08-17  Andrew John Hughes  <andrew@dcs.shef.ac.uk>
 
 	* LICENSE,
@@ -132,7 +153,7 @@
 	Initial build infrastructure.
 	* docs/papers/ja4mo07/paper.tex:
 	Added copyright data.
-	
+
 2007-06-18  Andrew John Hughes  <andrew@dcs.shef.ac.uk>
 
 	* docs/papers/ja4mo07/paper.tex,
@@ -158,12 +179,12 @@
 	Added.
 	* docs/papers/ja4mo07/paper.tex:
 	New paper for Java workshop.
-	
+
 2007-04-11  Andrew John Hughes  <andrew@dcs.shef.ac.uk>
 
 	* docs/papers/concur07/concur.tex:
 	Final version.
-	
+
 2007-04-11  Andrew John Hughes  <andrew@dcs.shef.ac.uk>
 
 	* docs/papers/concur07/concur.tex:
@@ -190,7 +211,7 @@
 
 	* docs/papers/concur07/concur.tex:
 	Use our hiding macro.
-	
+
 2007-04-08  Andrew John Hughes  <andrew@dcs.shef.ac.uk>
 
 	* docs/papers/concur07/concur.tex:
@@ -198,14 +219,14 @@
 	as LNCS provides one.
 	* docs/papers/concur07/literature.bib:
 	Corrected entry (Mike's fault).
-	
+
 2007-04-08  Andrew John Hughes  <andrew@dcs.shef.ac.uk>
 
 	* docs/papers/concur07/mpsproof.tex:
 	Added comments.
 	* docs/papers/concur07/literature.bib:
 	Merged Mike's additions.
-	
+
 2007-04-05  Andrew John Hughes  <andrew@dcs.shef.ac.uk>
 
 	* docs/papers/concur07/concur.tex:
@@ -220,7 +241,7 @@
 
 	* docs/papers/concur07/concur.tex:
 	Worked on some of Mike's comments.
-	
+
 2007-04-02  Andrew John Hughes  <andrew@dcs.shef.ac.uk>
 
 	* docs/papers/concur07/concur.tex:
@@ -230,7 +251,7 @@
 
 	* docs/papers/concur07/marginnote.sty:
 	Added.
-	
+
 2007-04-03 Mike Stannett <m.stannett@dcs.shef.ac.uk>
 
 	* docs/papers/concur07/macros.tex:
@@ -261,7 +282,7 @@
 	* docs/papers/concur07/sprmindx.sty,
 	* docs/papers/concur07/subjindx.ind:
 	Added CONCUR 07 paper.
-	
+
 ChangeLog -- List of changes.
 Copyright (C) 2007, 2009 The University of Sheffield
 

@@ -1,9 +1,4 @@
 # Makefile.am -- Input for automake
-# Taken from GNU Classpath project
-# Originally GPLv2, upgraded to AGPLv3 via 'or later' clause.
-#
-# Copyright (C) 2003, 2004, 2005, 2006, 2007 Free Software Foundation, Inc.
-# Copyright (C) 2007 The University of Sheffield
 # Copyright (C) 2013 Andrew John Hughes
 #
 # This file is part of DynamiTE.
@@ -28,10 +23,5 @@
 
 ## Input file for automake to generate the Makefile.in used by configure
 
-# lib first, to compile .class files before native code, last examples
-SUBDIRS = lib $(DOCS) $(EXAMPLES)
-DIST_SUBDIRS = lib docs examples
+SUBDIRS = api
 
-native: lib
-
-EXTRA_DIST = HACKING BUGS THANKYOU

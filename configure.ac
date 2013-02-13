@@ -4,6 +4,7 @@ dnl Originally GPLv2, upgraded to AGPLv3 via 'or later' clause.
 dnl
 dnl Copyright (C) 2003, 2004, 2005, 2006, 2007 Free Software Foundation, Inc.
 dnl Copyright (C) 2007 The University of Sheffield
+dnl Copyright (C) 2013 Andrew John Hughes
 dnl
 dnl This file is part of DynamiTE.
 dnl
@@ -59,7 +60,20 @@ dnl Choose zipping methodology
 CLASSPATH_WITH_DYNAMITE
 
 dnl Enable API docs?
-CLASSPATH_WITH_GJDOC
+AC_MSG_CHECKING([whether to build documentation])
+AC_ARG_ENABLE([docs],
+	      [AS_HELP_STRING([--disable-docs],
+	      		      [Disable generation of documentation])],
+	      [ENABLE_DOCS="${enableval}"], [ENABLE_DOCS='yes'])
+AC_MSG_RESULT(${ENABLE_DOCS})
+if test "x$ENABLE_DOCS" = "xyes"; then
+  AM_CONDITIONAL([ENABLE_DOCS], [true])
+  IT_FIND_JAVADOC
+  DOCS="docs";
+  AC_SUBST(DOCS)
+else
+  AM_CONDITIONAL([ENABLE_DOCS], [false])
+fi
 
 dnl Set debug level
 DYNAMITE_WITH_DEBUG_LEVEL
@@ -70,6 +84,8 @@ DYNAMITE_ENABLE_EXAMPLES
 dnl Generate classlist and other output
 AC_CONFIG_FILES([Makefile
 	lib/Makefile
+	docs/Makefile
+	docs/api/Makefile
 	lib/gen-classlist.sh
 	src/uk/ac/shef/dcs/dynamite/Config.java
 	examples/Makefile])
